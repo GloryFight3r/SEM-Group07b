@@ -1,4 +1,9 @@
-# Lab Template
+# Five nights at Annie's
+
+Backend for a pizza place order management application, implemented using microservices.
+To get started see the template code.
+
+## Lab Template
 
 This template contains two microservices:
 - authentication-microservice
@@ -13,7 +18,7 @@ The `example-microservice` is just an example and needs to be modified to suit t
 
 The `domain` and `application` packages contain the code for the domain layer and application layer. The code for the framework layer is the root package as *Spring* has some limitations on were certain files are located in terms of autowiring.
 
-## Running the microservices
+### Running the microservices
 
 You can run the two microservices individually by starting the Spring applications. Then, you can use *Postman* to perform the different requests:
 
