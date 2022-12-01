@@ -9,6 +9,8 @@
 - how should we handle topping options on pizzas
 - do coupons work in all stores, or just a selection
 - how much data and logic should the stores have (availability, etc.)
+- subscription model?
+- when can a user edit an order?
 
 ## For nex week:
 - choose a checkstyle

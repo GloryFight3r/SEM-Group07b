@@ -1,0 +1,14 @@
+@startuml
+
+[User] -- [Auth]
+[Auth] - [Order]
+[User] - [Coupon]
+[User] - [Order]
+[User] - [Food]
+[User] -- [Store]
+[Coupon] - [Order]
+[Order] -- [Store]
+[Order] -- [Food]
+
+footer Microservices architecture UML diagram *WIP*
+@enduml

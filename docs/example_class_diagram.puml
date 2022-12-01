@@ -1,0 +1,39 @@
+@startuml
+
+class ExampleClass extends AbstractClass implements Interface {
+    + publicMember: type
+    - privateMember: type
+    {static}+ staticMember: type
+    {abstract}+ abstractMember: type
+    + method(arg1: type, arg2: type)
+}
+
+abstract class AbstractClass
+
+interface Interface
+
+note right of ExampleClass
+    For more on UML syntax: plantuml.com
+
+    To render the diagram:
+        go to plantuml.com online server
+      OR
+        install the Intllij PlantUML plugin
+end note
+
+class otherStuff {
+    ..don't use..
+    --delimiters--
+    ==unless you==
+    __have to__
+
+
+
+
+    whitespace is NOT ignored
+    **bold**
+    *point
+}
+
+footer Example class diagram
+@enduml
