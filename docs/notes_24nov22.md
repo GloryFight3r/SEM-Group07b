@@ -1,5 +1,7 @@
 ## SEM lab 24 Nov 2022 notes
 
+Note taker: Raul
+
 - agree on a goal in terms of grades (be direct and sincere)
 - organize at least one internal meeting per week
 - we are graded based on notes taken during the meetings
