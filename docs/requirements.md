@@ -8,6 +8,9 @@
 * Customers must be able to place orders.
 * Stores must be notified when a customer places an order.
 * Stores must be notified when a customer cancels an order.
+* The chain must be able to upload the pizzas they offer.
+* The chain must be able to upload the default topping set they offer.
+* The chain must be able to edit the pizzas and the topping set they offer.
 
 ### Should Have Requirements
 
@@ -16,16 +19,14 @@
 * Customers should be able to filter out the pizzas containing their allergies.
 * Customers should be able to create custom pizzas.
 * Customers should be able to add toppings from a default set of toppings.
-* Customers should be able to add coupon codes to the system.
+* Customers should be able to add coupon codes to their order.
 * Customers should be able to edit their order up until 30 minutes before pickup time.
 * Customers should be able to cancel their order up until 30 minutes before pickup time.
 * Stores should be able to upload custom coupon codes.
-* The system must select the coupon code that offers the largest discount in case that multiple coupons are passed through.
+* The system should select the coupon code that offers the largest discount in case that multiple coupons are passed through.
 
 ### Could Have Requirements
 
-* Stores could be able to upload pizzas.
-* Stores could be able to upload a default set of toppings.
 * Coupons could have expiration dates.
 * The regional manager could be able to see all currently placed orders.
 * The regional manager could be able to delete any selection of orders.
