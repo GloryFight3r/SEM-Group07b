@@ -1,66 +1,39 @@
 @startuml
-abstract class "Food" {
- -name: String
- -baseToppings: List<Ingredients>
- -selectedExtraToppings: List<Ingredients>
- -basePrice: int
 
- +getName(): String
- +setName(name: String): void
- +getBaseToppings(): List<Ingredients>
- +setBaseToppings(toppings: List<Ingredients>): void
- +getBasePrice(): int
- +setBasePrice(price: int): void
- +calculateFinalPrice(): int
- +containsAllergens(user: User): boolean
- +{static} filterMenu(user: User): List<Food>
-
-}
-class Pizza{
-...
-}
-Food <|-- Pizza
-
-class Ingredient {
--name: String
--price: int
-
-+getPrice():int
-+setPrice(price: int)
-+getName(): String
-+setName(name: String): void
-}
-Food *-- Ingredient
-interface IngredientRepository
-interface FoodRepository
-Food o--FoodRepository
-Ingredient o-- IngredientRepository
-
-interface "Coupon"{
- -id: int
- -validationCode: String
- -validUntil: Date
-
- +getId(): int
- +setId(id: int): void
- +getValidationCode(): String
- +setValidationCode(code: String): void
- +getValidUntil(): Date
- +setValidUntil(date: Date): void
- +validate(): boolean
- +calculateDiscount(): double
+class ExampleClass extends AbstractClass implements Interface {
+    + publicMember: type
+    - privateMember: type
+    {static}+ staticMember: type
+    {abstract}+ abstractMember: type
+    + method(arg1: type, arg2: type)
 }
 
-class RegularDiscountCoupon {
-...
-}
-class BuyOneGetOneFree{
-...
-}
-Coupon <|-- RegularDiscountCoupon
-Coupon <|-- BuyOneGetOneFree
+abstract class AbstractClass
 
-interface CouponRepository
+interface Interface
 
-Coupon o-- CouponRepository
+note right of ExampleClass
+    For more on UML syntax: plantuml.com
+
+    To render the diagram:
+        go to plantuml.com online server
+      OR
+        install the Intllij PlantUML plugin
+end note
+
+class otherStuff {
+    ..don't use..
+    --delimiters--
+    ==unless you==
+    __have to__
+
+
+
+
+    whitespace is NOT ignored
+    **bold**
+    *point
+}
+
+footer Example class diagram
 @enduml
