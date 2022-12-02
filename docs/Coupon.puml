@@ -1,0 +1,29 @@
+@startuml
+interface "Coupon"{
+ -id: int
+ -validationCode: String
+ -validUntil: Date
+
+ +getId(): int
+ +setId(id: int): void
+ +getValidationCode(): String
+ +setValidationCode(code: String): void
+ +getValidUntil(): Date
+ +setValidUntil(date: Date): void
+ +validate(): boolean
+ +calculateDiscount(): double
+}
+
+class RegularDiscountCoupon {
+...
+}
+class BuyOneGetOneFree{
+...
+}
+Coupon <|-- RegularDiscountCoupon
+Coupon <|-- BuyOneGetOneFree
+
+interface CouponRepository
+
+Coupon o-- CouponRepository
+@enduml
