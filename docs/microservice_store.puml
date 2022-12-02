@@ -5,9 +5,9 @@ class Store {
     - orders: List<Order>
     --
     getters & setters...
-    + addOrder(token: String, order: Order): Order
-    + editOrder(token: String, orderID: Integer): Boolean
-    + removeOrder(token: String, orderID: Integer): Boolean
+    + addOrder(order: Order): Order
+    + editOrder(orderID: Integer): Boolean
+    + removeOrder(orderID: Integer): Boolean
 }
 
 class StoreAPI {
