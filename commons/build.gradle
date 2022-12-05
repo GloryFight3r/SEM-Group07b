@@ -9,6 +9,8 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
