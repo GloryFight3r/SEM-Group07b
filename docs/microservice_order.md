@@ -1,20 +1,20 @@
-# Order Microservice
+# commons.Order Microservice
 The API allows authorised users to create, edit, delete and list orders.
 Below you can find the detailed explanation of how these operations work.
 
-## Create Order
+## Create commons.Order
 This endpoint receives a request containing an order object and a user token.
 It validates the request by checking the authority of the user and the validity of the order object.
 If valid, it completes the order object (by calculating price, coupons, id, etc.) and writes it to the database.
 After this, the microservice notifies the store about the new order by sending a copy of it.
 
-## Edit Order
+## Edit commons.Order
 This endpoint receives a request containing an order object and a user token.
 It validates the request by checking the user authority, timestamp, and order object validity.
 If valid, it modifies the database entry with the new completed order object.
 It then notifies the store about the change by sending a copy of the order.
 
-## Delete Order
+## Delete commons.Order
 This endpoint receives a request containing an order ID and a user token.
 It checks the user authority and, if sufficient, it deletes the database entry.
 It then notifies the store about the deletion.
