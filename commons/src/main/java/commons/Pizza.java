@@ -1,6 +1,10 @@
+package commons;
+
+import commons.Ingredient;
+
 import java.util.List;
 
-public class Pizza extends Food{
+public class Pizza extends Food {
     /**
      * Empty constructor necessary for the Entity annotation
      */

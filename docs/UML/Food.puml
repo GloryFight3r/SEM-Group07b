@@ -16,12 +16,12 @@ abstract class "Food" {
  +{static} filterMenu(user: User): List<Food>
 
 }
-class Pizza{
+class commons.Pizza{
 ...
 }
-Food <|-- Pizza
+Food <|-- commons.Pizza
 
-class Ingredient {
+class commons.Ingredient {
 -name: String
 -price: int
 
@@ -30,9 +30,9 @@ class Ingredient {
 +getName(): String
 +setName(name: String): void
 }
-Food *-- Ingredient
+Food *-- commons.Ingredient
 interface IngredientRepository
 interface FoodRepository
 Food o--FoodRepository
-Ingredient o-- IngredientRepository
+commons.Ingredient o-- IngredientRepository
 @enduml
