@@ -5,11 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b0d4ab2-bb65-4650-b043-c6eab75a06c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/authentication/AuthManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/H2Config.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/RequestAuthenticationConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/controllers/OrderController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/HasEvents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/order/OrderRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/order/OrderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/authentication-microservice/pizzeria.authentication-microservice.test.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/jwtstuff/JwtUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/jwtstuff/JwtUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/jwtstuff/JwtUserDetailsServiceTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/jwtstuff/JwtUserDetailsServiceTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/H2Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" afterDir="false" />
+    </list>
+    <list id="812a0fcf-e5ee-45e8-a867-52c042def17f" name="Changes by Raul" comment="">
+      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/Application.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +82,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -111,6 +124,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ExpandSpringBootJavaOptionsPanel" value="true" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
@@ -118,16 +132,26 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/order-microservice/src/main/resources" />
+    <property name="codeWithMe.voiceChat.enabledByDefault" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/config/checkstyle/checkstyle.xml" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="org.infernus.idea.checkstyle.CheckStyleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Projects\SEM07b\order-microservice\src\main\resources" />
       <recent name="D:\Projects\SEM07b\order-microservice" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="pizzeria.order.config" />
+      <recent name="pizzeria.order" />
+    </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.Authentication">
+  <component name="RunManager" selected="Spring Boot.Order">
     <configuration name="JwtUserDetailsServiceTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -214,7 +238,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="SEM07b [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SEM07b [test]" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -271,16 +295,15 @@
       <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
       <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
       <item itemvalue="Gradle.JwtUserDetailsServiceTests" />
+      <item itemvalue="Gradle.SEM07b [build]" />
       <item itemvalue="Spring Boot.Authentication" />
       <item itemvalue="Spring Boot.Example" />
       <item itemvalue="Spring Boot.Order" />
       <item itemvalue="Spring Boot.Application" />
-      <item itemvalue="Gradle.SEM07b [build]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.SEM07b [build]" />
-        <item itemvalue="Gradle.SEM07b [test]" />
         <item itemvalue="Gradle.JwtUserDetailsServiceTests" />
         <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
         <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
@@ -312,5 +335,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

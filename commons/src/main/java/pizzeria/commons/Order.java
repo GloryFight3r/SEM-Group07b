@@ -1,33 +1,46 @@
 package pizzeria.commons;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.*;
 import java.time.LocalDateTime;
 
+@Entity
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    long id;
     List<Food> foodList;
-    int id;
-    int storeId;
-    int userId;
+    long storeId;
+    long userId;
     LocalDateTime pickupTime;
     double price;
-    List<Integer> couponIds;
+    List<Long> couponIds;
 
-    //TODO: make default constructor for persisting as entity
+    //default constructor
+    @Autowired
+    public Order(){
+
+    }
 
     public List<Food> getFoodList() {
         return this.foodList;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public int getStoreId() {
+    public long getStoreId() {
         return this.storeId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return this.userId;
     }
 
@@ -39,14 +52,14 @@ public class Order {
         return this.price;
     }
 
-    public List<Integer> getCouponIds() {
+    public List<Long> getCouponIds() {
         return this.couponIds;
     }
 
     public double calculatePrice() {
         double min = Double.MAX_VALUE;
-        int couponUsed = -1;
-        for (int c : couponIds) {
+        long couponUsed = -1;
+        for (long c : couponIds) {
             //TODO: query Jpa repository for the coupon
             //validate the coupon (part of the query) and calculate a price if not null
             double price = 5.0;
