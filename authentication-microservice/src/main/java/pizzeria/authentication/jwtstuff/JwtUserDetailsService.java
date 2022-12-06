@@ -2,7 +2,6 @@ package pizzeria.authentication.jwtstuff;
 
 import java.util.ArrayList;
 
-import lombok.Getter;
 import pizzeria.authentication.domain.user.NetId;
 import pizzeria.authentication.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

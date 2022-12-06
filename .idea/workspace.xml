@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b0d4ab2-bb65-4650-b043-c6eab75a06c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/jwtstuff/JwtUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/jwtstuff/JwtUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/jwtstuff/JwtUserDetailsServiceTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/jwtstuff/JwtUserDetailsServiceTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +27,9 @@
         <task path="$PROJECT_DIR$">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/commons">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -39,6 +41,24 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="pizzeria" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="commons" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="commons" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="commons" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -85,6 +105,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2IXD8OcK9JymdfFbxLZcZGAhki9" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -106,7 +127,7 @@
       <recent name="D:\Projects\SEM07b\order-microservice" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.Order">
+  <component name="RunManager" selected="Spring Boot.Authentication">
     <configuration name="JwtUserDetailsServiceTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -130,25 +151,23 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="RegistrationServiceTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SEM07b [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value=":authentication-microservice:test" />
-            <option value="--tests" />
-            <option value="&quot;pizzeria.authentication.domain.user.RegistrationServiceTests&quot;" />
+            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
@@ -249,7 +268,6 @@
     </configuration>
     <list>
       <item itemvalue="Gradle.SEM07b [test]" />
-      <item itemvalue="Gradle.RegistrationServiceTests" />
       <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
       <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
       <item itemvalue="Gradle.JwtUserDetailsServiceTests" />
@@ -257,14 +275,15 @@
       <item itemvalue="Spring Boot.Example" />
       <item itemvalue="Spring Boot.Order" />
       <item itemvalue="Spring Boot.Application" />
+      <item itemvalue="Gradle.SEM07b [build]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.SEM07b [build]" />
         <item itemvalue="Gradle.SEM07b [test]" />
         <item itemvalue="Gradle.JwtUserDetailsServiceTests" />
         <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
         <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
-        <item itemvalue="Gradle.RegistrationServiceTests" />
       </list>
     </recent_temporary>
   </component>
