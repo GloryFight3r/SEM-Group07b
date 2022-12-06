@@ -1,5 +1,5 @@
-import pizzeria.commons.Ingredient;
-import pizzeria.commons.Pizza;
+import commons.Ingredient;
+import commons.Pizza;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
