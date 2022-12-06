@@ -9,13 +9,10 @@
         </processorPath>
         <module name="pizzeria.commons.main" />
         <module name="pizzeria.authentication-microservice.main" />
+        <module name="pizzeria.order-microservice.main" />
         <module name="pizzeria.example-microservice.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11">
-      <module name="pizzeria.commons" target="17" />
-      <module name="pizzeria.commons.main" target="17" />
-      <module name="pizzeria.commons.test" target="17" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="11" />
   </component>
 </project>
