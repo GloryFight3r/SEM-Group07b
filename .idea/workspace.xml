@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3b0d4ab2-bb65-4650-b043-c6eab75a06c4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/application/user/UserWasCreatedListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/application/user/UserWasCreatedListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/authentication/JwtTokenGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/jwtstuff/JwtTokenGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/authentication/JwtUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/jwtstuff/JwtUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/config/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/config/H2Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/controllers/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/controllers/AuthenticationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/HasEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/HasEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/providers/TimeProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/providers/TimeProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/providers/implementations/CurrentTimeProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/providers/implementations/CurrentTimeProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/AppUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/AppUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/HashedPassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/HashedPassword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/HashedPasswordAttributeConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/HashedPasswordAttributeConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/NetId.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/NetId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/NetIdAlreadyInUseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/NetIdAlreadyInUseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/NetIdAttributeConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/NetIdAttributeConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/Password.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/PasswordHashingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/PasswordHashingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/PasswordWasChangedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/PasswordWasChangedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/RegistrationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/RegistrationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/domain/user/UserWasCreatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/domain/user/UserWasCreatedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/models/AuthenticationRequestModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/models/AuthenticationRequestModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/models/AuthenticationResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/models/AuthenticationResponseModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/nl/tudelft/sem/template/authentication/models/RegistrationRequestModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/models/RegistrationRequestModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/authentication/JwtTokenGeneratorTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/jwtstuff/JwtTokenGeneratorTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/authentication/JwtUserDetailsServiceTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/jwtstuff/JwtUserDetailsServiceTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/domain/user/RegistrationServiceTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/domain/user/RegistrationServiceTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/integration/UsersTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/integration/UsersTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/integration/utils/JsonUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/integration/utils/JsonUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/profiles/MockAuthenticationManagerProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/profiles/MockAuthenticationManagerProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/profiles/MockPasswordEncoderProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/profiles/MockPasswordEncoderProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/test/java/nl/tudelft/sem/template/authentication/profiles/MockTokenGeneratorProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/test/java/pizzeria/authentication/profiles/MockTokenGeneratorProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/commons/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/Coupon.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Coupon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/Food.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Food.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Ingredient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/PercentageCoupon.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/PercentageCoupon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/Pizza.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Pizza.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/main/java/commons/TwoForOneCoupon.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/TwoForOneCoupon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/test/java/IngredientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/test/java/pizzeria/commons/IngredientTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons/src/test/java/PizzaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/test/java/pizzeria/commons/PizzaTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/application/.keep" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/application/.keep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/authentication/AuthManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/AuthManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/authentication/JwtAuthenticationEntryPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtAuthenticationEntryPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/authentication/JwtRequestFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtRequestFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/authentication/JwtTokenVerifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtTokenVerifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/config/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/H2Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/config/RequestAuthenticationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/RequestAuthenticationConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/controllers/DefaultController.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/controllers/DefaultController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/nl/tudelft/sem/template/example/domain/.keep" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/domain/.keep" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/authentication/AuthManagerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/authentication/AuthManagerTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/authentication/JwtAuthenticationEntryPointTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/authentication/JwtAuthenticationEntryPointTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/authentication/JwtRequestFilterTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/authentication/JwtRequestFilterTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/authentication/JwtTokenVerifierTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/authentication/JwtTokenVerifierTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/integration/ExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/integration/ExampleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/profiles/MockAuthenticationManagerProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/profiles/MockAuthenticationManagerProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/test/java/nl/tudelft/sem/template/example/profiles/MockTokenVerifierProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/test/java/pizzeria/example/profiles/MockTokenVerifierProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2IXD8OcK9JymdfFbxLZcZGAhki9" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RunManager" selected="Spring Boot.Authentication">
+    <configuration name="RegistrationServiceTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":authentication-microservice:test" />
+            <option value="--tests" />
+            <option value="&quot;pizzeria.authentication.domain.user.RegistrationServiceTests&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SEM07b [checkstyleMain]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--scan" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="checkstyleMain" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SEM07b [checkstyleTest]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="checkstyleTest" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SEM07b [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="UsersTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":authentication-microservice:test" />
+            <option value="--tests" />
+            <option value="&quot;pizzeria.authentication.integration.UsersTests&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="Authentication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="pizzeria.authentication-microservice.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.authentication.Application" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Example" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="pizzeria.example-microservice.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.example.Application" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.SEM07b [test]" />
+      <item itemvalue="Spring Boot.Authentication" />
+      <item itemvalue="Spring Boot.Example" />
+      <item itemvalue="Gradle.UsersTests" />
+      <item itemvalue="Gradle.RegistrationServiceTests" />
+      <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
+      <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.SEM07b [test]" />
+        <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
+        <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
+        <item itemvalue="Gradle.RegistrationServiceTests" />
+        <item itemvalue="Gradle.UsersTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3b0d4ab2-bb65-4650-b043-c6eab75a06c4" name="Changes" comment="" />
+      <created>1670318882518</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1670318882518</updated>
+      <workItem from="1670318885459" duration="6146000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
