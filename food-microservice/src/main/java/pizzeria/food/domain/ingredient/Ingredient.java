@@ -1,4 +1,4 @@
-package pizzeria.food.domain;
+package pizzeria.food.domain.ingredient;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
