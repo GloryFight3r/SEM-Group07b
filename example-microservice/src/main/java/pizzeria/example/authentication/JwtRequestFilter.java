@@ -52,6 +52,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // Get authorization header
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        //System.out.println(authorizationHeader);
 
         // Check if an authorization header is set
         if (authorizationHeader != null) {
@@ -60,9 +61,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             // Check for the correct auth scheme
             if (directives.length == 2 && directives[0].equals(AUTHORIZATION_AUTH_SCHEME)) {
                 String token = directives[1];
+                //System.out.println("this is the token " + token);
 
                 try {
                     if (jwtTokenVerifier.validateToken(token)) {
+                        System.out.println("WE MADE IT");
                         String netId = jwtTokenVerifier.getNetIdFromToken(token);
                         var authenticationToken = new UsernamePasswordAuthenticationToken(
                                 netId,

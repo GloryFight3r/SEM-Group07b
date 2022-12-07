@@ -2,6 +2,8 @@ package pizzeria.authentication.authentication;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import org.springframework.security.authentication.jaas.AuthorityGranter;
 import pizzeria.authentication.domain.user.NetId;
 import pizzeria.authentication.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         var user = optionalUser.get();
         Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        System.out.println("This is AUTHORITIES: " + authorities);
 
         return new User(user.getNetId().toString(), user.getPassword().toString(), authorities); // no authorities/roles
     }

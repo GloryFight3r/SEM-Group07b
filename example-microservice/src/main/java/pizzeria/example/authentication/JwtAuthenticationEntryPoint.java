@@ -24,6 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             throws IOException, ServletException {
 
         // Return an unauthorized response code
+        System.out.println(response.toString());
         response.addHeader(JwtRequestFilter.WWW_AUTHENTICATE_HEADER, JwtRequestFilter.AUTHORIZATION_AUTH_SCHEME);
         response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
     }

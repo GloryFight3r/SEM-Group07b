@@ -43,11 +43,11 @@ public class JwtTokenGenerator {
     public String generateToken(UserDetails userDetails) {
         //Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", userDetails.getAuthorities());
+        claims.put("role", userDetails.getAuthorities().toString());
         return Jwts.builder()
-                //.setClaims(claims)
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .claim("role", userDetails.getAuthorities().toString())
+                 //.claim("role", userDetails.getAuthorities().toString())
                 .setIssuedAt(new Date(timeProvider.getCurrentTime().toEpochMilli()))
                 .setExpiration(new Date(timeProvider.getCurrentTime().toEpochMilli() + JWT_TOKEN_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
