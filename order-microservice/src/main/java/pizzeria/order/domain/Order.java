@@ -26,10 +26,16 @@ public class Order {
     public Order(){
 
     }
-
+    @SuppressWarnings("PMD")
     public double calculatePrice() {
+        if (couponIds.isEmpty()) {
+            this.price = -1;
+            return -1;
+        }
         double min = Double.MAX_VALUE;
-        long couponUsed = -1;
+
+        long couponUsed = couponIds.get(0);
+
         for (long c : couponIds) {
             //TODO: query Jpa repository for the coupon
             //validate the coupon (part of the query) and calculate a price if not null
@@ -42,10 +48,10 @@ public class Order {
 
         //update the coupon list with the actual coupon used
         this.couponIds.clear();
-        if (couponUsed != -1) {
-            //if there was a valid coupon used we add it to the list (for the response body)
-            couponIds.add(couponUsed);
-        }
+        //if there was a valid coupon used we add it to the list (for the response body)
+        couponIds.add(couponUsed);
+
+        this.price = min;
 
         return min;
     }

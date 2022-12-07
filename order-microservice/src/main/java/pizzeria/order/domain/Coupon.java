@@ -1,31 +1,17 @@
 package pizzeria.order.domain;
 
+import lombok.Data;
+
+@Data
 public abstract class Coupon {
 
-    final int id;
-    final String description;
+    final String id;
 
-    //make default constructor for entity
-    public Coupon() {
-        //initialize to incorrect values to catch potential errors
-        this.id = -1;
-        this.description = null;
-    }
-
-    public Coupon(String description) {
-        this.description = description;
+    public Coupon(String id) {
         //TODO: persist this thing in a JPA repo, use the id in the constructor
-        this.id = 0;
+        this.id = id;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public abstract boolean validate(int id);
+    public abstract boolean validate(String id);
     public abstract double calculatePrice(Order order);
 }

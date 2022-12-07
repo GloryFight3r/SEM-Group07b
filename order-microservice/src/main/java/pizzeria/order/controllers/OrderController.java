@@ -23,12 +23,11 @@ public class OrderController {
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
         // TODO: validate user token
         // TODO: validate the foods
-        Order saved = null;
         try {
-            saved = orderService.saveOrder(incoming);
+            Order saved = orderService.saveOrder(incoming);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }
