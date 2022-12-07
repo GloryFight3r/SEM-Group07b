@@ -1,4 +1,4 @@
-package pizzeria.commons;
+package pizzeria.order.domain;
 
 public abstract class Coupon {
 

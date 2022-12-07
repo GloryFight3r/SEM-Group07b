@@ -1,7 +1,6 @@
-package pizzeria.order.domain.order;
+package pizzeria.order.domain;
 
 import org.springframework.stereotype.Service;
-import pizzeria.commons.Order;
 
 import java.time.LocalDateTime;
 

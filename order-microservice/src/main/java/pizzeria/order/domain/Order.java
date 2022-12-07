@@ -1,56 +1,30 @@
-package pizzeria.commons;
+package pizzeria.order.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.*;
+import lombok.Data;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@Data
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private List<Food> foodList;
+    @ElementCollection
+    private List<Long> foodList;
     private long storeId;
     private long userId;
     private LocalDateTime pickupTime;
     private double price;
+    @ElementCollection
     private List<Long> couponIds;
 
     //default constructor
     public Order(){
 
-    }
-
-    public List<Food> getFoodList() {
-        return this.foodList;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public long getStoreId() {
-        return this.storeId;
-    }
-
-    public long getUserId() {
-        return this.userId;
-    }
-
-    public LocalDateTime getPickupTime() {
-        return this.pickupTime;
-    }
-
-    public double getPrice() {
-        return this.price;
-    }
-
-    public List<Long> getCouponIds() {
-        return this.couponIds;
     }
 
     public double calculatePrice() {

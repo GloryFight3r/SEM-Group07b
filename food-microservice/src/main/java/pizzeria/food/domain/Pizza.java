@@ -1,8 +1,8 @@
-package pizzeria.commons;
+package pizzeria.food.domain;
 
 import java.util.List;
 
-public class Pizza extends Food {
+public class Pizza extends Recipe {
     /**
      * Empty constructor necessary for the Entity annotation
      */
@@ -15,7 +15,7 @@ public class Pizza extends Food {
      * @param selectedExtraToppings List of ingredients representing the selected extraToppings
      * @param basePrice double value representing the price of the food without any extra toppings
      */
-    public Pizza(String name, List<Ingredient> baseToppings, List<Ingredient> selectedExtraToppings, double basePrice) {
+    public Pizza(String name, List<Long> baseToppings, List<Long> selectedExtraToppings, double basePrice) {
         super(name, baseToppings, selectedExtraToppings, basePrice);
     }
 
@@ -24,7 +24,7 @@ public class Pizza extends Food {
      * @param baseToppings List of ingredients representing the selected baseToppings
      * @param basePrice double value representing the price of the food without any extra toppings
      */
-    public Pizza(String name, List<Ingredient> baseToppings, double basePrice) {
+    public Pizza(String name, List<Long> baseToppings, double basePrice) {
         super(name, baseToppings, basePrice);
     }
 }

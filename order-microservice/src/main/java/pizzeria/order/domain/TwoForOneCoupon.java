@@ -1,6 +1,6 @@
-package pizzeria.commons;
+package pizzeria.order.domain;
 
-public class PercentageCoupon extends Coupon{
+public class TwoForOneCoupon extends Coupon {
 
     @Override
     public boolean validate(int id) {
