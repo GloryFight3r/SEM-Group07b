@@ -1,0 +1,38 @@
+@startuml
+abstract class "Food" {
+ -name: String
+ -baseToppings: List<Ingredients>
+ -selectedExtraToppings: List<Ingredients>
+ -basePrice: int
+
+ +getName(): String
+ +setName(name: String): void
+ +getBaseToppings(): List<Ingredients>
+ +setBaseToppings(toppings: List<Ingredients>): void
+ +getBasePrice(): int
+ +setBasePrice(price: int): void
+ +calculateFinalPrice(): int
+ +containsAllergens(user: User): boolean
+ +{static} filterMenu(user: User): List<Food>
+
+}
+class commons.Pizza{
+...
+}
+Food <|-- commons.Pizza
+
+class commons.Ingredient {
+-name: String
+-price: int
+
++getPrice():int
++setPrice(price: int)
++getName(): String
++setName(name: String): void
+}
+Food *-- commons.Ingredient
+interface IngredientRepository
+interface FoodRepository
+Food o--FoodRepository
+commons.Ingredient o-- IngredientRepository
+@enduml
