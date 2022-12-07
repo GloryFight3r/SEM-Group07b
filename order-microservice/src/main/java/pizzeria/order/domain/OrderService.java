@@ -1,5 +1,6 @@
 package pizzeria.order.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 @Service
 public class OrderService {
     private final transient OrderRepository orderRepo;
+    @Autowired
 
     public OrderService(OrderRepository orderRepo){
         this.orderRepo = orderRepo;
@@ -29,14 +31,15 @@ public class OrderService {
         return orderRepo.save(order);
     }
 
-    public static class PriceNotRightException extends Exception{
+    @SuppressWarnings("PMD")
+    public static class PriceNotRightException extends Exception {
         @Override
         public String getMessage(){
             return "The price calculated does not match the price given";
         }
     }
-
-    public static class TimeIsPastException extends Exception{
+    @SuppressWarnings("PMD")
+    public static class TimeIsPastException extends Exception {
         @Override
         public String getMessage(){
             return "The selected pickup time is in the past";

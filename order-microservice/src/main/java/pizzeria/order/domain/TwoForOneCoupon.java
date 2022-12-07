@@ -1,9 +1,12 @@
 package pizzeria.order.domain;
 
 public class TwoForOneCoupon extends Coupon {
+    public TwoForOneCoupon(String id) {
+        super(id);
+    }
 
     @Override
-    public boolean validate(int id) {
+    public boolean validate(String id) {
         return false;
     }
 
