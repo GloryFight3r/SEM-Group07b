@@ -1,5 +1,6 @@
 package pizzeria.order.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import pizzeria.commons.Order;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,12 @@ import pizzeria.order.domain.order.OrderService;
 @RequestMapping("/order")
 public class OrderController {
 
-    private OrderService orderService;
+    private final transient OrderService orderService;
+
+    @Autowired
+    public OrderController(OrderService orderService){
+        this.orderService = orderService;
+    }
 
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {

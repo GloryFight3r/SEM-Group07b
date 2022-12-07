@@ -15,7 +15,7 @@ import javax.sql.DataSource;
  * The H2 config.
  */
 @Configuration
-@EnableJpaRepositories("pizzeria.order.domain")
+@EnableJpaRepositories("pizzeria.order")
 @PropertySource("classpath:application-dev.properties")
 @EnableTransactionManagement
 public class H2Config {

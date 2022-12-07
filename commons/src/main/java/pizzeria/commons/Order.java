@@ -1,7 +1,5 @@
 package pizzeria.commons;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,16 +12,15 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    long id;
-    List<Food> foodList;
-    long storeId;
-    long userId;
-    LocalDateTime pickupTime;
-    double price;
-    List<Long> couponIds;
+    private long id;
+    private List<Food> foodList;
+    private long storeId;
+    private long userId;
+    private LocalDateTime pickupTime;
+    private double price;
+    private List<Long> couponIds;
 
     //default constructor
-    @Autowired
     public Order(){
 
     }

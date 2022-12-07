@@ -5,24 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b0d4ab2-bb65-4650-b043-c6eab75a06c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/authentication/AuthManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/H2Config.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/RequestAuthenticationConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/controllers/OrderController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/HasEvents.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/order/OrderRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/order/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/authentication-microservice/pizzeria.authentication-microservice.test.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/H2Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" afterDir="false" />
-    </list>
-    <list id="812a0fcf-e5ee-45e8-a867-52c042def17f" name="Changes by Raul" comment="">
       <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/H2Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/controllers/OrderController.java" afterDir="false" />
     </list>
+    <list id="812a0fcf-e5ee-45e8-a867-52c042def17f" name="Changes by Raul" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,6 +113,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="h2" />
     <property name="ExpandSpringBootJavaOptionsPanel" value="true" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
@@ -151,7 +141,7 @@
       <recent name="pizzeria.order" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.Order">
+  <component name="RunManager" selected="Gradle.SEM07b [test]">
     <configuration name="JwtUserDetailsServiceTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -319,6 +309,8 @@
       <option name="presentableId" value="Default" />
       <updated>1670318882518</updated>
       <workItem from="1670318885459" duration="8449000" />
+      <workItem from="1670366821491" duration="1610000" />
+      <workItem from="1670407231598" duration="2808000" />
     </task>
     <servers />
   </component>
