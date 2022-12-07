@@ -1,11 +1,7 @@
 package pizzeria.authentication.domain.user;
 
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.NoArgsConstructor;
 import pizzeria.authentication.domain.HasEvents;
 
@@ -20,6 +16,7 @@ public class AppUser extends HasEvents {
      * Identifier for the application user.
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -31,15 +28,25 @@ public class AppUser extends HasEvents {
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
+    public enum Role {MANAGER, EMPLOYEE, CUSTOMER}
+
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    public String getRole() {
+        return role.toString();
+    }
+
     /**
      * Create new application user.
      *
      * @param netId The NetId for the new user
      * @param password The password for the new user
      */
-    public AppUser(NetId netId, HashedPassword password) {
+    public AppUser(NetId netId, HashedPassword password, Role role) {
         this.netId = netId;
         this.password = password;
+        this.role = role;
         this.recordThat(new UserWasCreatedEvent(netId));
     }
 

@@ -1,7 +1,8 @@
 package pizzeria.authentication.controllers;
 
-import pizzeria.authentication.jwtstuff.JwtTokenGenerator;
-import pizzeria.authentication.jwtstuff.JwtUserDetailsService;
+import pizzeria.authentication.authentication.JwtTokenGenerator;
+import pizzeria.authentication.authentication.JwtUserDetailsService;
+import pizzeria.authentication.domain.user.AppUser;
 import pizzeria.authentication.domain.user.NetId;
 import pizzeria.authentication.domain.user.Password;
 import pizzeria.authentication.domain.user.RegistrationService;
@@ -86,12 +87,28 @@ public class AuthenticationController {
      * @throws Exception if a user with this netid already exists
      */
     @PostMapping("/register")
+    @SuppressWarnings("PMD")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
 
         try {
             NetId netId = new NetId(request.getNetId());
             Password password = new Password(request.getPassword());
-            registrationService.registerUser(netId, password);
+            String roleString = request.getRole();
+            AppUser.Role role = AppUser.Role.CUSTOMER;
+            switch (roleString) {
+                case "MANAGER":
+                    role = AppUser.Role.MANAGER;
+                    break;
+                case "EMPLOYEE":
+                    role = AppUser.Role.EMPLOYEE;
+                    break;
+                case "CUSTOMER":
+                    role = AppUser.Role.CUSTOMER;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            registrationService.registerUser(netId, password, role);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
