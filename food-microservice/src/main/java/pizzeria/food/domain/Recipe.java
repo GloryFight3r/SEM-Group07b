@@ -1,22 +1,28 @@
 package pizzeria.food.domain;
-import lombok.Data;
+
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
 @NoArgsConstructor
 public abstract class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
     private long id;
+    @Getter
     private String name;
     @ElementCollection
+    @Getter
     private List<Long> baseToppings;
     @ElementCollection
+    @Getter
     private List<Long> selectedExtraToppings;
+    @Getter
     private double basePrice;
 
     /**
@@ -55,6 +61,19 @@ public abstract class Recipe {
             //totalPrice += ingredient.getPrice();
         }
         return totalPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Recipe)) return false;
+        Recipe recipe = (Recipe) o;
+        return id == recipe.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 
