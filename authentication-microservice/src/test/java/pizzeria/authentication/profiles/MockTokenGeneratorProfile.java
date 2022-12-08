@@ -1,6 +1,6 @@
 package pizzeria.authentication.profiles;
 
-import pizzeria.authentication.jwtstuff.JwtTokenGenerator;
+import pizzeria.authentication.authentication.JwtTokenGenerator;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

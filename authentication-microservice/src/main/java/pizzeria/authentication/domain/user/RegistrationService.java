@@ -28,23 +28,23 @@ public class RegistrationService {
      * @param password The password of the user
      * @throws Exception if the user already exists
      */
-    public AppUser registerUser(NetId netId, Password password) throws Exception {
+    public AppUser registerUser(String id, Password password, String role) throws Exception {
 
-        if (checkNetIdIsUnique(netId)) {
+        if (checkIdIsUnique(id)) {
             // Hash password
             HashedPassword hashedPassword = passwordHashingService.hash(password);
 
             // Create new account
-            AppUser user = new AppUser(netId, hashedPassword);
+            AppUser user = new AppUser(id, hashedPassword, role);
             userRepository.save(user);
 
             return user;
         }
 
-        throw new NetIdAlreadyInUseException(netId);
+        throw new IdAlreadyInUseException(id);
     }
 
-    public boolean checkNetIdIsUnique(NetId netId) {
-        return !userRepository.existsByNetId(netId);
+    public boolean checkIdIsUnique(String id) {
+        return !userRepository.existsById(id);
     }
 }

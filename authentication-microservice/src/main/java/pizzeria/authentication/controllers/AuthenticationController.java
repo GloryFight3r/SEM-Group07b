@@ -1,8 +1,8 @@
 package pizzeria.authentication.controllers;
 
-import pizzeria.authentication.jwtstuff.JwtTokenGenerator;
-import pizzeria.authentication.jwtstuff.JwtUserDetailsService;
-import pizzeria.authentication.domain.user.NetId;
+import pizzeria.authentication.authentication.JwtTokenGenerator;
+import pizzeria.authentication.authentication.JwtUserDetailsService;
+import pizzeria.authentication.domain.user.AppUser;
 import pizzeria.authentication.domain.user.Password;
 import pizzeria.authentication.domain.user.RegistrationService;
 import pizzeria.authentication.models.AuthenticationRequestModel;
@@ -65,7 +65,7 @@ public class AuthenticationController {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getNetId(),
+                            request.getId(),
                             request.getPassword()));
         } catch (DisabledException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_DISABLED", e);
@@ -73,7 +73,7 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", e);
         }
 
-        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getNetId());
+        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getId());
         final String jwtToken = jwtTokenGenerator.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
     }
@@ -86,12 +86,19 @@ public class AuthenticationController {
      * @throws Exception if a user with this netid already exists
      */
     @PostMapping("/register")
+    @SuppressWarnings("PMD")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
-
         try {
-            NetId netId = new NetId(request.getNetId());
+
+            String id = request.getId();
             Password password = new Password(request.getPassword());
-            registrationService.registerUser(netId, password);
+            System.out.println(request + " " + AppUser.containsRole(request.getRole()));
+            if (!AppUser.containsRole(request.getRole())) {
+                throw new IllegalArgumentException();
+            }
+
+            String role = request.getRole();
+            registrationService.registerUser(id, password, role);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

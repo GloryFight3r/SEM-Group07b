@@ -4,13 +4,13 @@ package pizzeria.authentication.domain.user;
  * A DDD domain event that indicated a user was created.
  */
 public class UserWasCreatedEvent {
-    private final NetId netId;
+    private final String id;
 
-    public UserWasCreatedEvent(NetId netId) {
-        this.netId = netId;
+    public UserWasCreatedEvent(String id) {
+        this.id = id;
     }
 
-    public NetId getNetId() {
-        return this.netId;
+    public String getId() {
+        return this.id;
     }
 }
