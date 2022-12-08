@@ -1,17 +1,20 @@
-package pizzeria.order.domain;
+package pizzeria.order.domain.order;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pizzeria.order.domain.food.FoodRepository;
 
 import java.time.LocalDateTime;
 
 @Service
 public class OrderService {
     private final transient OrderRepository orderRepo;
-    @Autowired
+    private final transient FoodRepository foodRepo;
 
-    public OrderService(OrderRepository orderRepo){
+    @Autowired
+    public OrderService(OrderRepository orderRepo, FoodRepository foodRepo){
         this.orderRepo = orderRepo;
+        this.foodRepo = foodRepo;
     }
 
     public Order saveOrder(Order order) throws Exception{

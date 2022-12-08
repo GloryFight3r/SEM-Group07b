@@ -1,5 +1,4 @@
-package pizzeria.order.config;
-
+package pizzeria.user.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -10,7 +9,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
  */
 @Configuration
 public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
-
     public RequestAuthenticationConfig() {
 
     }
@@ -23,5 +21,4 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
 }
