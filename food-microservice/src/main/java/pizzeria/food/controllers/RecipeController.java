@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
 import pizzeria.food.domain.recipe.Recipe;
 import pizzeria.food.domain.recipe.RecipeAlreadyInUseException;
@@ -31,6 +32,16 @@ public class RecipeController {
             Recipe saved = foodService.registerFood(recipe);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (RecipeAlreadyInUseException e){
+            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
+    }
+
+    @PostMapping("update")
+    public ResponseEntity<Recipe> updateFood(@RequestBody Recipe recipe) {
+        try {
+            Recipe updated = foodService.updateFood(recipe);
+            return ResponseEntity.status(HttpStatus.OK).body(updated);
+        } catch (RecipeNotFoundException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }

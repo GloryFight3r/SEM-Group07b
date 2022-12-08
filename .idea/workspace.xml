@@ -4,27 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f87caad7-deea-4458-b657-28435cce381b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/RecipeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/HasEvents.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/Pizza.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/Recipe.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeAlreadyInUseException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/models/SaveFoodRequestModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/example-microservice/pizzeria.example-microservice.test.iml" beforeDir="false" />
+    <list default="true" id="f87caad7-deea-4458-b657-28435cce381b" name="Changes" comment="Added the first endpoint for the food microservice also renamed some files.">
+      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeNotFoundException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/config/RequestAuthenticationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/config/RequestAuthenticationConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/OrderController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/FoodRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/FoodService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/Ingredient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Pizza.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Recipe.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/RecipeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/RecipeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeAlreadyInUseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeAlreadyInUseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +27,9 @@
         <task path="$PROJECT_DIR$">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/food-microservice">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -57,6 +45,24 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="food-microservice" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="food-microservice" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="food-microservice" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
@@ -144,6 +150,27 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="SEM07b:food-microservice [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/food-microservice" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="template" />
       <method v="2">
@@ -152,6 +179,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.SEM07b:food-microservice [build]" />
         <item itemvalue="Gradle.SEM07b [build]" />
         <item itemvalue="Application.Application" />
       </list>
@@ -166,6 +194,14 @@
       <option name="presentableId" value="Default" />
       <updated>1670433752322</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added the first endpoint for the food microservice also renamed some files.">
+      <created>1670442064745</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1670442064745</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -179,6 +215,11 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added the first endpoint for the food microservice also renamed some files" />
+    <MESSAGE value="Added the first endpoint for the food microservice also renamed some files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the first endpoint for the food microservice also renamed some files." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
