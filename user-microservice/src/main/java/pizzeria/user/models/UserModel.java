@@ -11,6 +11,7 @@ public class UserModel {
     List<String> allergies;
     String name;
     String role;
+    String password;
 
     public User parseToUser() {
         return new User(role, name, email, allergies);

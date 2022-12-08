@@ -3,7 +3,6 @@ package pizzeria.user.domain.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pizzeria.user.models.UserModel;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +17,10 @@ public class UserService {
 
     public void saveUser(UserModel user) {
         userRepository.save(user.parseToUser());
+    }
+
+    public Optional<User> findUserByEmail(String mail) {
+        return userRepository.findUserByEmail(mail);
     }
 
     public List<User> getAllUsers() {

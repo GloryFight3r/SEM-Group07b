@@ -60,7 +60,7 @@ public class UsersTests {
         final String testUser = "SomeUser";
         final Password testPassword = new Password("password123");
         final HashedPassword testHashedPassword = new HashedPassword("hashedTestPassword");
-        final String role = "CUSTOMER";
+        final String role = "ROLE_CUSTOMER";
         when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
 
         RegistrationRequestModel model = new RegistrationRequestModel();
@@ -74,7 +74,7 @@ public class UsersTests {
                 .content(JsonUtil.serialize(model)));
 
         // Assert
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(status().isCreated());
 
         AppUser savedUser = userRepository.findById(testUser).orElseThrow();
 

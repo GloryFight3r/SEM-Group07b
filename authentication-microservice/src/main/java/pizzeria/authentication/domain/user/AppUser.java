@@ -25,7 +25,7 @@ public class AppUser extends HasEvents {
     private HashedPassword password;
 
     public static boolean containsRole(String role) {
-        List<String> roles = List.of("ADMIN", "CUSTOMER", "MANAGER");
+        List<String> roles = List.of("ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_MANAGER");
         return roles.contains(role);
     }
 
