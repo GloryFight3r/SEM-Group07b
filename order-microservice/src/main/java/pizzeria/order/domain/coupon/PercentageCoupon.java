@@ -1,4 +1,6 @@
-package pizzeria.order.domain;
+package pizzeria.order.domain.coupon;
+
+import pizzeria.order.domain.order.Order;
 
 public class PercentageCoupon extends Coupon {
     public PercentageCoupon(String id) {

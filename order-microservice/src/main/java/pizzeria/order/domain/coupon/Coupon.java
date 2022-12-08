@@ -1,6 +1,7 @@
-package pizzeria.order.domain;
+package pizzeria.order.domain.coupon;
 
 import lombok.Data;
+import pizzeria.order.domain.order.Order;
 
 @Data
 public abstract class Coupon {
