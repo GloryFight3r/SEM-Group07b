@@ -1,15 +1,16 @@
-package pizzeria.food.domain.recipe;
+package pizzeria.food.domain.ingredient;
 
-public class RecipeAlreadyInUseException extends Exception{
-    private String message;
-    static final long serialVersionUID = -3437516993124229948L;
+
+public class IngredientAlreadyInUseException extends Exception{
+    static final long serialVersionUID = -3437516993124229568L;
+
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public RecipeAlreadyInUseException() {
-        this.message = "The recipe is already in the database";
+    public IngredientAlreadyInUseException() {
+        super("The ingredient is already stored in the database");
     }
 
     /**
@@ -20,17 +21,15 @@ public class RecipeAlreadyInUseException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public RecipeAlreadyInUseException(String message) {
+    public IngredientAlreadyInUseException(String message, String message1) {
         super(message);
-        this.message = message;
     }
+
 
     @Override
     public String getMessage() {
-        return message;
+        return super.getMessage();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+
 }
