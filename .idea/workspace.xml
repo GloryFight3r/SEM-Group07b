@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4bec0618-6d19-41aa-8a36-e54c63eba912" name="Changes" comment="Authentication roles added and merged into the refactored branch.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/controllers/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/controllers/AuthenticationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtRequestFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtRequestFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtTokenVerifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtTokenVerifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/RequestAuthenticationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/RequestAuthenticationConfig.java" afterDir="false" />
+    <list default="true" id="4bec0618-6d19-41aa-8a36-e54c63eba912" name="Changes" comment="Adding authentication process in the example microservice.">
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/authentication/JwtUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/authentication/JwtUserDetailsService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +37,23 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -59,7 +71,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Big-refactoring" />
+        <entry key="$PROJECT_DIR$" value="merge_authentication_to_refactor" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -128,7 +140,7 @@
       <recent name="pizzeria.order" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.Authentication">
+  <component name="RunManager" selected="Gradle.SEM07b [build]">
     <configuration name="SEM07b [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -361,7 +373,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670442003353</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Adding authentication process in the example microservice.">
+      <created>1670499837355</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1670499837355</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -381,6 +400,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Authentication roles added and merged into the refactored branch." />
-    <option name="LAST_COMMIT_MESSAGE" value="Authentication roles added and merged into the refactored branch." />
+    <MESSAGE value="Adding authentication process in the example microservice." />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding authentication process in the example microservice." />
   </component>
 </project>

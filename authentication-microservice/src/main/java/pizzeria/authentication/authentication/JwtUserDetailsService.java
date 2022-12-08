@@ -2,8 +2,6 @@ package pizzeria.authentication.authentication;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import org.springframework.security.authentication.jaas.AuthorityGranter;
 import pizzeria.authentication.domain.user.NetId;
 import pizzeria.authentication.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
