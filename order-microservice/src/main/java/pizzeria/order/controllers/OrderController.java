@@ -2,11 +2,11 @@ package pizzeria.order.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import pizzeria.commons.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pizzeria.order.domain.order.OrderService;
+import pizzeria.order.domain.Order;
+import pizzeria.order.domain.OrderService;
 
 @RestController
 @RequestMapping("/order")
@@ -23,12 +23,11 @@ public class OrderController {
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
         // TODO: validate user token
         // TODO: validate the foods
-        Order saved;
         try {
-            saved = orderService.saveOrder(incoming);
+            Order saved = orderService.saveOrder(incoming);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b0d4ab2-bb65-4650-b043-c6eab75a06c4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/commons/pizzeria.commons.test.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons/src/main/java/pizzeria/commons/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/H2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/config/H2Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/controllers/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Ingredient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Recipe.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/Recipe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/java/pizzeria/order/domain/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-microservice/src/main/resources/application-dev.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-microservice/src/main/java/pizzeria/user/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-microservice/src/main/java/pizzeria/user/domain/user/User.java" afterDir="false" />
     </list>
     <list id="812a0fcf-e5ee-45e8-a867-52c042def17f" name="Changes by Raul" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,6 +35,12 @@
         <task path="$PROJECT_DIR$/commons">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/order-microservice">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/user-microservice">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -46,20 +56,51 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="commons" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="commons" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="commons" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="order-microservice" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="order-microservice" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="order-microservice" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="order-microservice" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="user-microservice" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="user-microservice" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="pizzeria" type="f1a62948:ProjectNode" />
+                <item name="user-microservice" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -141,30 +182,7 @@
       <recent name="pizzeria.order" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.SEM07b [test]">
-    <configuration name="JwtUserDetailsServiceTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":authentication-microservice:test" />
-            <option value="--tests" />
-            <option value="&quot;pizzeria.authentication.jwtstuff.JwtUserDetailsServiceTests&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Spring Boot.User">
     <configuration name="SEM07b [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -186,28 +204,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="SEM07b [checkstyleMain]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--scan" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="checkstyleMain" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="SEM07b [checkstyleTest]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SEM07b [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -218,7 +215,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="checkstyleTest" />
+            <option value="clean" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -249,12 +246,68 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <module name="pizzeria.order-microservice.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.order.Application" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="SEM07b:order-microservice [bootRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/order-microservice" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="bootRun" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SEM07b:order-microservice [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/order-microservice" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="SEM07b:user-microservice [bootRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/user-microservice" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="bootRun" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
     </configuration>
     <configuration name="Authentication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pizzeria.authentication-microservice.main" />
@@ -272,31 +325,53 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Food" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="pizzeria.food-microservice.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.food.Application" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Order" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pizzeria.order-microservice.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.order.Application" />
       <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="User" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="pizzeria.user-microservice.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.user.Application" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SHORTEN_COMMAND_LINE" value="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="Gradle.SEM07b [test]" />
-      <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
-      <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
-      <item itemvalue="Gradle.JwtUserDetailsServiceTests" />
       <item itemvalue="Gradle.SEM07b [build]" />
+      <item itemvalue="Gradle.SEM07b:order-microservice [bootRun]" />
+      <item itemvalue="Gradle.SEM07b:user-microservice [bootRun]" />
+      <item itemvalue="Gradle.SEM07b [clean]" />
+      <item itemvalue="Gradle.SEM07b:order-microservice [build]" />
       <item itemvalue="Spring Boot.Authentication" />
       <item itemvalue="Spring Boot.Example" />
       <item itemvalue="Spring Boot.Order" />
-      <item itemvalue="Spring Boot.Application" />
+      <item itemvalue="Spring Boot.Food" />
+      <item itemvalue="Spring Boot.User" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.SEM07b:order-microservice [bootRun]" />
+        <item itemvalue="Gradle.SEM07b:order-microservice [build]" />
+        <item itemvalue="Gradle.SEM07b [clean]" />
+        <item itemvalue="Gradle.SEM07b:user-microservice [bootRun]" />
         <item itemvalue="Gradle.SEM07b [build]" />
-        <item itemvalue="Gradle.JwtUserDetailsServiceTests" />
-        <item itemvalue="Gradle.SEM07b [checkstyleTest]" />
-        <item itemvalue="Gradle.SEM07b [checkstyleMain]" />
       </list>
     </recent_temporary>
   </component>
@@ -311,6 +386,8 @@
       <workItem from="1670318885459" duration="8449000" />
       <workItem from="1670366821491" duration="1610000" />
       <workItem from="1670407231598" duration="2808000" />
+      <workItem from="1670441366865" duration="4245000" />
+      <workItem from="1670446088237" duration="66000" />
     </task>
     <servers />
   </component>
