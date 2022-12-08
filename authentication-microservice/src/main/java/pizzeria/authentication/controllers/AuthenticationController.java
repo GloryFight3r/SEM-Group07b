@@ -94,7 +94,7 @@ public class AuthenticationController {
             NetId netId = new NetId(request.getNetId());
             Password password = new Password(request.getPassword());
             String roleString = request.getRole();
-            AppUser.Role role = AppUser.Role.CUSTOMER;
+            AppUser.Role role = null;
             switch (roleString) {
                 case "MANAGER":
                     role = AppUser.Role.MANAGER;

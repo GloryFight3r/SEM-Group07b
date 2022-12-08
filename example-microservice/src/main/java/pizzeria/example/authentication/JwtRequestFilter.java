@@ -3,13 +3,14 @@ package pizzeria.example.authentication;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -67,9 +68,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     if (jwtTokenVerifier.validateToken(token)) {
                         System.out.println("WE MADE IT");
                         String netId = jwtTokenVerifier.getNetIdFromToken(token);
+                        Collection<? extends GrantedAuthority> role = jwtTokenVerifier.getRoleFromToken(token);
+                        System.out.println("This is the role ig: " + role);
                         var authenticationToken = new UsernamePasswordAuthenticationToken(
                                 netId,
-                                null, List.of() // no credentials and no authorities
+                                null, role // no credentials and no authorities
                         );
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource()
                                 .buildDetails(request));

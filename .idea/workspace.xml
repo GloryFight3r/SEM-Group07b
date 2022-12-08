@@ -6,12 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4bec0618-6d19-41aa-8a36-e54c63eba912" name="Changes" comment="Authentication roles added and merged into the refactored branch.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/authentication/JwtTokenGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/authentication/JwtTokenGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/authentication/JwtUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/authentication/JwtUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/AuthManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/AuthManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtAuthenticationEntryPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtAuthenticationEntryPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/controllers/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/authentication-microservice/src/main/java/pizzeria/authentication/controllers/AuthenticationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtRequestFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtRequestFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/controllers/DefaultController.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/controllers/DefaultController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtTokenVerifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/authentication/JwtTokenVerifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/RequestAuthenticationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/example-microservice/src/main/java/pizzeria/example/config/RequestAuthenticationConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,91 +41,7 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="authentication-microservice" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="authentication-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="authentication-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="application" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="authentication-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="example-microservice" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="example-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="example-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="application" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="example-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="food-microservice" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="food-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="pizzeria" type="f1a62948:ProjectNode" />
-                <item name="food-microservice" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -214,7 +128,7 @@
       <recent name="pizzeria.order" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.Example">
+  <component name="RunManager" selected="Spring Boot.Authentication">
     <configuration name="SEM07b [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -354,6 +268,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Application (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="pizzeria.food-microservice.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.food.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Application (2)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="pizzeria.user-microservice.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.user.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="pizzeria.order-microservice.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="pizzeria.order.Application" />
@@ -401,6 +329,8 @@
       <item itemvalue="Spring Boot.Example" />
       <item itemvalue="Spring Boot.Order" />
       <item itemvalue="Spring Boot.Application" />
+      <item itemvalue="Spring Boot.Application (1)" />
+      <item itemvalue="Spring Boot.Application (2)" />
     </list>
     <recent_temporary>
       <list>
