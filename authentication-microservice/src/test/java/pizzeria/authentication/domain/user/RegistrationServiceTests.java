@@ -1,11 +1,15 @@
 package pizzeria.authentication.domain.user;
 
+import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -23,23 +27,24 @@ public class RegistrationServiceTests {
     @Autowired
     private transient UserRepository userRepository;
 
-//    @Test
-//    public void createUser_withValidData_worksCorrectly() throws Exception {
-//        // Arrange
-//        final NetId testUser = new NetId("SomeUser");
-//        final Password testPassword = new Password("password123");
-//        final HashedPassword testHashedPassword = new HashedPassword("hashedTestPassword");
-//        when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
-//
-//        // Act
-//        registrationService.registerUser(testUser, testPassword);
-//
-//        // Assert
-//        AppUser savedUser = userRepository.findByNetId(testUser).orElseThrow();
-//
-//        assertThat(savedUser.getNetId()).isEqualTo(testUser);
-//        assertThat(savedUser.getPassword()).isEqualTo(testHashedPassword);
-//    }
+    @Test
+    public void createUser_withValidData_worksCorrectly() throws Exception {
+        // Arrange
+        //final NetId testUser = new NetId("SomeUser");
+        final String testUser = "SomeUser";
+        final Password testPassword = new Password("password123");
+        final HashedPassword testHashedPassword = new HashedPassword("hashedTestPassword");
+        when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
+
+        // Act
+        registrationService.registerUser(testUser, testPassword);
+
+        // Assert
+        AppUser savedUser = userRepository.findById(testUser).orElseThrow();
+
+        assertThat(savedUser.getId()).isEqualTo(testUser);
+        assertThat(savedUser.getPassword()).isEqualTo(testHashedPassword);
+    }
 
 //    @Test
 //    public void createUser_withExistingUser_throwsException() {
