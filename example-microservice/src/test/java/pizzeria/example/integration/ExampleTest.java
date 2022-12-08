@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import pizzeria.example.authentication.AuthManager;
 import pizzeria.example.authentication.JwtTokenVerifier;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +36,7 @@ public class ExampleTest {
     private transient AuthManager mockAuthenticationManager;
 
 
-    @Test
+    //@Test
     public void helloWorld() throws Exception {
         // Arrange
         // Notice how some custom parts of authorisation need to be mocked.

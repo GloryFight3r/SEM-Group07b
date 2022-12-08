@@ -12,10 +12,10 @@ public interface UserRepository extends JpaRepository<AppUser, String> {
     /**
      * Find user by NetID.
      */
-    Optional<AppUser> findByNetId(NetId netId);
+    Optional<AppUser> findById(String id);
 
     /**
      * Check if an existing user already uses a NetID.
      */
-    boolean existsByNetId(NetId netId);
+    boolean existsById(String id);
 }
