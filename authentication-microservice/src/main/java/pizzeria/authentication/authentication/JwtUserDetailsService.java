@@ -42,6 +42,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         var user = optionalUser.get();
         Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        System.out.println("This is AUTHORITIES: " + authorities);
 
         return new User(user.getId(), user.getPassword().toString(), authorities); // no authorities/roles
     }
