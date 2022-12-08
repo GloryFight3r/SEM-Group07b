@@ -1,29 +1,44 @@
 package pizzeria.order.domain.store;
 
+import com.sun.istack.NotNull;
+import lombok.Getter;
 import pizzeria.order.domain.order.Order;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name="stores")
 public class Store {
 
-    private static int value;
+    @Id
+    @Column(name = "id")
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    private long id;
 
-    private int id;
+    @Column(name = "location")
+    @Getter
     private String location; // attribute data type to be decided
-    private List<Order> orders;
+
+//    @ElementCollection
+//    @Column(name = "ordersAssigned")
+//    @Getter
+//    private List<Order> orders;
 
     public Store() {}
 
-    public Store(String location) {
-        this.id = value++;
+    public Store(int id, String location) {
+        this.id = id;
         this.location = location;
-        this.orders = new ArrayList<>(); // attribute data type to be decided
+//        this.orders = new ArrayList<>(); // attribute data type to be decided
     }
 
     public Order addOrder(Order order) {
-        orders.add(order);
+//        orders.add(order);
 
         return order;
     }
@@ -36,16 +51,8 @@ public class Store {
         return false;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public void setLocation(String location) {
@@ -58,11 +65,11 @@ public class Store {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Store store = (Store) o;
-        return id == store.id && Objects.equals(location, store.location) && Objects.equals(orders, store.orders);
+        return id == store.id && Objects.equals(location, store.location); // && Objects.equals(orders, store.orders);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, location, orders);
+        return Objects.hash(id, location/*, orders*/);
     }
 }
