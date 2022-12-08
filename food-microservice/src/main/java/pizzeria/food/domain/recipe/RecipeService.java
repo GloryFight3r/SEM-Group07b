@@ -27,4 +27,12 @@ public class RecipeService {
         }
         throw new RecipeNotFoundException();
     }
+
+    public boolean deleteFood(Recipe recipe) throws RecipeNotFoundException {
+        if (recipeRepository.existsById(recipe.getId())) {
+            recipeRepository.deleteById(recipe.getId());
+            return true;
+        }
+        throw new RecipeNotFoundException();
+    }
 }

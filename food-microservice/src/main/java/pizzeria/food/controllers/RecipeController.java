@@ -36,11 +36,21 @@ public class RecipeController {
         }
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
     public ResponseEntity<Recipe> updateFood(@RequestBody Recipe recipe) {
         try {
             Recipe updated = foodService.updateFood(recipe);
             return ResponseEntity.status(HttpStatus.OK).body(updated);
+        } catch (RecipeNotFoundException e){
+            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity deleteFood(@RequestBody Recipe recipe) {
+        try {
+            foodService.deleteFood(recipe);
+            return ResponseEntity.ok().build();
         } catch (RecipeNotFoundException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
