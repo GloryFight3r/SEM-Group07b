@@ -1,5 +1,6 @@
-package pizzeria.order.domain;
+package pizzeria.order.domain.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 
@@ -20,11 +21,11 @@ public class Order {
     private long id;
 
     @ElementCollection
-    @CollectionTable(name = "foodIds",
+    @CollectionTable(name = "recipeIds",
         joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "foodIds")
+    @Column(name = "recipeIds")
     @Getter
-    private List<Long> foodIds;
+    private List<Long> recipeIds;
 
     @Column(name = "store_id")
     @Getter
@@ -36,6 +37,7 @@ public class Order {
 
     @Column(name = "pickup_time")
     @Getter
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime pickupTime;
 
     @Column(name = "price")
@@ -63,7 +65,7 @@ public class Order {
         double min = Double.MAX_VALUE;
 
         long couponUsed = couponIds.get(0);
-
+        //TODO: send request to get all the food prices
         for (long c : couponIds) {
             //TODO: query Jpa repository for the coupon
             //validate the coupon (part of the query) and calculate a price if not null

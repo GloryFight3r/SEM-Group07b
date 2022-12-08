@@ -5,8 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pizzeria.order.domain.Order;
-import pizzeria.order.domain.OrderService;
+import pizzeria.order.domain.order.Order;
+import pizzeria.order.domain.order.OrderService;
 
 @RestController
 @RequestMapping("/order")
@@ -27,7 +27,7 @@ public class OrderController {
             Order saved = orderService.saveOrder(incoming);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
 }
