@@ -3,6 +3,9 @@ package pizzeria.food.domain.recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class RecipeService {
     private final transient RecipeRepository recipeRepository;
@@ -34,5 +37,18 @@ public class RecipeService {
             return true;
         }
         throw new RecipeNotFoundException();
+    }
+    @SuppressWarnings("PMD")
+    public List<Double> getPrices(List<Long> ids) throws RecipeNotFoundException {
+        List<Double> prices = new ArrayList<>(ids.size());
+        for (long id: ids){
+            if (recipeRepository.existsById(id)) {
+                Recipe recipe = recipeRepository.findById(id).get();
+                prices.add(recipe.getBasePrice());
+            } else {
+                throw new RecipeNotFoundException("The Recipe with the id " + id + " was not found in the databases");
+            }
+        }
+        return prices;
     }
 }

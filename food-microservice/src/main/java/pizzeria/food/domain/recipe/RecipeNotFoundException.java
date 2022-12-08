@@ -1,7 +1,6 @@
 package pizzeria.food.domain.recipe;
 
 public class RecipeNotFoundException extends Exception{
-    private String message;
     static final long serialVersionUID = -3387416993124229948L;
 
     /**
@@ -10,7 +9,7 @@ public class RecipeNotFoundException extends Exception{
      * call to {@link #initCause}.
      */
     public RecipeNotFoundException() {
-        this.message = "The recipe could not be found in the database";
+        super("The recipe could not be found in the database");
     }
 
     /**
@@ -21,17 +20,13 @@ public class RecipeNotFoundException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public RecipeNotFoundException(String message, String message1) {
+    public RecipeNotFoundException(String message) {
         super(message);
-        this.message = message1;
     }
 
     @Override
     public String getMessage() {
-        return message;
+        return super.getMessage();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

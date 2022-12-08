@@ -4,14 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f87caad7-deea-4458-b657-28435cce381b" name="Changes" comment="Added the endpoint for deleting a recipe">
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/IngredientController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/IngredientAlreadyInUseException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/IngredientNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/IngredientRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/IngredientService.java" afterDir="false" />
+    <list default="true" id="f87caad7-deea-4458-b657-28435cce381b" name="Changes" comment="Added the endpoints for basic Ingredient operations.">
+      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/PriceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/models/GetPricesRequestModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/models/GetPricesResponseModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeAlreadyInUseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeAlreadyInUseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/IngredientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/IngredientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/RecipeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/controllers/RecipeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/IngredientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/ingredient/IngredientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/food-microservice/src/main/java/pizzeria/food/domain/recipe/RecipeService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,6 +117,9 @@
       </map>
     </option>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
+  </component>
   <component name="ProjectId" id="2Iaxyg1V3F0wuaOZDC9BVbDbma4" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -126,7 +131,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/config/checkstyle/checkstyle.xml" />
     <property name="settings.editor.selected.configurable" value="org.infernus.idea.checkstyle.CheckStyleConfigurable" />
   </component>
-  <component name="RunManager" selected="Gradle.SEM07b [build]">
+  <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pizzeria.food.Application" />
       <module name="pizzeria.food-microservice.main" />
@@ -226,7 +231,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670488481778</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added the endpoints for basic Ingredient operations.">
+      <created>1670492567055</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1670492567055</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -246,7 +258,8 @@
     <MESSAGE value="Added the first endpoint for the food microservice also renamed some files." />
     <MESSAGE value="Added the endpoint for updating a recipe" />
     <MESSAGE value="Added the endpoint for deleting a recipe" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the endpoint for deleting a recipe" />
+    <MESSAGE value="Added the endpoints for basic Ingredient operations." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the endpoints for basic Ingredient operations." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

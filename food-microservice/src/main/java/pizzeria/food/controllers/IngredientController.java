@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientAlreadyInUseException;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
@@ -43,7 +40,7 @@ public class IngredientController {
         }
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity deleteIngredient(@RequestBody long id) {
         try {
             ingredientService.deleteIngredient(id);

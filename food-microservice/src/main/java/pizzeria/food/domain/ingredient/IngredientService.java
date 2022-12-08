@@ -3,6 +3,9 @@ package pizzeria.food.domain.ingredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class IngredientService {
     private final transient IngredientRepository ingredientRepository;
@@ -35,6 +38,19 @@ public class IngredientService {
             return true;
         }
         throw new IngredientNotFoundException();
+    }
+
+    @SuppressWarnings("PMD")
+    public List<Double> getPrices(List<Long> ids) throws IngredientNotFoundException {
+        List<Double> prices = new ArrayList<>(ids.size());
+        for (long id: ids){
+            if (ingredientRepository.existsById(id)){
+                prices.add(ingredientRepository.findById(id).get().getPrice());
+            } else {
+                throw new IngredientNotFoundException("The Ingredient with id " + id + " was not found in the database");
+            }
+        }
+        return prices;
     }
 
 
