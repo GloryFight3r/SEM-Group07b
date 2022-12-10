@@ -48,6 +48,10 @@ public class Ingredient {
         this.allergens = new ArrayList<>();
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

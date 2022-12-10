@@ -23,8 +23,9 @@ public class IngredientService {
         return result;
     }
 
-    public Ingredient updateIngredient(Ingredient ingredient) throws IngredientNotFoundException {
-        if (ingredientRepository.existsById(ingredient.getId())) {
+    public Ingredient updateIngredient(Ingredient ingredient, long id) throws IngredientNotFoundException {
+        if (ingredientRepository.existsById(id)) {
+            ingredient.setId(id);
             return ingredientRepository.save(ingredient);
         } else {
             throw new IngredientNotFoundException();

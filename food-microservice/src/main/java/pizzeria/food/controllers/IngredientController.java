@@ -9,6 +9,7 @@ import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientAlreadyInUseException;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
+import pizzeria.food.models.ingredient.*;
 
 @RestController
 @RequestMapping("/ingredient")
@@ -21,29 +22,35 @@ public class IngredientController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Ingredient> saveIngredient(@RequestBody Ingredient ingredient){
+    public ResponseEntity<SaveIngredientResponseModel> saveIngredient(@RequestBody SaveIngredientRequestModel model){
         try {
-            Ingredient saved = ingredientService.registerIngredient(ingredient);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            Ingredient saved = ingredientService.registerIngredient(model.getIngredient());
+            SaveIngredientResponseModel responseModel = new SaveIngredientResponseModel();
+            responseModel.setId(saved.getId());
+            responseModel.setIngredient(saved);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
         } catch (IngredientAlreadyInUseException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Ingredient> updateIngredient(@RequestBody Ingredient ingredient){
+    public ResponseEntity<UpdateIngredientResponseModel> updateIngredient(@RequestBody UpdateIngredientRequestModel model){
         try {
-            Ingredient updated = ingredientService.updateIngredient(ingredient);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updated);
+            Ingredient updated = ingredientService.updateIngredient(model.getIngredient(), model.getId());
+            UpdateIngredientResponseModel responseModel = new UpdateIngredientResponseModel();
+            responseModel.setId(updated.getId());
+            responseModel.setIngredient(updated);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
         } catch (IngredientNotFoundException e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteIngredient(@RequestBody long id) {
+    public ResponseEntity deleteIngredient(@RequestBody DeleteIngredientRequestModel model) {
         try {
-            ingredientService.deleteIngredient(id);
+            ingredientService.deleteIngredient(model.getId());
             return ResponseEntity.ok().build();
         } catch (IngredientNotFoundException e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
