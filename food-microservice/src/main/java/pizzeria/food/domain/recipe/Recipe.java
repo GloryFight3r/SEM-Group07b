@@ -31,6 +31,7 @@ public class Recipe extends HasEvents {
         this.basePrice = basePrice;
     }
 
+
 }
 
 

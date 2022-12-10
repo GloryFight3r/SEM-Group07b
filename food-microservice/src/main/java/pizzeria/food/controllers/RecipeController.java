@@ -11,6 +11,8 @@ import pizzeria.food.domain.recipe.Recipe;
 import pizzeria.food.domain.recipe.RecipeAlreadyInUseException;
 import pizzeria.food.models.recipe.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/recipe")
@@ -60,7 +62,12 @@ public class RecipeController {
         }
     }
 
-
-
+    @GetMapping("/menu")
+    public ResponseEntity<MenuResponseModel> getMenu() {
+        List<Recipe> menu = foodService.getMenu();
+        MenuResponseModel responseModel = new MenuResponseModel();
+        responseModel.setMenu(menu);
+        return ResponseEntity.ok().body(responseModel);
+    }
 
 }

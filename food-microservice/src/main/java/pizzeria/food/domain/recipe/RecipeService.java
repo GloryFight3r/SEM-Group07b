@@ -51,4 +51,8 @@ public class RecipeService {
         }
         return prices;
     }
+
+    public List<Recipe> getMenu(){
+        return recipeRepository.findAll();
+    }
 }

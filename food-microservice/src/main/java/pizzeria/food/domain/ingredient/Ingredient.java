@@ -24,6 +24,8 @@ public class Ingredient {
     @Getter
     private List<String> allergens;
 
+    @Getter
+    private boolean isBaseTopping;
 
     /**
      * @param name String value representing the name of this commons.Ingredient
@@ -31,10 +33,11 @@ public class Ingredient {
      * @param allergens List of Strings representing the allergies this commons.Ingredient contains
      * returns a new commons.Ingredient with the values specified above
      */
-    public Ingredient(String name, double price, List<String> allergens) {
+    public Ingredient(String name, double price, List<String> allergens, boolean isBaseTopping) {
         this.name = name;
         this.price = price;
         this.allergens = allergens;
+        this.isBaseTopping = isBaseTopping;
     }
 
     /**
@@ -42,10 +45,11 @@ public class Ingredient {
      * @param price Double value representing the price of this commons.Ingredient
      * returns a new commons.Ingredient that contains no allergens
      */
-    public Ingredient(String name, double price) {
+    public Ingredient(String name, double price, boolean isBaseTopping) {
         this.name = name;
         this.price = price;
         this.allergens = new ArrayList<>();
+        this.isBaseTopping = isBaseTopping;
     }
 
     public void setId(long id) {

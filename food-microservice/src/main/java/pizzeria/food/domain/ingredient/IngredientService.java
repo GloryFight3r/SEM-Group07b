@@ -53,5 +53,9 @@ public class IngredientService {
         return prices;
     }
 
+    public List<Ingredient> getToppingsList(){
+        return ingredientRepository.getDefaultToppings();
+    }
+
 
 }

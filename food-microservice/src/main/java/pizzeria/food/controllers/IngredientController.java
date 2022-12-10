@@ -11,6 +11,8 @@ import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.models.ingredient.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ingredient")
 public class IngredientController {
@@ -55,6 +57,14 @@ public class IngredientController {
         } catch (IngredientNotFoundException e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
+    }
+
+    @GetMapping("/extraToppings")
+    public ResponseEntity getExtraToppingsSet(){
+        List<Ingredient> ingredientList = ingredientService.getToppingsList();
+        ExtraToppingsResponseModel responseModel = new ExtraToppingsResponseModel();
+        responseModel.setIngredients(ingredientList);
+        return ResponseEntity.ok().body(responseModel);
     }
 
 }
