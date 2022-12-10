@@ -25,7 +25,6 @@ public class RecipeService {
 
     public Recipe updateFood(Recipe recipe) throws RecipeNotFoundException {
         if (recipeRepository.existsById(recipe.getId())) {
-            recipeRepository.deleteById(recipe.getId());
             return recipeRepository.save(recipe);
         }
         throw new RecipeNotFoundException();
