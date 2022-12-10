@@ -16,4 +16,7 @@ public class AuthManager {
     public String getNetId() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+    public String getRole() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+    }
 }

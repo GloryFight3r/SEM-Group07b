@@ -1,11 +1,8 @@
 package pizzeria.authentication.domain.user;
 
+import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.NoArgsConstructor;
 import pizzeria.authentication.domain.HasEvents;
 
@@ -20,27 +17,37 @@ public class AppUser extends HasEvents {
      * Identifier for the application user.
      */
     @Id
-    @Column(name = "id", nullable = false)
-    private int id;
-
-    @Column(name = "net_id", nullable = false, unique = true)
-    @Convert(converter = NetIdAttributeConverter.class)
-    private NetId netId;
+    @Column(name = "id", nullable = false, unique = true)
+    private String id;
 
     @Column(name = "password_hash", nullable = false)
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
+    public static boolean containsRole(String role) {
+        List<String> roles = List.of("ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_MANAGER");
+        return roles.contains(role);
+    }
+
+    @Column(name = "role", nullable = false)
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
     /**
      * Create new application user.
      *
-     * @param netId The NetId for the new user
+     * @param id The NetId for the new user
      * @param password The password for the new user
+     * @param role The password for the new user
      */
-    public AppUser(NetId netId, HashedPassword password) {
-        this.netId = netId;
+    public AppUser(String id, HashedPassword password, String role) {
+        this.id = id;
         this.password = password;
-        this.recordThat(new UserWasCreatedEvent(netId));
+        this.role = role;
+        this.recordThat(new UserWasCreatedEvent(id));
     }
 
     public void changePassword(HashedPassword password) {
@@ -48,8 +55,8 @@ public class AppUser extends HasEvents {
         this.recordThat(new PasswordWasChangedEvent(this));
     }
 
-    public NetId getNetId() {
-        return netId;
+    public String getId() {
+        return id;
     }
 
     public HashedPassword getPassword() {
@@ -68,11 +75,11 @@ public class AppUser extends HasEvents {
             return false;
         }
         AppUser appUser = (AppUser) o;
-        return id == (appUser.id);
+        return id.equals(appUser.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(netId);
+        return Objects.hash(id);
     }
 }

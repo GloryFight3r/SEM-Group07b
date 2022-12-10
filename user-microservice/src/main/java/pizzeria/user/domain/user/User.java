@@ -2,6 +2,9 @@ package pizzeria.user.domain.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -12,9 +15,12 @@ import java.util.Objects;
 public class User extends HasEvents {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Getter
-    private int id;
+    @Setter
+    private String id;
 
     @Column(name = "role", nullable = false)
     @Getter
@@ -22,12 +28,14 @@ public class User extends HasEvents {
     @Column(name = "name", nullable = false)
     @Getter
     private String name;
+
     @Column(name = "email", nullable = false, unique = true)
     @Getter
     private String email;
     @Column(name = "allergies", nullable = false)
     @ElementCollection
     @Getter
+    @Setter
     private List<String> allergies;
 
     public User(String role, String name, String email, List<String> allergies) {
@@ -37,16 +45,16 @@ public class User extends HasEvents {
         this.allergies = allergies;
         //this.recordThat(new UserWasCreatedEvent(netId));
     }
-
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id;
+        return id.equals(user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, role, name, email, allergies);
+        return Objects.hash(id);
     }
 }

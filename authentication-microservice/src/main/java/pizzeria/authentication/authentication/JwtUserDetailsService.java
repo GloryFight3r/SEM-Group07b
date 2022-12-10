@@ -1,10 +1,11 @@
-package pizzeria.authentication.jwtstuff;
+package pizzeria.authentication.authentication;
 
-import java.util.ArrayList;
-
-import pizzeria.authentication.domain.user.NetId;
+import java.util.Collection;
+import java.util.Collections;
 import pizzeria.authentication.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +25,6 @@ public class JwtUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-
     /**
      * Loads user information required for authentication from the DB.
      *
@@ -34,15 +34,16 @@ public class JwtUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var optionalUser = userRepository.findByNetId(new NetId(username));
+        var optionalUser = userRepository.findById(username);
 
         if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("User does not exist");
         }
 
         var user = optionalUser.get();
+        Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        System.out.println("This is AUTHORITIES: " + authorities);
 
-        return new User(user.getNetId().toString(), user.getPassword().toString(),
-                new ArrayList<>()); // no authorities/roles
+        return new User(user.getId(), user.getPassword().toString(), authorities); // no authorities/roles
     }
 }

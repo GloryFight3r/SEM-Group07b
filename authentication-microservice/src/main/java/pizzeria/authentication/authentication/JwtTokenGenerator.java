@@ -1,4 +1,4 @@
-package pizzeria.authentication.jwtstuff;
+package pizzeria.authentication.authentication;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,8 +41,13 @@ public class JwtTokenGenerator {
      * @return the JWT token
      */
     public String generateToken(UserDetails userDetails) {
+        //Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername())
+        claims.put("role", userDetails.getAuthorities().toString());
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                 //.claim("role", userDetails.getAuthorities().toString())
                 .setIssuedAt(new Date(timeProvider.getCurrentTime().toEpochMilli()))
                 .setExpiration(new Date(timeProvider.getCurrentTime().toEpochMilli() + JWT_TOKEN_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
