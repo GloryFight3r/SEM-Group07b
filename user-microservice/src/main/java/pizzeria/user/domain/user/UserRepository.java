@@ -12,8 +12,13 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAll();
+
     @Transactional
     Long deleteUserByEmail(String netId);
 
-    Optional<User> findUserByEmail(String mail);
+    //Optional<User> findUserByAllergies();
+
+    Optional<User> findUserById(String id);
+
+    Optional<User> findUserByEmail(String email);
 }

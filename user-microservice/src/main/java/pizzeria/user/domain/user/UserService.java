@@ -10,7 +10,6 @@ import java.util.Optional;
 public class UserService {
     private final transient UserRepository userRepository;
     @Autowired
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -31,8 +30,8 @@ public class UserService {
         return userRepository.deleteUserByEmail(mail) != 0;
     }
 
-    public boolean updateUserAllergies(UserModel user) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(user.getEmail());
+    public boolean updateUserAllergies(String id, List<String> allergies) {
+        Optional<User> optionalUser = userRepository.findUserById(id);
 
         if (optionalUser.isEmpty()) {
             return false;
@@ -40,10 +39,22 @@ public class UserService {
 
         User currentUser = optionalUser.get();
 
-        currentUser.setAllergies(user.getAllergies());
+        currentUser.setAllergies(allergies);
 
         userRepository.save(currentUser);
 
         return true;
+    }
+
+    public List<String> getAllergies(String id) {
+        Optional<User> optionalUser = userRepository.findUserById(id);
+
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        User currentUser = optionalUser.get();
+
+        return currentUser.getAllergies();
     }
 }
