@@ -22,23 +22,23 @@ public class Store {
 
     @Column(name = "location")
     @Getter
-    private String location; // attribute data type to be decided
+    private String location;
 
-//    @ElementCollection
-//    @Column(name = "ordersAssigned")
-//    @Getter
-//    private List<Order> orders;
+    @ElementCollection
+    @Column(name = "ordersAssigned")
+    @Getter
+    private List<Long> orders;
 
     public Store() {}
 
     public Store(int id, String location) {
         this.id = id;
         this.location = location;
-//        this.orders = new ArrayList<>(); // attribute data type to be decided
+        this.orders = new ArrayList<>();
     }
 
     public Order addOrder(Order order) {
-//        orders.add(order);
+        orders.add(order.getId());
 
         return order;
     }
@@ -65,7 +65,7 @@ public class Store {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Store store = (Store) o;
-        return id == store.id && Objects.equals(location, store.location); // && Objects.equals(orders, store.orders);
+        return id == store.id && Objects.equals(location, store.location) && Objects.equals(orders, store.orders);
     }
 
     @Override
