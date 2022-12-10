@@ -32,6 +32,6 @@ public class Recipe extends HasEvents {
     }
 
 }
-enum FoodType{PIZZA}
+
 
 

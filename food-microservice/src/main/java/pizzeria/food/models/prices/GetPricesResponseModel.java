@@ -1,4 +1,4 @@
-package pizzeria.food.models;
+package pizzeria.food.models.prices;
 
 import lombok.Data;
 

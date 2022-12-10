@@ -1,4 +1,4 @@
-package pizzeria.food.models;
+package pizzeria.food.models.recipe;
 
 import lombok.Data;
 import pizzeria.food.domain.recipe.Recipe;

@@ -23,16 +23,17 @@ public class RecipeService {
         return result;
     }
 
-    public Recipe updateFood(Recipe recipe) throws RecipeNotFoundException {
-        if (recipeRepository.existsById(recipe.getId())) {
+    public Recipe updateFood(Recipe recipe, long id) throws RecipeNotFoundException {
+        if (recipeRepository.existsById(id)) {
+            recipe.setId(id);
             return recipeRepository.save(recipe);
         }
         throw new RecipeNotFoundException();
     }
 
-    public boolean deleteFood(Recipe recipe) throws RecipeNotFoundException {
-        if (recipeRepository.existsById(recipe.getId())) {
-            recipeRepository.deleteById(recipe.getId());
+    public boolean deleteFood(long id) throws RecipeNotFoundException {
+        if (recipeRepository.existsById(id)) {
+            recipeRepository.deleteById(id);
             return true;
         }
         throw new RecipeNotFoundException();

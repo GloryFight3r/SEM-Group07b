@@ -12,8 +12,8 @@ import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
-import pizzeria.food.models.GetPricesRequestModel;
-import pizzeria.food.models.GetPricesResponseModel;
+import pizzeria.food.models.prices.GetPricesRequestModel;
+import pizzeria.food.models.prices.GetPricesResponseModel;
 
 import java.util.List;
 
