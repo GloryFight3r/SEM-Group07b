@@ -18,7 +18,7 @@ public class OrderService {
     }
 
     public Order saveOrder(Order order) throws Exception{
-        if (order == null || orderRepo.existsById(order.getId())){
+        if (order == null || orderRepo.existsById(order.getOrderId())){
             return null;
         }
         //check if the prices match, applies the cheapest coupon

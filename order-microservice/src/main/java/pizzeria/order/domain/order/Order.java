@@ -3,29 +3,32 @@ package pizzeria.order.domain.order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import pizzeria.order.domain.food.Food;
+import pizzeria.order.domain.food.FoodPriceService;
+import pizzeria.order.models.GetPricesRequestModel;
+import pizzeria.order.models.GetPricesResponseModel;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="orders")
 public class Order {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "orderId")
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
-    private long id;
+    private long orderId;
 
-    @ElementCollection
-    @CollectionTable(name = "recipeIds",
-        joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "recipeIds")
+    @OneToMany(mappedBy="orderId")
     @Getter
-    private List<Long> recipeIds;
+    private List<Food> foods;
 
     @Column(name = "store_id")
     @Getter
@@ -51,16 +54,25 @@ public class Order {
     @Getter
     private List<Long> couponIds;
 
-    //default constructor
-    public Order(){
+    private transient FoodPriceService foodPriceService;
 
+    @Autowired
+    public Order(FoodPriceService foodPriceService) {
+        this.foodPriceService = foodPriceService;
     }
+
+    //default constructor
+    public Order() {}
 
     @SuppressWarnings("PMD")
     public double calculatePrice() {
+        GetPricesResponseModel prices = foodPriceService.getFoodPrices(this);
+
         if (couponIds.isEmpty()) {
-            this.price = -1;
-            return -1;
+            // If coupon list is empty, just add all ingredients and recipes
+            for (Food f: foods) {
+
+            }
         }
         double min = Double.MAX_VALUE;
 
@@ -91,11 +103,11 @@ public class Order {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return id == order.id;
+        return orderId == order.orderId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(orderId);
     }
 }
