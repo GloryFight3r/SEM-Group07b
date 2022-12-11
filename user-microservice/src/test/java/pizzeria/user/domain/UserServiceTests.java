@@ -1,5 +1,6 @@
-package pizzeria.user.domain.user;
+package pizzeria.user.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,6 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import pizzeria.user.domain.user.User;
+import pizzeria.user.domain.user.UserRepository;
+import pizzeria.user.domain.user.UserService;
 import pizzeria.user.models.UserModel;
 
 import java.util.List;
@@ -54,7 +58,7 @@ public class UserServiceTests {
 
         Optional<User> actualUser = userRepository.findUserByEmail(email);
 
-        assertThat(actualUser).isNotEmpty();
+        Assertions.assertThat(actualUser).isNotEmpty();
 
         assertThat(actualUser.get().getEmail()).isEqualTo(email);
         assertThat(actualUser.get().getName()).isEqualTo(name);
@@ -70,7 +74,7 @@ public class UserServiceTests {
 
         Optional<User> actualUser = userService.findUserByEmail(email);
 
-        assertThat(actualUser).isNotEmpty();
+        Assertions.assertThat(actualUser).isNotEmpty();
 
         assertThat(actualUser.get()).isEqualTo(tempUser);
     }
@@ -112,7 +116,7 @@ public class UserServiceTests {
 
         Optional <User> updatedUser = userRepository.findUserById(tempUser.getId());
 
-        assertThat(updatedUser).isNotEmpty();
+        Assertions.assertThat(updatedUser).isNotEmpty();
 
         assertThat(updatedUser.get().getAllergies()).containsExactlyInAnyOrderElementsOf(newAllergies);
     }
@@ -125,7 +129,7 @@ public class UserServiceTests {
 
         Optional <User> actualUser = userRepository.findUserById(tempUser.getId());
 
-        assertThat(actualUser).isNotEmpty();
+        Assertions.assertThat(actualUser).isNotEmpty();
 
         assertThat(actualUser.get().getAllergies()).containsExactlyInAnyOrderElementsOf(allergies);
     }

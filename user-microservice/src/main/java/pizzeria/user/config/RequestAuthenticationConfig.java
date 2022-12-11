@@ -22,6 +22,11 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
+    /**
+     * Configuration for the http requests
+     * @param http the {@link HttpSecurity} to modify
+     * @throws Exception Exception that has arisen during the configuration
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()

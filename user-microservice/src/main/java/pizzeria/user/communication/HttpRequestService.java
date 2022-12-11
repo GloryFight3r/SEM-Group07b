@@ -13,10 +13,21 @@ import java.util.Map;
 public class HttpRequestService {
     private final transient RestTemplate restTemplate;
 
+    /**
+     * Dependency injection
+     *
+     * @param restTemplateBuilder builder for RestTemplate
+     */
     public HttpRequestService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    /**
+     * Sends a http request to the authentication microservice telling it to register a user with given id, password and role
+     * @param user User object from which we extract the id and the role
+     * @param password Password of the user
+     * @return True or False depending on the response of the HTTP request
+     */
     public boolean registerUser(User user, String password) {
         // create headers
         HttpHeaders headers = new HttpHeaders();
@@ -39,10 +50,6 @@ public class HttpRequestService {
         ResponseEntity response = this.restTemplate.postForEntity("http://localhost:8081/register", entity, ResponseEntity.class);
 
         // check response status code
-        if (response.getStatusCode() == HttpStatus.CREATED) {
-            return true;
-        } else {
-            return false;
-        }
+        return response.getStatusCode() == HttpStatus.CREATED;
     }
 }

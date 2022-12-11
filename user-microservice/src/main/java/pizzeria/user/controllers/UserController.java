@@ -24,6 +24,12 @@ public class UserController {
 
     private final transient AuthManager authManager;
 
+    /**
+     * Dependency injection
+     * @param userService User service
+     * @param httpRequestService Http service used to send http requests
+     * @param authManager Authentication manager from which we can get information about the current http request user
+     */
     @Autowired
     public UserController(UserService userService, HttpRequestService httpRequestService, AuthManager authManager) {
         this.userService = userService;
@@ -31,6 +37,11 @@ public class UserController {
         this.authManager = authManager;
     }
 
+    /**
+     * Endpoint used for creating new users
+     * @param user UserModel which contains the following fields [email, role, allergies, name, password]
+     * @return A response indicating either failure or success
+     */
     @PostMapping("/create_user")
     public ResponseEntity create(@RequestBody UserModel user) {
         try {
@@ -53,6 +64,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    /**
+     * A method which returns all the users registered in our database
+     * @return List of all the users in our database
+     */
     @GetMapping("/get_users")
     public List<User> getUsers() {
         try {
@@ -76,6 +91,12 @@ public class UserController {
         }
     }*/
 
+    /**
+     * Endpoint which allows changing of allergies for a given user. The id user is extracted from the JWT
+     * token that is used for authentication
+     * @param allergiesModel AllergiesModel which contains a list of the new allergies
+     * @return A response indicating either failure or success
+     */
     @PutMapping("/update_allergies")
     public ResponseEntity updateAllergies(@RequestBody AllergiesModel allergiesModel) {
         try {
@@ -90,6 +111,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint which returns all the allergies associated with a user in our database.
+     * The user id for which we want the allergies is extracted from the JWT token
+     * used for authentication
+     *
+     * @return A response indicating either failure or success and a list with allergies in the body
+     */
     @GetMapping("/get_allergies")
     public ResponseEntity<List<String>> getAllergies() {
         try {

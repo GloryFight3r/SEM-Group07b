@@ -27,20 +27,40 @@ public class JwtTokenVerifier {
         return !isTokenExpired(token);
     }
 
+    /**
+     * Get the id from the token
+     * @param token JWT token
+     * @return The id from the token
+     */
     public String getNetIdFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    /**
+     * Returns a collection of granted authorities from the token (in our case it will be only one authority)
+     * @param token JWT token
+     * @return A collection of granted authorities in the format ROLE_(Given role)
+     */
     public Collection
             <? extends GrantedAuthority> getRoleFromToken(String token) {
         String role = getClaims(token).toString().split("role")[1].split(",")[0].replace("=", "");
         return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
+    /**
+     * Return the expiration date from the JWT toekn
+     * @param token JWT token
+     * @return Date of expiration
+     */
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
+    /**
+     * Checks whether the token has expired
+     * @param token JWT token
+     * @return True or False depending on whether the token has expired
+     */
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
