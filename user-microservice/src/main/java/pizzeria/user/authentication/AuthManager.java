@@ -15,6 +15,6 @@ public class AuthManager {
     }
 
     public String getRole() {
-        return SecurityContextHolder.getContext().getAuthentication().getDetails().toString();
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
     }
 }

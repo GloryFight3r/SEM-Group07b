@@ -33,7 +33,7 @@ public class User extends HasEvents {
     @Getter
     private String email;
     @Column(name = "allergies", nullable = false)
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Getter
     @Setter
     private List<String> allergies;

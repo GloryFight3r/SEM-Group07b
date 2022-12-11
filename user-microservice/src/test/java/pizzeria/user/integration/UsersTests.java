@@ -1,0 +1,154 @@
+package pizzeria.user.integration;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import pizzeria.user.authentication.AuthManager;
+import pizzeria.user.authentication.JwtTokenVerifier;
+import pizzeria.user.communication.HttpRequestService;
+import pizzeria.user.domain.user.User;
+import pizzeria.user.domain.user.UserRepository;
+import pizzeria.user.integration.utils.JsonUtil;
+import pizzeria.user.models.AllergiesModel;
+import pizzeria.user.models.UserModel;
+
+import java.util.List;
+
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+// activate profiles to have spring use mocks during auto-injection of certain beans.
+@ActiveProfiles({"test", "mockHttpRequestService", "mockTokenVerifier", "mockAuthenticationManager"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureMockMvc
+public class UsersTests {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private transient UserRepository userRepository;
+
+    @Autowired
+    private transient JwtTokenVerifier mockJwtTokenVerifier;
+
+    @Autowired
+    private transient HttpRequestService httpRequestService;
+
+    @Autowired
+    private transient AuthManager mockAuthManager;
+
+    @Test
+    public void register_withValidData_worksCorrectly() throws Exception {
+        // Arrange
+        final String testPassword = "password123";
+        final String testRole = "ROLE_CUSTOMER";
+        final String testEmail = "Borislav@gmail.com";
+        final String testName = "borislav";
+        final List<String> testAllergies = List.of("Allergy");
+
+        UserModel model = new UserModel();
+        model.setPassword(testPassword);
+        model.setEmail(testEmail);
+        model.setRole(testRole);
+        model.setName(testName);
+        model.setAllergies(testAllergies);
+
+        when(httpRequestService.registerUser(any(User.class), any(String.class))).thenReturn(true);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/user/create_user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(model)));
+
+        // Assert
+        resultActions.andExpect(status().isCreated());
+
+        User savedUser = userRepository.findUserByEmail(testEmail).orElseThrow();
+
+        assertThat(savedUser.getEmail()).isEqualTo(testEmail);
+        assertThat(savedUser.getRole()).isEqualTo(testRole);
+        assertThat(savedUser.getAllergies()).containsExactlyElementsOf(testAllergies);
+        assertThat(savedUser.getName()).isEqualTo(testName);
+    }
+
+    @Test
+    public void updateAllergies_worksCorrectly() throws Exception {
+        final String testPassword = "password123";
+        final String testRole = "ROLE_CUSTOMER";
+        final String testEmail = "Borislav@gmail.com";
+        final String testName = "borislav";
+        final List<String> testAllergies = List.of("Allergy");
+        final List<String> newAllergies = List.of("Allergy2");
+
+        when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
+        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("asdasdasdas");
+
+        userRepository.save(new User(testRole, testName, testEmail, testAllergies));
+
+        User currentUser = userRepository.findUserByEmail(testEmail).get();
+
+        String id = currentUser.getId();
+
+        when(mockAuthManager.getNetId()).thenReturn(id);
+
+        AllergiesModel model = new AllergiesModel();
+        model.setAllergies(newAllergies);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(put("/user/update_allergies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(model))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isOk());
+
+        User tempUser = userRepository.findUserByEmail(testEmail).get();
+
+        assertThat(tempUser.getAllergies()).containsExactlyElementsOf(newAllergies);
+    }
+
+    @Test
+    public void getAllergies_worksCorrectly() throws Exception {
+        final String testPassword = "password123";
+        final String testRole = "ROLE_CUSTOMER";
+        final String testEmail = "Borislav@gmail.com";
+        final String testName = "borislav";
+        final List<String> testAllergies = List.of("Allergy", "Allergy2", "Allergy3");
+
+        when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
+        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("asdasdasdas");
+
+        userRepository.save(new User(testRole, testName, testEmail, testAllergies));
+
+        User currentUser = userRepository.findUserByEmail(testEmail).get();
+
+        String id = currentUser.getId();
+
+        when(mockAuthManager.getNetId()).thenReturn(id);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/user/get_allergies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isOk());
+
+        User tempUser = userRepository.findUserByEmail(testEmail).get();
+
+        assertThat(tempUser.getAllergies()).containsExactlyElementsOf(testAllergies);
+    }
+}
+
