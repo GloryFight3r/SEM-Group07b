@@ -37,4 +37,5 @@ public class AllergenController {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
+
 }

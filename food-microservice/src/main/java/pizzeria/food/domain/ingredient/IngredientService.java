@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -54,7 +55,14 @@ public class IngredientService {
     }
 
     public List<Ingredient> getToppingsList(){
-        return ingredientRepository.getDefaultToppings();
+        List<Ingredient> ingredientList = ingredientRepository.findAll();
+        List<Ingredient> extraToppings = new LinkedList<>();
+        for (Ingredient ingredient: ingredientList){
+            if (!ingredient.isBaseTopping()){
+                extraToppings.add(ingredient);
+            }
+        }
+        return extraToppings;
     }
 
 
