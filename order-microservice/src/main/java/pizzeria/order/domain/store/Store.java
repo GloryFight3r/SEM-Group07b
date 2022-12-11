@@ -2,6 +2,7 @@ package pizzeria.order.domain.store;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 import pizzeria.order.domain.order.Order;
 
 import javax.persistence.*;
@@ -16,12 +17,13 @@ public class Store {
     @Id
     @Column(name = "id")
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
+    @Setter
     private long id;
 
     @Column(name = "location")
     @Getter
+    @Setter
     private String location;
 
     @ElementCollection
@@ -50,15 +52,6 @@ public class Store {
     public boolean removeOrder(int orderID) {
         return false;
     }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
 
     @Override
     public boolean equals(Object o) {
