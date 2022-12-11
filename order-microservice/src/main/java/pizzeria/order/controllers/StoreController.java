@@ -59,4 +59,23 @@ public class StoreController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
+
+    @GetMapping("/get_stores")
+    public List<Store> getStores() {
+        try {
+            return storeService.getAllStores();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/get_store_orders")
+    public ResponseEntity<List<Long>> getStoreOrders(@RequestBody Long storeId) {
+        try {
+            List<Long> orders = storeService.getAssignedStoreOrders(storeId);
+            return ResponseEntity.status(HttpStatus.OK).body(orders);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
+    }
 }
