@@ -145,12 +145,12 @@ public class UserController {
             Optional<User> user = userService.findUserByEmail(loginModel.getEmail());
 
             if (user.isEmpty()) {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.badRequest().build();
             }
 
             Optional <String> jwtToken = httpRequestService.loginUser(user.get().getId(), loginModel.getPassword());
             if (jwtToken.isEmpty()) {
-               return ResponseEntity.notFound().build();
+               return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.ok().body(new LoginResponseModel(jwtToken.get()));
         } catch (Exception e) {

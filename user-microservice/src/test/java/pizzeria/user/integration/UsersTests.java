@@ -16,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import pizzeria.user.authentication.AuthManager;
 import pizzeria.user.authentication.JwtTokenVerifier;
@@ -24,9 +25,12 @@ import pizzeria.user.domain.user.User;
 import pizzeria.user.domain.user.UserRepository;
 import pizzeria.user.integration.utils.JsonUtil;
 import pizzeria.user.models.AllergiesModel;
+import pizzeria.user.models.LoginModel;
+import pizzeria.user.models.LoginResponseModel;
 import pizzeria.user.models.UserModel;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -149,6 +153,47 @@ public class UsersTests {
         User tempUser = userRepository.findUserByEmail(testEmail).get();
 
         assertThat(tempUser.getAllergies()).containsExactlyElementsOf(testAllergies);
+    }
+
+    @Test
+    public void loginUser_worksCorrectly() throws Exception {
+        final String testEmail = "Borislav@gmail.com";
+        final String testPassword = "password123";
+        final String testRole = "ROLE_MANAGER";
+        final String testName = "Borislav";
+        final List<String> testAllergies = List.of("Allergy", "Allergy2", "Allergy3");
+
+        userRepository.save(new User(testRole, testName, testEmail, testAllergies));
+
+        String id = "5aa88856-718e-4a45-9919-e7e9e14f6d5d";
+
+        String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1YWE4ODg1Ni03MThlLTRhN" +
+                "DUtOTkxOS1lN2U5ZTE0ZjZkNWQiLCJyb2xlIjoiW1JPTEVfTUFOQUdFUl0iLCJl" +
+                "eHAiOjE2NzEwMjMzOTksImlhdCI6MTY3MDkzNjk5OX0.aGtHkbWJfZCxb98l-wr1Ejs" +
+                "CA3uAguFKwGN912yufi6X2enPTTK9kmcSdSBpLRlLmybN_km06rqYYAMDGly6CA";
+
+        when(httpRequestService.loginUser(any(), any()))
+                .thenReturn(Optional.of(token));
+
+        LoginModel loginModel = new LoginModel();
+        loginModel.setEmail(testEmail);
+        loginModel.setPassword(testPassword);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(loginModel)));
+
+        MvcResult result = resultActions
+                .andExpect(status().isOk())
+                .andReturn();
+
+        LoginResponseModel responseModel = JsonUtil.deserialize(result.getResponse().getContentAsString(),
+                LoginResponseModel.class);
+
+        String actualToken = responseModel.getJwtToken();
+
+        assertThat(actualToken).isEqualTo(token);
     }
 }
 

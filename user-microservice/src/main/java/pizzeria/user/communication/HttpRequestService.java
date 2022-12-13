@@ -1,10 +1,12 @@
 package pizzeria.user.communication;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pizzeria.user.domain.user.User;
+import pizzeria.user.models.AuthenticationResponseModel;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,8 +22,13 @@ public class HttpRequestService {
      *
      * @param restTemplateBuilder builder for RestTemplate
      */
+    @Autowired
     public HttpRequestService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
+    }
+
+    public HttpRequestService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -79,12 +86,11 @@ public class HttpRequestService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
         // send POST request
-        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:8081/authenticate", entity, String.class);
+        ResponseEntity<AuthenticationResponseModel> response = this.restTemplate.postForEntity("http://localhost:8081/authenticate", entity, AuthenticationResponseModel.class);
 
         // check response status code
         if (response.getStatusCode() == HttpStatus.OK) {
-            String toParse = response.getBody();
-            String jwtToken = toParse.split("\"")[3];
+            String jwtToken = response.getBody().getToken();
             return Optional.of(jwtToken);
         } else {
             return Optional.empty();
