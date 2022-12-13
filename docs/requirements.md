@@ -47,6 +47,6 @@
 * The system should be build using Gradle and Spring boot.
 * Users have a unique id that is a string.
 * Users' passwords should be stored safely.
-* Coupon codes should have an activation code that consists of firstly 4 alphabetical characters followed by 2 numbers.
+* commons.Coupon codes should have an activation code that consists of firstly 4 alphabetical characters followed by 2 numbers.
 * The system must support two types of coupon codes: default x% off and buy-one-get-one-free.
 
