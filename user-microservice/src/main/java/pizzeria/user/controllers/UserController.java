@@ -9,8 +9,7 @@ import pizzeria.user.domain.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
-import pizzeria.user.models.AllergiesModel;
-import pizzeria.user.models.UserModel;
+import pizzeria.user.models.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -119,14 +118,41 @@ public class UserController {
      * @return A response indicating either failure or success and a list with allergies in the body
      */
     @GetMapping("/get_allergies")
-    public ResponseEntity<List<String>> getAllergies() {
+    public ResponseEntity<AllergiesResponseModel> getAllergies() {
         try {
-            List<String> allergies = userService.getAllergies(authManager.getNetId());
+            List <String> allergies = userService.getAllergies(authManager.getNetId());
             if (allergies != null) {
-                return ResponseEntity.ok().body(allergies);
+                return ResponseEntity.ok().body(new AllergiesResponseModel(allergies));
             } else {
                 return ResponseEntity.notFound().build();
             }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    /**
+     * Returns the jwt token associated with the user with the given email address,
+     * provided we have the correct password
+     *
+     * @param loginModel Email and password for the user
+     * @return If we successfully authenticate, we get the correct jwt token
+     */
+    @GetMapping("/login")
+    public ResponseEntity<LoginResponseModel> loginUser(@RequestBody LoginModel loginModel) {
+        try {
+            Optional<User> user = userService.findUserByEmail(loginModel.getEmail());
+
+            if (user.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Optional <String> jwtToken = httpRequestService.loginUser(user.get().getId(), loginModel.getPassword());
+            if (jwtToken.isEmpty()) {
+               return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(new LoginResponseModel(jwtToken.get()));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

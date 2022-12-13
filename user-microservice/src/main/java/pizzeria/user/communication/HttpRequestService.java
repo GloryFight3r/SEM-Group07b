@@ -5,9 +5,11 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pizzeria.user.domain.user.User;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class HttpRequestService {
@@ -51,5 +53,41 @@ public class HttpRequestService {
 
         // check response status code
         return response.getStatusCode() == HttpStatus.CREATED;
+    }
+    /**
+     * Sends a http request to the authentication microservice requesting to authenticate
+     * a user with given id and password
+     * @param id ID of the user we want to authenticate
+     * @param password Password of the user
+     * @return Optional with the jwtToken or none, depending on whether we successfully authenticated
+     */
+    public Optional<String> loginUser(String id, String password) {
+        // create headers
+        HttpHeaders headers = new HttpHeaders();
+        // set `content-type` header
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // set `accept` header
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        // create headers
+        // create a map for post parameters
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("password", password);
+
+        // build the request
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+
+        // send POST request
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:8081/authenticate", entity, String.class);
+
+        // check response status code
+        if (response.getStatusCode() == HttpStatus.OK) {
+            String toParse = response.getBody();
+            String jwtToken = toParse.split("\"")[3];
+            return Optional.of(jwtToken);
+        } else {
+            return Optional.empty();
+        }
     }
 }
