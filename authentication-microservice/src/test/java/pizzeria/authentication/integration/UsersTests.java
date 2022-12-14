@@ -148,6 +148,7 @@ public class UsersTests {
 //
 //        AuthenticationResponseModel responseModel = JsonUtil.deserialize(result.getResponse().getContentAsString(),
 //                AuthenticationResponseModel.class);
+
 //
 //        assertThat(responseModel.getToken()).isEqualTo(testToken);
 //
