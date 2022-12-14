@@ -23,12 +23,22 @@ public class PriceController {
     private final transient RecipeService recipeService;
     private final transient IngredientService ingredientService;
 
+    /**
+     * Constructor for the PriceController that auto wires the required databases
+     * @param recipeService RecipeService that handles all the recipe operations.
+     * @param ingredientService IngredientService that handles all the ingredient operations.
+     */
     @Autowired
     public PriceController(RecipeService recipeService, IngredientService ingredientService) {
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
     }
 
+    /**
+     * @param requestModel GetPricesRequestModel that holds the ids of the recipes and ingredients
+     * from which we want the prices
+     * @return two list of doubles representing the prices of the requested recipes and ingredients
+     */
     @GetMapping("/ids")
     public ResponseEntity<GetPricesResponseModel> getPrices(@RequestBody GetPricesRequestModel requestModel) {
         try {

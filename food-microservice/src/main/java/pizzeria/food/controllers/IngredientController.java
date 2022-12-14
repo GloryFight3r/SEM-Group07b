@@ -18,11 +18,19 @@ import java.util.List;
 public class IngredientController {
     private final transient IngredientService ingredientService;
 
+    /**
+     * Constructor for the IngredientController class that autowires the required service
+     * @param ingredientService IngredientService that handles the complexity
+     */
     @Autowired
     public IngredientController(IngredientService ingredientService){
         this.ingredientService = ingredientService;
     }
 
+    /**
+     * @param model SaveIngredientRequestModel that holds the Ingredient we want to save
+     * @return the saved ingredient and its id
+     */
     @PostMapping("/save")
     public ResponseEntity<SaveIngredientResponseModel> saveIngredient(@RequestBody SaveIngredientRequestModel model){
         try {
@@ -36,6 +44,10 @@ public class IngredientController {
         }
     }
 
+    /**
+     * @param model UpdateIngredientRequestModel that holds the id and the ingredient we want to store
+     * @return the updated ingredient
+     */
     @PostMapping("/update")
     public ResponseEntity<UpdateIngredientResponseModel> updateIngredient(@RequestBody UpdateIngredientRequestModel model){
         try {
@@ -49,6 +61,10 @@ public class IngredientController {
         }
     }
 
+    /**
+     * @param model DeleteIngredientRequestModel holding the id of the Ingredient we want to delete
+     * @return ResponseEntity that holds nothing or the message of the thrown exception
+     */
     @DeleteMapping("/delete")
     public ResponseEntity deleteIngredient(@RequestBody DeleteIngredientRequestModel model) {
         try {
@@ -59,8 +75,11 @@ public class IngredientController {
         }
     }
 
+    /**
+     * @return the list of extra toppings
+     */
     @GetMapping("/extraToppings")
-    public ResponseEntity getExtraToppingsSet(){
+    public ResponseEntity<ExtraToppingsResponseModel> getExtraToppingsSet(){
         List<Ingredient> ingredientList = ingredientService.getToppingsList();
         ExtraToppingsResponseModel responseModel = new ExtraToppingsResponseModel();
         responseModel.setIngredients(ingredientList);

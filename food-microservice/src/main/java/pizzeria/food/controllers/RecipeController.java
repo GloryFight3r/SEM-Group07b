@@ -21,11 +21,19 @@ public class RecipeController {
 
     private final transient RecipeService foodService;
 
+    /**
+     * Constructor for the RecipeController class that auto wires the required service
+     * @param foodService RecipeService that handles all the Recipe complexity
+     */
     @Autowired
     public RecipeController(RecipeService foodService){
         this.foodService = foodService;
     }
 
+    /**
+     * @param model SaveFoodRequestModel that holds the Recipe we want to save
+     * @return SaveFoodResponseModel that holds the saved recipe
+     */
     @PostMapping("/save")
     public ResponseEntity<SaveFoodResponseModel> saveFood(@RequestBody SaveFoodRequestModel model){
 
@@ -40,6 +48,10 @@ public class RecipeController {
         }
     }
 
+    /**
+     * @param model UpdateFoodRequestModel holding the id and the recipe we want to update
+     * @return Recipe that was updated
+     */
     @PostMapping("/update")
     public ResponseEntity<UpdateFoodResponseModel> updateFood(@RequestBody UpdateFoodRequestModel model) {
         try {
@@ -53,6 +65,9 @@ public class RecipeController {
         }
     }
 
+    /**
+     * @param model DeleteFoodRequestModel that holds the id of the Recipe we want to delete
+     */
     @DeleteMapping("/delete")
     public ResponseEntity deleteFood(@RequestBody DeleteFoodRequestModel model) {
         try {
@@ -63,6 +78,9 @@ public class RecipeController {
         }
     }
 
+    /**
+     * @return MenuResponseModel holding the list of available recipes
+     */
     @GetMapping("/menu")
     public ResponseEntity<MenuResponseModel> getMenu() {
         List<Recipe> menu = foodService.getMenu();

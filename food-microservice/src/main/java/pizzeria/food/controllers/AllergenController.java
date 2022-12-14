@@ -22,10 +22,20 @@ public class AllergenController {
 
     private final transient AllergenService allergenService;
 
+    /**
+     * Constructor for the AllergenController class that auto wires the required service
+     * @param allergenService AllergenService that handles the allergen complexity
+     */
     @Autowired
     public AllergenController(AllergenService allergenService) {
         this.allergenService = allergenService;
     }
+
+
+    /**
+     * @param requestModel FilterMenuRequestModel that holds the allergens of the user
+     * @return List of recipes that don't contain the specified allergens
+     */
     @GetMapping("/menu")
     public ResponseEntity<FilterMenuResponseModel> filterMenu(@RequestBody FilterMenuRequestModel requestModel){
         try {
