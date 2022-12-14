@@ -1,0 +1,21 @@
+@startuml
+class Store {
+    - id: Integer
+    - location: Address
+    - orders: List<Order>
+    --
+    getters & setters...
+    + addOrder(order: Order): Order
+    + editOrder(orderID: Integer): Boolean
+    + removeOrder(orderID: Integer): Boolean
+}
+
+class StoreAPI {
+    + assignStoreOrder(order: Order, storeID: Integer): Order
+    + editStoreOrder(orderID: Integer, storeID: Integer): Boolean
+    + removeStoreOrder(orderID: Integer, storeID: Integer): Boolean
+}
+
+footer Store microservice UML class diagram
+
+@enduml
