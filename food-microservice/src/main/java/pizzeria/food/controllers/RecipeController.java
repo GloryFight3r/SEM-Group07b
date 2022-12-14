@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
 import pizzeria.food.domain.recipe.Recipe;
@@ -34,7 +35,7 @@ public class RecipeController {
             responseModel.setId(saved.getId());
             responseModel.setRecipe(saved);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
-        } catch (RecipeAlreadyInUseException e){
+        } catch (RecipeAlreadyInUseException | IngredientNotFoundException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
@@ -47,7 +48,7 @@ public class RecipeController {
             responseModel.setId(updated.getId());
             responseModel.setRecipe(updated);
             return ResponseEntity.status(HttpStatus.OK).body(responseModel);
-        } catch (RecipeNotFoundException e){
+        } catch (RecipeNotFoundException | IngredientNotFoundException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
