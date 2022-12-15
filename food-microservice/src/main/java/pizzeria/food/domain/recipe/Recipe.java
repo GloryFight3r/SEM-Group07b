@@ -17,6 +17,8 @@ public class Recipe extends HasEvents {
     @ElementCollection
     private List<Long> baseToppings;
     private double basePrice;
+    private FoodType foodType = FoodType.PIZZA;
+
 
     /**
      * @param name String value representing the name of this Food instance
@@ -30,4 +32,6 @@ public class Recipe extends HasEvents {
     }
 
 }
+enum FoodType{PIZZA}
+
 
