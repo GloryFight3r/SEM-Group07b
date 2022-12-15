@@ -37,8 +37,12 @@ public class AllergenService {
             if (ingredientRepository.existsById(id)){
                 List<String> allergensOfIngredient = ingredientRepository.findById(id).get().getAllergens();
                 for (String allergen: allergensOfIngredient){
-                    if (allergens.contains(allergen)) return false;
+                    if (allergens.contains(allergen)) {
+                        System.out.println("YES YES YES");
+                        return false;
+                    }
                 }
+
             } else {
                 throw new IngredientNotFoundException();
             }

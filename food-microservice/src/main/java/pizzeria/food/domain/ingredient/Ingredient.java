@@ -20,7 +20,7 @@ public class Ingredient {
     private String name;
     @Getter
     private double price;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Getter
     private List<String> allergens;
 
