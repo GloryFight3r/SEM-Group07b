@@ -1,4 +1,4 @@
-package pizzeria.user.domain.user;
+package pizzeria.user.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
