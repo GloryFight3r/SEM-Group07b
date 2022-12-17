@@ -89,9 +89,7 @@ public class IngredientService {
         List<Ingredient> ingredientList = ingredientRepository.findAll();
         List<Ingredient> extraToppings = new LinkedList<>();
         for (Ingredient ingredient: ingredientList){
-            if (!ingredient.isBaseTopping()){
-                extraToppings.add(ingredient);
-            }
+            extraToppings.add(ingredient);
         }
         return extraToppings;
     }
