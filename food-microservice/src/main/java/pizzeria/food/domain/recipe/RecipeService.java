@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
+import pizzeria.food.models.prices.Tuple;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RecipeService {
@@ -87,12 +89,12 @@ public class RecipeService {
      * @throws RecipeNotFoundException thrown when one of the ids of the recipes was not in the database.
      */
     @SuppressWarnings("PMD")
-    public List<Double> getPrices(List<Long> ids) throws RecipeNotFoundException {
-        List<Double> prices = new ArrayList<>(ids.size());
+    public Map<Long, Tuple> getPrices(List<Long> ids) throws RecipeNotFoundException {
+        Map<Long, Tuple> prices = new HashMap<>(ids.size());
         for (long id: ids){
             if (recipeRepository.existsById(id)) {
                 Recipe recipe = recipeRepository.findById(id).get();
-                prices.add(recipe.getBasePrice());
+                prices.put(id, new Tuple(recipe.getBasePrice(), recipe.getName()));
             } else {
                 throw new RecipeNotFoundException("The Recipe with the id " + id + " was not found in the databases");
             }

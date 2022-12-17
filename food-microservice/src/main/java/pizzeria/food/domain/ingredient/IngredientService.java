@@ -2,10 +2,9 @@ package pizzeria.food.domain.ingredient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pizzeria.food.models.prices.Tuple;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class IngredientService {
@@ -70,11 +69,12 @@ public class IngredientService {
      * ingredient in the database.
      */
     @SuppressWarnings("PMD")
-    public List<Double> getPrices(List<Long> ids) throws IngredientNotFoundException {
-        List<Double> prices = new ArrayList<>(ids.size());
+    public Map<Long, Tuple> getPrices(List<Long> ids) throws IngredientNotFoundException {
+        Map<Long, Tuple> prices = new HashMap<>(ids.size());
         for (long id: ids){
             if (ingredientRepository.existsById(id)){
-                prices.add(ingredientRepository.findById(id).get().getPrice());
+                Ingredient ingredient = ingredientRepository.findById(id).get();
+                prices.put(id, new Tuple(ingredient.getPrice(), ingredient.getName()));
             } else {
                 throw new IngredientNotFoundException("The Ingredient with id " + id + " was not found in the database");
             }

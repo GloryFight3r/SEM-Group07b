@@ -14,8 +14,9 @@ import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
 import pizzeria.food.models.prices.GetPricesRequestModel;
 import pizzeria.food.models.prices.GetPricesResponseModel;
+import pizzeria.food.models.prices.Tuple;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/price")
@@ -42,8 +43,8 @@ public class PriceController {
     @GetMapping("/ids")
     public ResponseEntity<GetPricesResponseModel> getPrices(@RequestBody GetPricesRequestModel requestModel) {
         try {
-            List<Double> foodPrices = recipeService.getPrices(requestModel.getFoodIds());
-            List<Double> ingredientPrices = ingredientService.getPrices(requestModel.getIngredientIds());
+            Map<Long, Tuple> foodPrices = recipeService.getPrices(requestModel.getFoodIds());
+            Map<Long, Tuple> ingredientPrices = ingredientService.getPrices(requestModel.getIngredientIds());
             GetPricesResponseModel responseModel = new GetPricesResponseModel();
             responseModel.setFoodPrices(foodPrices);
             responseModel.setIngredientPrices(ingredientPrices);
