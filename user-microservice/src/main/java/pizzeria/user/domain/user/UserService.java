@@ -19,8 +19,18 @@ public class UserService {
      *
      * @param user UserModel containing information about the user
      */
-    public void saveUser(UserModel user) {
-        userRepository.save(user.parseToUser());
+    public void saveUser(UserModel user) throws EmailAlreadyInUseException{
+        User userToSave = user.parseToUser();
+
+        if (checkUniqueEmail(userToSave.getEmail())) {
+            userRepository.save(userToSave);
+        } else {
+            throw new EmailAlreadyInUseException(user.getEmail());
+        }
+    }
+
+    private boolean checkUniqueEmail(String email) {
+        return !userRepository.existsByEmail(email);
     }
 
     /**
@@ -43,13 +53,12 @@ public class UserService {
     }
 
     /**
-     * Deletes a user from the database, given his email
+     * Deletes a user from the database, given his id
      *
-     * @param mail Unique email of the user
-     * @return True or False depending on whether a user with such email exists
+     * @param id Unique id of the user
      */
-    public boolean deleteUser(String mail) {
-        return userRepository.deleteUserByEmail(mail) != 0;
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);
     }
 
     /**
@@ -59,20 +68,14 @@ public class UserService {
      * @param allergies The new allergies of the user
      * @return True or False depending on whether the user was found
      */
-    public boolean updateUserAllergies(String id, List<String> allergies) {
+    public void updateUserAllergies(String id, List<String> allergies) {
         Optional<User> optionalUser = userRepository.findUserById(id);
-
-        if (optionalUser.isEmpty()) {
-            return false;
-        }
 
         User currentUser = optionalUser.get();
 
         currentUser.setAllergies(allergies);
 
         userRepository.save(currentUser);
-
-        return true;
     }
 
     /**
@@ -91,5 +94,14 @@ public class UserService {
         User currentUser = optionalUser.get();
 
         return currentUser.getAllergies();
+    }
+
+    /**
+     * Checks whether a user exists given his id
+     * @param id unique id of the user
+     * @return True or False depending on whether the user exists
+     */
+    public boolean userExistsById(String id) {
+        return userRepository.existsById(id);
     }
 }

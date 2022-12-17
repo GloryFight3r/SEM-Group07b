@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import pizzeria.user.domain.user.EmailAlreadyInUseException;
 import pizzeria.user.domain.user.User;
 import pizzeria.user.domain.user.UserRepository;
 import pizzeria.user.domain.user.UserService;
@@ -54,7 +55,11 @@ public class UserServiceTests {
 
     @Test
     public void saveUser_worksCorrectly() {
-        userService.saveUser(userModel);
+        try {
+            userService.saveUser(userModel);
+        } catch (EmailAlreadyInUseException e) {
+            System.out.println("User with such email already exists");
+        }
 
         Optional<User> actualUser = userRepository.findUserByEmail(email);
 
@@ -98,9 +103,11 @@ public class UserServiceTests {
     public void deleteUser_worksCorrectly() {
         userRepository.save(new User(role, name, email, allergies));
 
-        assertThat(userRepository.findUserByEmail(email)).isNotEmpty();
+        assertThat(userRepository.existsByEmail(email)).isTrue();
 
-        userService.deleteUser(email);
+        Optional<User> user = userService.findUserByEmail(email);
+
+        userService.deleteUser(user.get().getId());
 
         assertThat(userRepository.findUserByEmail(email)).isEmpty();
     }
