@@ -5,7 +5,6 @@
 [User] - [Coupon]
 [User] - [Order]
 [User] - [Food]
-[User] -- [Store]
 [Coupon] - [Order]
 [Order] -- [Store]
 [Order] -- [Food]

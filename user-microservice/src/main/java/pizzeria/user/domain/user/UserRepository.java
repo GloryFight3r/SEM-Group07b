@@ -25,6 +25,13 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Transactional
     Long deleteUserByEmail(String id);
 
+    /**
+     * Indicates whether a user with the given email already exists in our database
+     * @param email user's email
+     * @return True or False, indicating whether it already exists
+     */
+    boolean existsByEmail(String email);
+
     //Optional<User> findUserByAllergies();
 
     /**
