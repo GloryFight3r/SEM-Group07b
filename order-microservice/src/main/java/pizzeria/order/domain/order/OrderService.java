@@ -11,6 +11,7 @@ import pizzeria.order.models.GetPricesResponseModel;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -86,6 +87,14 @@ public class OrderService {
             return true;
         }
         return false;
+    }
+
+    public List<Order> listOrders(Long userId) {
+        return orderRepo.findByUserId(userId);
+    }
+
+    public List<Order> listAllOrders() {
+        return orderRepo.findAll();
     }
 
     @SuppressWarnings("PMD")
