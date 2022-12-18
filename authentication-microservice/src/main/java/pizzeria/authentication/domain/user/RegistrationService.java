@@ -24,7 +24,7 @@ public class RegistrationService {
     /**
      * Register a new user.
      *
-     * @param netId    The NetID of the user
+     * @param id    The NetID of the user
      * @param password The password of the user
      * @throws Exception if the user already exists
      */
