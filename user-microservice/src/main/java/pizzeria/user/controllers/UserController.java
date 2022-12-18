@@ -54,12 +54,15 @@ public class UserController {
             Optional<User> savedUser = userService.findUserByEmail(user.getEmail());
 
             if (savedUser.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not store the user in the database");
             }
 
             //registers the user in the authenticate-microservice database
             if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
                 userService.deleteUser(savedUser.get().getEmail());
+
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not communicate with " +
+                        "authentication service");
             }
 
         } catch (EmailAlreadyInUseException e) {
@@ -89,7 +92,7 @@ public class UserController {
             userService.deleteUser(authManager.getNetId());
             return ResponseEntity.ok().build();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such id found");
         }
     }
 
@@ -120,7 +123,8 @@ public class UserController {
     public ResponseEntity<AllergiesResponseModel> getAllergies() {
         if (userService.userExistsById(authManager.getNetId())) {
             List <String> allergies = userService.getAllergies(authManager.getNetId());
-                return ResponseEntity.ok().body(new AllergiesResponseModel(allergies));
+
+            return ResponseEntity.ok().body(new AllergiesResponseModel(allergies));
         } else {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such id not found");
         }
@@ -149,7 +153,7 @@ public class UserController {
 
         Optional <String> jwtToken = httpRequestService.loginUser(user.get().getId(), loginModel.getPassword());
         if (jwtToken.isEmpty()) {
-           return ResponseEntity.badRequest().build();
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not authenticate");
         }
         return ResponseEntity.ok().body(new LoginResponseModel(jwtToken.get()));
     }
