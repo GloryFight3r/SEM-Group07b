@@ -9,5 +9,4 @@ import lombok.Data;
 public class RegistrationRequestModel {
     private String id;
     private String password;
-    private String role;
 }

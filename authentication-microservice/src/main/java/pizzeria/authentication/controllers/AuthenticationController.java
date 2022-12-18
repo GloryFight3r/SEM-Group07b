@@ -2,7 +2,6 @@ package pizzeria.authentication.controllers;
 
 import pizzeria.authentication.authentication.JwtTokenGenerator;
 import pizzeria.authentication.authentication.JwtUserDetailsService;
-import pizzeria.authentication.domain.user.AppUser;
 import pizzeria.authentication.domain.user.Password;
 import pizzeria.authentication.domain.user.RegistrationService;
 import pizzeria.authentication.models.AuthenticationRequestModel;
@@ -92,13 +91,12 @@ public class AuthenticationController {
 
             String id = request.getId();
             Password password = new Password(request.getPassword());
-            System.out.println(request + " " + AppUser.containsRole(request.getRole()));
-            if (!AppUser.containsRole(request.getRole())) {
-                throw new IllegalArgumentException();
-            }
-
-            String role = request.getRole();
-            registrationService.registerUser(id, password, role);
+//            if (!AppUser.containsRole(request.getRole())) {
+//                throw new IllegalArgumentException();
+//            }
+//
+//            String role = request.getRole();
+            registrationService.registerUser(id, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

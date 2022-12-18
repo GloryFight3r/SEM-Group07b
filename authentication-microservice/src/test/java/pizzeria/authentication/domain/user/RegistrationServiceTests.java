@@ -38,7 +38,7 @@ public class RegistrationServiceTests {
         when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
 
         // Act
-        registrationService.registerUser(testUser, testPassword, "ROLE_MANAGER");
+        registrationService.registerUser(testUser, testPassword);
 
         // Assert
         AppUser savedUser = userRepository.findById(testUser).orElseThrow();
@@ -54,12 +54,12 @@ public class RegistrationServiceTests {
         final HashedPassword existingTestPassword = new HashedPassword("password123");
         final Password newTestPassword = new Password("password456");
 
-        AppUser existingAppUser = new AppUser(testUser, existingTestPassword, "ROLE_MANAGER");
+        AppUser existingAppUser = new AppUser(testUser, existingTestPassword);
 
         userRepository.save(existingAppUser);
 
         // Act
-        ThrowableAssert.ThrowingCallable action = () -> registrationService.registerUser(testUser, newTestPassword, "ROLE_MANAGER");
+        ThrowableAssert.ThrowingCallable action = () -> registrationService.registerUser(testUser, newTestPassword);
 
         // Assert
         assertThatExceptionOfType(Exception.class)
