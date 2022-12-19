@@ -3,11 +3,9 @@ package pizzeria.order.domain.store;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pizzeria.order.domain.order.Order;
-import pizzeria.order.domain.order.OrderRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -110,7 +108,7 @@ public class StoreService {
         return pattern.matcher(testLocation).matches();
     }
 
-
+    @SuppressWarnings("PMD")
     public static class StoreDoesNotExistException extends Exception {
         @Override
         public String getMessage(){
@@ -118,6 +116,7 @@ public class StoreService {
         }
     }
 
+    @SuppressWarnings("PMD")
     public static class StoreAlreadyExistException extends Exception {
         @Override
         public String getMessage(){
@@ -125,6 +124,7 @@ public class StoreService {
         }
     }
 
+    @SuppressWarnings("PMD")
     public static class InvalidEmailException extends Exception {
         @Override
         public String getMessage(){
@@ -132,6 +132,7 @@ public class StoreService {
         }
     }
 
+    @SuppressWarnings("PMD")
     public static class InvalidLocationException extends Exception {
         @Override
         public String getMessage(){
