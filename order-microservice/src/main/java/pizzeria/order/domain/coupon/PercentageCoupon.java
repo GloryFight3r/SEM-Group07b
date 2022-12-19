@@ -5,10 +5,9 @@ import pizzeria.order.domain.order.Order;
 
 public class PercentageCoupon extends Coupon {
     @Getter
-    private final double percentage;
-    public PercentageCoupon(String id, double percentage) {
-        super(id);
-        this.percentage = percentage;
+    private double percentage;
+
+    public PercentageCoupon() {
     }
 
     @Override

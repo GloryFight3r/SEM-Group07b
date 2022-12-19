@@ -1,20 +1,39 @@
 package pizzeria.order.domain.coupon;
 
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sun.istack.NotNull;
+import lombok.Getter;
 import pizzeria.order.domain.order.Order;
 
-@Data
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.Objects;
+
+@Entity
 public abstract class Coupon {
 
-    final String id;
+    @Id
+    @Column(name = "couponId")
+    @Getter
+    @NotNull
+    protected String id;
 
-    @Autowired
-    public Coupon(String id) {
-        //TODO: persist this thing in a JPA repo, use the id in the constructor
-        this.id = id;
+    public Coupon() {
     }
 
     public abstract boolean validate(String id);
     public abstract double calculatePrice(Order order);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coupon)) return false;
+        Coupon coupon = (Coupon) o;
+        return Objects.equals(id, coupon.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
