@@ -46,7 +46,7 @@ public class Store {
     }
 
     public Order addOrder(Order order) {
-        orders.add(order.getId());
+        orders.add(order.getOrderId());
 
         return order;
     }
