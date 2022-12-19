@@ -88,14 +88,9 @@ public class AuthenticationController {
     @SuppressWarnings("PMD")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
         try {
-
             String id = request.getId();
             Password password = new Password(request.getPassword());
-//            if (!AppUser.containsRole(request.getRole())) {
-//                throw new IllegalArgumentException();
-//            }
-//
-//            String role = request.getRole();
+
             registrationService.registerUser(id, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

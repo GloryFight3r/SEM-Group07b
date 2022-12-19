@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 public class RegistrationService {
     private final transient UserRepository userRepository;
     private final transient PasswordHashingService passwordHashingService;
+    private final transient int MANAGER_ACCOUNTS = 5;
 
     /**
      * Instantiates a new UserService.
@@ -34,12 +35,22 @@ public class RegistrationService {
             // Hash password
             HashedPassword hashedPassword = passwordHashingService.hash(password);
 
-            // Create new account
-            AppUser user = new AppUser(id, hashedPassword);
-            userRepository.save(user);
-            System.out.println("the role of the new user is: " + user.getRole());
+            if (userRepository.count() < MANAGER_ACCOUNTS) {
+                // create new manager account
+                AppUser manager = AppUser.createManager(id, hashedPassword);
+                userRepository.save(manager);
 
-            return user;
+                System.out.println("the role of the new user is: " + manager.getRole());
+                return manager;
+            } else {
+                // Create new account
+                AppUser user = new AppUser(id, hashedPassword);
+
+                userRepository.save(user);
+
+                System.out.println("the role of the new user is: " + user.getRole());
+                return user;
+            }
         }
 
         throw new IdAlreadyInUseException(id);

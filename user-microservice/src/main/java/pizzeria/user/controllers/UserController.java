@@ -41,7 +41,7 @@ public class UserController {
      * @return A response indicating either failure or success
      */
     @PostMapping("/create_user")
-    public ResponseEntity create(@RequestBody UserModel user) {
+    public ResponseEntity create(@RequestBody UserRegisterModel user) {
         // perform UserModel data validation
         if (user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Arguments for user are " +
