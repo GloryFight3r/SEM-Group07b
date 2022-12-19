@@ -66,7 +66,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 try {
                     if (jwtTokenVerifier.validateToken(token)) {
-                        System.out.println("WE MADE IT");
                         String netId = jwtTokenVerifier.getNetIdFromToken(token);
                         Collection<? extends GrantedAuthority> role = jwtTokenVerifier.getRoleFromToken(token);
                         System.out.println("This is the role ig: " + role);

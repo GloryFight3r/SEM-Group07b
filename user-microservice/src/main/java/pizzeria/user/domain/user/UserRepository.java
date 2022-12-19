@@ -11,9 +11,40 @@ import java.util.Optional;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+    /**
+     * Return all the users
+     * @return
+     */
     List<User> findAll();
-    @Transactional
-    Long deleteUserByEmail(String netId);
 
-    Optional<User> findUserByEmail(String mail);
+    /**
+     * Delete a user, given his id
+     * @param id ID of the user
+     * @return Number indicating how many users have been deleted
+     */
+    @Transactional
+    Long deleteUserByEmail(String id);
+
+    /**
+     * Indicates whether a user with the given email already exists in our database
+     * @param email user's email
+     * @return True or False, indicating whether it already exists
+     */
+    boolean existsByEmail(String email);
+
+    //Optional<User> findUserByAllergies();
+
+    /**
+     * Finds a user, given his id
+     * @param id ID of the user
+     * @return Optional that contains the user in case he exists in the database
+     */
+    Optional<User> findUserById(String id);
+
+    /**
+     * Finds a user, given his email(emails are unique)
+     * @param email Email of the user
+     * @return Optional that contains the user in case he exists in the database
+     */
+    Optional<User> findUserByEmail(String email);
 }

@@ -24,6 +24,9 @@ public class RecipeNotFoundException extends Exception{
         super(message);
     }
 
+    /**
+     * @return String that represents the message associated with this RecipeNotFoundException
+     */
     @Override
     public String getMessage() {
         return super.getMessage();

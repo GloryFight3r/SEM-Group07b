@@ -48,6 +48,17 @@ public class Ingredient {
         this.allergens = new ArrayList<>();
     }
 
+    /**
+     * @param id long value representing the new id of this ingredient
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    /**
+     * @param o object we want to check for equality with
+     * @return true iff o is an instance of ingredient and has the same id as this Ingredient
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,6 +67,9 @@ public class Ingredient {
         return id == that.id;
     }
 
+    /**
+     * @return integer representation of this Ingredient
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);

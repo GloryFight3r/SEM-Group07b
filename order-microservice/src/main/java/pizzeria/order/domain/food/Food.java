@@ -21,6 +21,9 @@ public class Food {
     @Getter
     private long recipeId;
 
+    @Getter
+    private long orderId;
+
     @ElementCollection
     @CollectionTable(name = "baseIngredients",
             joinColumns = @JoinColumn(name = "id"))
