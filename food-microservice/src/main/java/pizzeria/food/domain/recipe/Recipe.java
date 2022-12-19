@@ -31,7 +31,8 @@ public class Recipe extends HasEvents {
         this.basePrice = basePrice;
     }
 
+
 }
-enum FoodType{PIZZA}
+
 
 
