@@ -34,9 +34,9 @@ public class AllergenServiceTests {
 
     @Test
     void recipeIsSafe() {
-        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al2"), true));
-        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al3", "Al4"), true));
-        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al7", "Al5"), true));
+        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al2")));
+        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al3", "Al4")));
+        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al7", "Al5")));
 
         Recipe recipe1 = new Recipe("recipe1", List.of(1L, 2L, 3L), 30.0);
 
@@ -48,9 +48,9 @@ public class AllergenServiceTests {
     }
     @Test
     void recipeIsNotSafe() {
-        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al2"), true));
-        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al3", "Al4"), true));
-        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al7", "Al5"), true));
+        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al2")));
+        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al3", "Al4")));
+        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al7", "Al5")));
 
         Recipe recipe1 = new Recipe("recipe1", List.of(1L, 2L, 3L), 30.0);
 
