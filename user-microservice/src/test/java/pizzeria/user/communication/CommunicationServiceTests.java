@@ -39,7 +39,7 @@ public class CommunicationServiceTests {
 
         HttpRequestService httpRequestService = new HttpRequestService(restTemplate);
 
-        boolean flag = httpRequestService.registerUser(new User("ROLE_ADMIN", "Borislav", "Borislav@gmail.com", List.of("Allergy1")), "Password1");
+        boolean flag = httpRequestService.registerUser(new User("Borislav", "Borislav@gmail.com", List.of("Allergy1")), "Password1");
 
         assertThat(flag).isEqualTo(true);
     }
