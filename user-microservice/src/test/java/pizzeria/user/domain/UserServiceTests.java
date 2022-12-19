@@ -13,7 +13,7 @@ import pizzeria.user.domain.user.EmailAlreadyInUseException;
 import pizzeria.user.domain.user.User;
 import pizzeria.user.domain.user.UserRepository;
 import pizzeria.user.domain.user.UserService;
-import pizzeria.user.models.UserModel;
+import pizzeria.user.models.UserRegisterModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +32,8 @@ public class UserServiceTests {
     @Autowired
     private transient UserRepository userRepository;
 
-    private UserModel userModel;
-    private String email, name, password, role;
+    private UserRegisterModel userModel;
+    private String email, name, password;
     private List<String> allergies;
 
     @BeforeEach
@@ -41,16 +41,14 @@ public class UserServiceTests {
         email = "Test1";
         name = "Test1";
         password = "coolpassword";
-        role = "ROLE_MANAGER";
         allergies = List.of("Al1", "Al2", "Al3");
 
 
-        userModel = new UserModel();
+        userModel = new UserRegisterModel();
         userModel.setEmail(email);
         userModel.setName(name);
         userModel.setPassword(password);
         userModel.setAllergies(allergies);
-        userModel.setRole(role);
     }
 
     @Test
@@ -67,13 +65,12 @@ public class UserServiceTests {
 
         assertThat(actualUser.get().getEmail()).isEqualTo(email);
         assertThat(actualUser.get().getName()).isEqualTo(name);
-        assertThat(actualUser.get().getRole()).isEqualTo(role);
         assertThat(actualUser.get().getAllergies()).containsExactlyElementsOf(allergies);
     }
 
     @Test
     public void findUserByEmail_worksCorrectly() {
-        User tempUser = new User(role, name, email, allergies);
+        User tempUser = new User(name, email, allergies);
 
         userRepository.save(tempUser);
 
@@ -86,9 +83,9 @@ public class UserServiceTests {
 
     @Test
     public void getAllUsers_worksCorrectly() {
-        User tempUser1 = new User(role, name, email, allergies);
-        User tempUser2 = new User(role, name, "borislav2@gmail.com", allergies);
-        User tempUser3 = new User(role, name, "borislav3@gmail.com", allergies);
+        User tempUser1 = new User(name, email, allergies);
+        User tempUser2 = new User(name, "borislav2@gmail.com", allergies);
+        User tempUser3 = new User(name, "borislav3@gmail.com", allergies);
 
         userRepository.save(tempUser1);
         userRepository.save(tempUser2);
@@ -96,12 +93,12 @@ public class UserServiceTests {
 
         List<User> getActualUsers = userService.getAllUsers();
 
-        assertThat(List.of(tempUser1, tempUser2, tempUser3)).containsExactlyInAnyOrderElementsOf(getActualUsers);
+        assertThat(getActualUsers).containsAll(List.of(tempUser1, tempUser2, tempUser3));
     }
 
     @Test
     public void deleteUser_worksCorrectly() {
-        userRepository.save(new User(role, name, email, allergies));
+        userRepository.save(new User(name, email, allergies));
 
         assertThat(userRepository.existsByEmail(email)).isTrue();
 
@@ -114,7 +111,7 @@ public class UserServiceTests {
 
     @Test
     public void updateUserAllergies_worksCorrectly() {
-        User tempUser = new User(role, name, email, allergies);
+        User tempUser = new User(name, email, allergies);
         List <String> newAllergies = List.of("newAllergy1", "newAllergy2", "newAllergy3");
 
         userRepository.save(tempUser);
@@ -130,7 +127,7 @@ public class UserServiceTests {
 
     @Test
     public void getAllergies_worksCorrectly() {
-        User tempUser = new User(role, name, email, allergies);
+        User tempUser = new User(name, email, allergies);
 
         userRepository.save(tempUser);
 
