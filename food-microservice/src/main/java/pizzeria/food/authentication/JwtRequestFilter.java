@@ -1,13 +1,7 @@
-package pizzeria.example.authentication;
+package pizzeria.food.authentication;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import java.io.IOException;
-import java.util.Collection;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +9,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Request filter for JWT security.
@@ -53,7 +54,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // Get authorization header
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
-        //System.out.println(authorizationHeader);
 
         // Check if an authorization header is set
         if (authorizationHeader != null) {
@@ -62,13 +62,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             // Check for the correct auth scheme
             if (directives.length == 2 && directives[0].equals(AUTHORIZATION_AUTH_SCHEME)) {
                 String token = directives[1];
-                //System.out.println("this is the token " + token);
 
                 try {
                     if (jwtTokenVerifier.validateToken(token)) {
                         String netId = jwtTokenVerifier.getNetIdFromToken(token);
                         Collection<? extends GrantedAuthority> role = jwtTokenVerifier.getRoleFromToken(token);
-                        System.out.println("This is the role ig: " + role);
+
                         var authenticationToken = new UsernamePasswordAuthenticationToken(
                                 netId,
                                 null, role // no credentials and no authorities
@@ -88,7 +87,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     System.err.println("Unable to parse JWT token");
                 }
             }
-            System.err.println("Invalid authorization header");
         }
 
         filterChain.doFilter(request, response);

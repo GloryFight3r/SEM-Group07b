@@ -2,10 +2,11 @@ package pizzeria.food.models.prices;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
+
 
 @Data
 public class GetPricesResponseModel {
-    private List<Double> foodPrices;
-    private List<Double> ingredientPrices;
+    private Map<Long, Tuple> foodPrices;
+    private Map<Long, Tuple> ingredientPrices;
 }

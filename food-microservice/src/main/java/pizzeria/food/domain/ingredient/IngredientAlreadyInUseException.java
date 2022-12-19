@@ -26,6 +26,10 @@ public class IngredientAlreadyInUseException extends Exception{
     }
 
 
+    /**
+     * @return String that represents the message associated with this
+     * IngredientAlreadyInUseException
+     */
     @Override
     public String getMessage() {
         return super.getMessage();

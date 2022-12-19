@@ -1,16 +1,16 @@
-package pizzeria.example.authentication;
+package pizzeria.food.authentication;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.function.Function;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 /**
  * Verifies the JWT token in the request for validity.
@@ -27,22 +27,40 @@ public class JwtTokenVerifier {
         return !isTokenExpired(token);
     }
 
+    /**
+     * Get the id from the token
+     * @param token JWT token
+     * @return The id from the token
+     */
     public String getNetIdFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    /**
+     * Returns a collection of granted authorities from the token (in our case it will be only one authority)
+     * @param token JWT token
+     * @return A collection of granted authorities in the format ROLE_(Given role)
+     */
     public Collection
             <? extends GrantedAuthority> getRoleFromToken(String token) {
-        System.out.println(getClaims(token));
-        String role = getClaimFromToken(token, claims -> claims.get("role").toString());
-        role = role.replace("[", "").replace("]", "");
+        String role = getClaims(token).toString().split("role")[1].split(",")[0].replace("=", "");
         return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
+    /**
+     * Return the expiration date from the JWT toekn
+     * @param token JWT token
+     * @return Date of expiration
+     */
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
+    /**
+     * Checks whether the token has expired
+     * @param token JWT token
+     * @return True or False depending on whether the token has expired
+     */
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
