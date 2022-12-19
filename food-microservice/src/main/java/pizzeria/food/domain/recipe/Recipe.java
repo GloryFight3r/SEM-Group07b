@@ -1,12 +1,16 @@
 package pizzeria.food.domain.recipe;
-import lombok.Data;
+
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pizzeria.food.domain.HasEvents;
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Recipe extends HasEvents {
     @Id
@@ -30,7 +34,18 @@ public class Recipe extends HasEvents {
         this.basePrice = basePrice;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Recipe)) return false;
+        Recipe recipe = (Recipe) o;
+        return id == recipe.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
 
 

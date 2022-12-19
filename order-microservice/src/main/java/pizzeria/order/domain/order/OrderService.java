@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderService {
     private final transient OrderRepository orderRepo;
     private final transient FoodRepository foodRepo;
-    private transient FoodPriceService foodPriceService;
+    private final transient FoodPriceService foodPriceService;
     private transient final CouponRepository couponRepository;
 
     @Autowired
@@ -79,7 +79,7 @@ public class OrderService {
         return orderRepo.save(order);
     }
 
-    public boolean removeOrder(Long orderId, Long userId, boolean isManager) {
+    public boolean removeOrder(Long orderId, String userId, boolean isManager) {
         if (orderId == null || userId == null)
             return false;
         if (isManager || userId.equals(orderRepo.findById(orderId).orElse(new Order()).getUserId())) {
@@ -89,7 +89,7 @@ public class OrderService {
         return false;
     }
 
-    public List<Order> listOrders(Long userId) {
+    public List<Order> listOrders(String userId) {
         return orderRepo.findByUserId(userId);
     }
 

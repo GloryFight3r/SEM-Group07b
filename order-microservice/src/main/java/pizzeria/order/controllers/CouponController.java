@@ -22,9 +22,7 @@ public class CouponController {
 
     @PostMapping("/create")
     public <T extends Coupon> ResponseEntity<Void> createCoupon(@RequestBody T coupon) {
-        // TODO: validate user token (also check that user id from token matches the one from order)
-        boolean isManager = true;
-        if (isManager && couponService.createCoupon(coupon))
+        if (couponService.createCoupon(coupon))
             return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

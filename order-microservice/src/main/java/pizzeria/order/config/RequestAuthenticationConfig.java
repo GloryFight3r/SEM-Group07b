@@ -19,6 +19,12 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/order/place").authenticated()
+                .antMatchers("/order/list").authenticated()
+                .antMatchers("/order/delete").authenticated()
+                .antMatchers("/order/edit").authenticated()
+                .antMatchers("/order/listAll").hasRole("[ROLE_MANAGER]")
+                .antMatchers("/coupon/create").hasRole("[ROLE_MANAGER]")
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

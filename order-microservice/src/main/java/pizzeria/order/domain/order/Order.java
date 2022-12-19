@@ -30,7 +30,7 @@ public class Order {
 
     @Column(name = "user_id")
     @Getter
-    private Long userId;
+    private String userId;
 
     @Column(name = "pickup_time")
     @Getter

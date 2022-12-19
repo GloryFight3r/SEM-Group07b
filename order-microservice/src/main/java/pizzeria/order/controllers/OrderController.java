@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pizzeria.order.authentication.AuthManager;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.domain.order.OrderService;
 
@@ -13,17 +14,22 @@ import pizzeria.order.domain.order.OrderService;
 @RequestMapping("/order")
 public class OrderController {
 
+    private final transient AuthManager authManager;
     private final transient OrderService orderService;
 
     @Autowired
-    public OrderController(OrderService orderService){
+    public OrderController(AuthManager authManager, OrderService orderService){
+        this.authManager = authManager;
         this.orderService = orderService;
     }
 
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
-        // TODO: validate user token (also check that user id from token matches the one from order)
         try {
+            String userId = authManager.getNetId();
+            if (!userId.equals(incoming.getUserId())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "You are trying to edit an order from someone else").build();
+            }
             Order processed = orderService.processOrder(incoming);
             return ResponseEntity.status(HttpStatus.CREATED).body(processed);
         } catch (Exception e) {
@@ -33,8 +39,11 @@ public class OrderController {
 
     @PostMapping("/edit")
     public ResponseEntity<Order> editOrder(@RequestBody Order incoming) {
-        // TODO: validate user token (also check that user id from token matches the one from order)
         try {
+            String userId = authManager.getNetId();
+            if (!userId.equals(incoming.getUserId())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "You are trying to edit an order from someone else").build();
+            }
             Order processed = orderService.processOrder(incoming);
             return ResponseEntity.status(HttpStatus.CREATED).body(processed);
         } catch (Exception e) {
@@ -44,9 +53,8 @@ public class OrderController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<Order> deleteOrder(@RequestBody Long orderId) {
-        // TODO: during the jwt validation we keep the user id in a var and the isManager bool
-        Long userId = null;
-        boolean isManager = false;
+        String userId = authManager.getNetId();
+        boolean isManager = authManager.getRole().equals("[ROLE_MANAGER]");
         if (orderService.removeOrder(orderId, userId, isManager))
             return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -54,18 +62,13 @@ public class OrderController {
 
     @GetMapping("/list")
     public ResponseEntity<List<Order>> listOrders() {
-        // TODO: JWT validation (keep user id)
-        Long userId = null;
+        String userId = authManager.getNetId();
         List<Order> orders = orderService.listOrders(userId);
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
     @GetMapping("/listAll")
     public ResponseEntity<List<Order>> listAllOrders() {
-        // TODO: JWT validation (keep isManager)
-        boolean isManager = false;
-        if (!isManager)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         List<Order> orders = orderService.listAllOrders();
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
