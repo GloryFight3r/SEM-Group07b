@@ -14,7 +14,7 @@ public class Recipe extends HasEvents {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Long> baseToppings;
     private double basePrice;
     private FoodType foodType = FoodType.PIZZA;
