@@ -69,7 +69,7 @@ public class IngredientService {
      * ingredient in the database.
      */
     @SuppressWarnings("PMD")
-    public Map<Long, Tuple> getPrices(List<Long> ids) throws IngredientNotFoundException {
+    public Map<Long, Tuple> getDetails(List<Long> ids) throws IngredientNotFoundException {
         Map<Long, Tuple> prices = new HashMap<>(ids.size());
         for (long id: ids){
             if (ingredientRepository.existsById(id)){
@@ -87,11 +87,7 @@ public class IngredientService {
      */
     public List<Ingredient> getToppingsList(){
         List<Ingredient> ingredientList = ingredientRepository.findAll();
-        List<Ingredient> extraToppings = new LinkedList<>();
-        for (Ingredient ingredient: ingredientList){
-            extraToppings.add(ingredient);
-        }
-        return extraToppings;
+        return ingredientList;
     }
 
 

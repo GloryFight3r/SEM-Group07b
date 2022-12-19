@@ -27,7 +27,7 @@ public class AllergenController {
      * @param allergenService AllergenService that handles the allergen complexity
      */
     @Autowired
-    public AllergenController(AllergenService allergenService) {
+    public AllergenController(AllergenService allergenService){
         this.allergenService = allergenService;
     }
 
@@ -47,5 +47,6 @@ public class AllergenController {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
+
 
 }

@@ -2,6 +2,7 @@ package pizzeria.food.domain.ingredient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Ingredient {
     private long id;
 
     @Getter
+    @Setter
     private String name;
     @Getter
     private double price;
