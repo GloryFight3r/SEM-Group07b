@@ -26,6 +26,11 @@ public class Store {
     @Setter
     private String location;
 
+    @Column(name = "contact")
+    @Getter
+    @Setter
+    private String contact;
+
     @ElementCollection
     @Column(name = "ordersAssigned")
     @Getter
@@ -33,9 +38,10 @@ public class Store {
 
     public Store() {}
 
-    public Store(int id, String location) {
+    public Store(int id, String location, String contact) {
         this.id = id;
         this.location = location;
+        this.contact = contact;
         this.orders = new ArrayList<>();
     }
 
@@ -45,24 +51,21 @@ public class Store {
         return order;
     }
 
-    public boolean editOrder(int orderID) {
-        return false;
-    }
-
-    public boolean removeOrder(int orderID) {
-        return false;
+    public boolean removeOrder(long orderID) {
+        return orders.remove(orderID);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Store)) return false;
         Store store = (Store) o;
-        return id == store.id && Objects.equals(location, store.location) && Objects.equals(orders, store.orders);
+        return id == store.id;
     }
+
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, location/*, orders*/);
+        return Objects.hash(id);
     }
 }
