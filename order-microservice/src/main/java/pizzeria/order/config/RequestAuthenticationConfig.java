@@ -17,6 +17,8 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //here we validate that the user is authenticated and exists in the system
+        //we also make the manager only endpoints visible to only the managers
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/order/place").authenticated()
