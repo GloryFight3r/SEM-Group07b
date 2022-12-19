@@ -28,15 +28,16 @@ public class RegistrationService {
      * @param password The password of the user
      * @throws Exception if the user already exists
      */
-    public AppUser registerUser(String id, Password password, String role) throws Exception {
+    public AppUser registerUser(String id, Password password) throws Exception {
 
         if (checkIdIsUnique(id)) {
             // Hash password
             HashedPassword hashedPassword = passwordHashingService.hash(password);
 
             // Create new account
-            AppUser user = new AppUser(id, hashedPassword, role);
+            AppUser user = new AppUser(id, hashedPassword);
             userRepository.save(user);
+            System.out.println("the role of the new user is: " + user.getRole());
 
             return user;
         }

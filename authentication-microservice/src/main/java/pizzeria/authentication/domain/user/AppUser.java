@@ -41,12 +41,11 @@ public class AppUser extends HasEvents {
      *
      * @param id The NetId for the new user
      * @param password The password for the new user
-     * @param role The password for the new user
      */
-    public AppUser(String id, HashedPassword password, String role) {
+    public AppUser(String id, HashedPassword password) {
         this.id = id;
         this.password = password;
-        this.role = role;
+        this.role = "ROLE_CUSTOMER";
         this.recordThat(new UserWasCreatedEvent(id));
     }
 
