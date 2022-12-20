@@ -30,7 +30,7 @@ public class Store {
 
     public Store() {}
 
-    public Store(int id, String location, String contact) {
+    public Store(long id, String location, String contact) {
         this.id = id;
         this.location = location;
         this.contact = contact;

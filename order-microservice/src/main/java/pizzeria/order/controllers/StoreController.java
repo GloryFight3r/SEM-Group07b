@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.domain.store.Store;
+import pizzeria.order.models.StoreModel;
 
 import java.util.List;
 
@@ -23,9 +24,13 @@ public class StoreController {
     private final transient StoreService storeService;
 
     @PostMapping("/create")
-    public ResponseEntity<Store> createStore(@RequestBody Store incoming) {
+    public ResponseEntity<Store> createStore(@RequestBody StoreModel store) {
+        if (store.getId() != null || store.getLocation().isEmpty() || store.getContact().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
+        }
+
         try {
-            Store saved = storeService.addStore(incoming);
+            Store saved = storeService.addStore(store.parseToStore());
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
@@ -33,9 +38,13 @@ public class StoreController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity editStore(@RequestBody Store incoming) {
+    public ResponseEntity editStore(@RequestBody StoreModel store) {
+        if (store.getId() != null || store.getLocation().isEmpty() || store.getContact().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
+        }
+
         try {
-            boolean isEdited = storeService.editStore(incoming);
+            boolean isEdited = storeService.editStore(store.parseToStore());
             if (isEdited) {
                 return ResponseEntity.ok().build();
             } else {
