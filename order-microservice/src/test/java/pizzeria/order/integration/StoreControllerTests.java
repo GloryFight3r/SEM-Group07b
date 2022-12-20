@@ -1,24 +1,16 @@
 package pizzeria.order.integration;
 
-import net.jqwik.api.ForAll;
-import net.jqwik.api.Property;
-import net.jqwik.api.constraints.Size;
-import net.jqwik.api.constraints.StringLength;
-import net.jqwik.api.constraints.UpperChars;
-import net.jqwik.api.lifecycle.AfterProperty;
-import net.jqwik.api.lifecycle.BeforeProperty;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -31,10 +23,13 @@ import pizzeria.order.domain.store.StoreRepository;
 import pizzeria.order.integration.utils.JsonUtil;
 import pizzeria.order.models.StoreModel;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,6 +53,14 @@ public class StoreControllerTests {
     @Autowired
     private transient StoreRepository storeRepo;
 
+    @BeforeEach
+    public void init() {
+        when(mockAuthManager.getNetId()).thenReturn("ExampleUser");
+        when(mockAuthManager.getRole()).thenReturn("ROLE_MANAGER");
+        when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(true);
+        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("ExampleUser");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_MANAGER")));
+    }
     @Test
     void createStore_worksCorrectly() throws Exception {
         StoreModel firstStore = new StoreModel();
@@ -67,7 +70,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(post("/store/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isCreated());
 
@@ -93,7 +97,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(post("/store/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
     }
@@ -108,7 +113,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(post("/store/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
     }
@@ -134,9 +140,28 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(post("/store/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createStore_noAuthority() throws Exception {
+        StoreModel firstStore = new StoreModel();
+        firstStore.setContact("borislav@gmail.com");
+        firstStore.setLocation("NL-2624ME");
+
+        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/store/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isForbidden());
     }
 
     static Stream<Arguments> incorrectLocationSuite() {
@@ -166,7 +191,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(put("/store/edit")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isOk());
 
@@ -190,7 +216,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(put("/store/edit")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
     }
@@ -210,7 +237,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(put("/store/edit")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
     }
@@ -230,7 +258,8 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(put("/store/edit")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
     }
@@ -250,9 +279,33 @@ public class StoreControllerTests {
         // Act
         ResultActions resultActions = mockMvc.perform(put("/store/edit")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.serialize(firstStore)));
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
 
         resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editStore_noAuthority() throws Exception {
+        Store alreadySavedStore = new Store("NL-2624ME", "borislav@gmail.com");
+
+        storeRepo.save(alreadySavedStore);
+
+        StoreModel firstStore = new StoreModel();
+        firstStore.setContact("borislav@gmail.com");
+        firstStore.setLocation("NL-2624ME");
+
+
+        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/store/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(firstStore))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isForbidden());
     }
 
     @Test

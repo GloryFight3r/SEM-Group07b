@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pizzeria.order.authentication.JwtAuthenticationEntryPoint;
+import pizzeria.order.authentication.JwtRequestFilter;
 
 /**
  * The type Web security config.
@@ -11,8 +14,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
-    public RequestAuthenticationConfig() {
+    private final transient JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final transient JwtRequestFilter jwtRequestFilter;
 
+    public RequestAuthenticationConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                       JwtRequestFilter jwtRequestFilter) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Override
@@ -25,11 +33,17 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/order/list").authenticated()
                 .antMatchers("/order/delete").authenticated()
                 .antMatchers("/order/edit").authenticated()
-                .antMatchers("/order/listAll").hasAuthority("[ROLE_MANAGER]")
-                .antMatchers("/coupon/create").hasAuthority("[ROLE_MANAGER]")
+                .antMatchers("/order/listAll").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/coupon/create").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/store/create").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/store/edit").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/store/delete").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/store/get_stores").hasAuthority("ROLE_MANAGER")
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 }
