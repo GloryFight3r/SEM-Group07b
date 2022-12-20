@@ -25,8 +25,8 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/order/list").authenticated()
                 .antMatchers("/order/delete").authenticated()
                 .antMatchers("/order/edit").authenticated()
-                .antMatchers("/order/listAll").hasRole("[ROLE_MANAGER]")
-                .antMatchers("/coupon/create").hasRole("[ROLE_MANAGER]")
+                .antMatchers("/order/listAll").hasAuthority("[ROLE_MANAGER]")
+                .antMatchers("/coupon/create").hasAuthority("[ROLE_MANAGER]")
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
