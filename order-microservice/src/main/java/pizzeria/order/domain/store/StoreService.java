@@ -1,10 +1,8 @@
 package pizzeria.order.domain.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pizzeria.order.domain.order.Order;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;

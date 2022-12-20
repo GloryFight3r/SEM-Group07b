@@ -25,6 +25,7 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        final String authorizedRole = "ROLE_MANAGER";
         //here we validate that the user is authenticated and exists in the system
         //we also make the manager only endpoints visible to only the managers
         http.csrf().disable()
@@ -33,12 +34,12 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/order/list").authenticated()
                 .antMatchers("/order/delete").authenticated()
                 .antMatchers("/order/edit").authenticated()
-                .antMatchers("/order/listAll").hasAuthority("ROLE_MANAGER")
-                .antMatchers("/coupon/create").hasAuthority("ROLE_MANAGER")
-                .antMatchers("/store/create").hasAuthority("ROLE_MANAGER")
-                .antMatchers("/store/edit").hasAuthority("ROLE_MANAGER")
-                .antMatchers("/store/delete").hasAuthority("ROLE_MANAGER")
-                .antMatchers("/store/get_stores").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/order/listAll").hasAuthority(authorizedRole)
+                .antMatchers("/coupon/create").hasAuthority(authorizedRole)
+                .antMatchers("/store/create").hasAuthority(authorizedRole)
+                .antMatchers("/store/edit").hasAuthority(authorizedRole)
+                .antMatchers("/store/delete").hasAuthority(authorizedRole)
+                .antMatchers("/store/get_stores").hasAuthority(authorizedRole)
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

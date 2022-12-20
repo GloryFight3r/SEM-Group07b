@@ -23,12 +23,11 @@ import pizzeria.order.domain.store.StoreRepository;
 import pizzeria.order.integration.utils.JsonUtil;
 import pizzeria.order.models.DeleteStoreModel;
 import pizzeria.order.models.StoreModel;
-
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -382,7 +381,56 @@ public class StoreControllerTests {
     }
 
     @Test
-    void getStores_worksCorrectly() {
+    void getStores_worksCorrectly() throws Exception {
+        List <Store> listOfAlreadySavedStores = List.of(
+                new Store("NL-2624ME", "borislav1@gmail.com"),
+                new Store("NL-2625ME", "borislav2@gmail.com"),
+                new Store("NL-2626ME", "borislav3@gmail.com")
+        );
 
+        for (Store storeToSave : listOfAlreadySavedStores) {
+            storeRepo.save(storeToSave);
+        }
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/store/get_stores")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isOk());
+
+        List<Store> actuallySavedStores = Arrays.asList(JsonUtil.deserialize(resultActions.andReturn().getResponse().getContentAsString(), Store[].class));
+
+        for (Store actuallySavedStore : actuallySavedStores) {
+            Optional<Store> storeFromRepository = storeRepo.findById(actuallySavedStore.getId());
+
+            assertThat(storeFromRepository).isNotEmpty();
+
+            assertThat(actuallySavedStore.getContact()).isEqualTo(storeFromRepository.get().getContact());
+            assertThat(actuallySavedStore.getLocation()).isEqualTo(storeFromRepository.get().getLocation());
+        }
+    }
+
+    @Test
+    void getStores_noAuthority() throws Exception {
+        List <Store> listOfAlreadySavedStores = List.of(
+                new Store("NL-2624ME", "borislav1@gmail.com"),
+                new Store("NL-2625ME", "borislav2@gmail.com"),
+                new Store("NL-2626ME", "borislav3@gmail.com")
+        );
+
+        for (Store storeToSave : listOfAlreadySavedStores) {
+            storeRepo.save(storeToSave);
+        }
+
+        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/store/get_stores")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isForbidden());
     }
 }
