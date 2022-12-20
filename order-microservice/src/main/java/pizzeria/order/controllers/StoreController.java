@@ -35,8 +35,8 @@ public class StoreController {
     @PutMapping("/edit")
     public ResponseEntity editStore(@RequestBody Store incoming) {
         try {
-            boolean flag = storeService.editStore(incoming);
-            if (flag) {
+            boolean isEdited = storeService.editStore(incoming);
+            if (isEdited) {
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.notFound().build();
