@@ -10,11 +10,11 @@ import java.util.Objects;
 @Entity
 @Table(name="stores")
 public class Store {
-
     @Id
     @Column(name = "id")
     @NotNull
     @Getter
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter
     private long id;
 
@@ -30,8 +30,7 @@ public class Store {
 
     public Store() {}
 
-    public Store(long id, String location, String contact) {
-        this.id = id;
+    public Store(String location, String contact) {
         this.location = location;
         this.contact = contact;
     }

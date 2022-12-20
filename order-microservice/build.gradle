@@ -30,6 +30,7 @@ group = 'pizzeria'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
+ext.jqwikVersion = '1.7.1'
 
 repositories {
     mavenCentral()
@@ -58,10 +59,21 @@ dependencies {
     testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
     testImplementation('org.assertj:assertj-core:3.23.1')
+
+    // aggregate jqwik dependency
+    testImplementation "net.jqwik:jqwik:${jqwikVersion}"
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        //includeEngines 'jqwik'
+
+        // Or include several Junit engines if you use them
+        // includeEngines 'jqwik', 'junit-jupiter', 'junit-vintage'
+
+        // includeTags 'fast', 'medium'
+        // excludeTags 'slow'
+    }
     jacoco {
         enabled = true
         includes = ['pizzeria.*']

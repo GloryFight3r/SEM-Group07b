@@ -25,7 +25,7 @@ public class StoreController {
 
     @PostMapping("/create")
     public ResponseEntity<Store> createStore(@RequestBody StoreModel store) {
-        if (store.getId() != null || store.getLocation().isEmpty() || store.getContact().isEmpty()) {
+        if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
         }
 
@@ -39,7 +39,7 @@ public class StoreController {
 
     @PutMapping("/edit")
     public ResponseEntity editStore(@RequestBody StoreModel store) {
-        if (store.getId() != null || store.getLocation().isEmpty() || store.getContact().isEmpty()) {
+        if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
         }
 

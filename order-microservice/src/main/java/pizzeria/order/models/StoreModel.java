@@ -5,10 +5,9 @@ import pizzeria.order.domain.store.Store;
 
 @Data
 public class StoreModel {
-    Long id;
     String location;
     String contact;
     public Store parseToStore() {
-        return new Store(id, location, contact);
+        return new Store(location, contact);
     }
 }
