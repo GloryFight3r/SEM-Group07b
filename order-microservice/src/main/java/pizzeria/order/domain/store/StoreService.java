@@ -78,17 +78,6 @@ public class StoreService {
         return false;
     }
 
-
-    public List<Long> getAssignedStoreOrders(Long storeId) throws StoreDoesNotExistException {
-        Optional<Store> optionalStore = storeRepo.findById(storeId);
-
-        if (optionalStore.isEmpty()) {
-            throw new StoreDoesNotExistException();
-        }
-
-        return optionalStore.get().getOrders();
-    }
-
     public List<Store> getAllStores() {
         return storeRepo.findAll();
     }
