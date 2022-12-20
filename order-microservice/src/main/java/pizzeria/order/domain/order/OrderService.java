@@ -23,6 +23,7 @@ public class OrderService {
     private final transient FoodRepository foodRepo;
     private final transient FoodPriceService foodPriceService;
     private transient final CouponRepository couponRepository;
+    private final ClockWrapper clockWrapper;
 
     /**
      * Instantiates a new Order service with the respective repositories and services
@@ -39,6 +40,7 @@ public class OrderService {
         this.foodRepo = foodRepo;
         this.foodPriceService = foodPriceService;
         this.couponRepository = couponRepository;
+        this.clockWrapper = new ClockWrapper();
     }
 
     /**
@@ -67,7 +69,7 @@ public class OrderService {
             throw new InvalidEditException();
 
         //check if the selected pickup time is 30 minutes or more in the future
-        LocalDateTime current = LocalDateTime.now();
+        LocalDateTime current = clockWrapper.getNow();
         if (order.getPickupTime().isBefore(current.plusMinutes(30)))
             throw new TimeInvalidException();
 
@@ -91,7 +93,7 @@ public class OrderService {
         }
 
         if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
-            if (order.price != sum) {
+            if (Double.compare(order.price, sum) != 0) {
                 throw new PriceNotRightException();
             }
             return orderRepo.save(order);
@@ -101,14 +103,14 @@ public class OrderService {
         for (Coupon c: coupons) {
             //iterate over the list of valid coupons
             double price = c.calculatePrice(order, prices, sum);
-            if (price < minPrice) {
+            if (Double.compare(price, minPrice) < 0) {
                 minPrice = price;
                 //set the first element in the coupon ids to the coupon used
                 order.couponIds.set(0, c.getId());
             }
         }
 
-        if (order.price != minPrice)
+        if (Double.compare(order.price, minPrice) != 0)
             throw new PriceNotRightException();
 
         return orderRepo.save(order);
@@ -132,7 +134,7 @@ public class OrderService {
             return false;
         }
         //check if the selected pickup time is 30 minutes or more in the future
-        LocalDateTime current = LocalDateTime.now();
+        LocalDateTime current = clockWrapper.getNow();
         if (toDelete.getPickupTime().isBefore(current.plusMinutes(30)))
             return false;
 

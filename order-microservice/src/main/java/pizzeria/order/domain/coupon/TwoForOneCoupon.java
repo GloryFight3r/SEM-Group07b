@@ -19,7 +19,19 @@ public class TwoForOneCoupon extends Coupon {
         super();
     }
 
+    public TwoForOneCoupon(String id){
+        this.id = id;
+    }
 
+
+    /**
+     * Calculates the price of an order using the 2for1 coupon
+     *
+     * @param order     the order to evaluate price on
+     * @param prices    the prices of ingredients and recipes
+     * @param basePrice the base price of the order
+     * @return the final price of the order after applying the coupon
+     */
     @Override
     public double calculatePrice(Order order, GetPricesResponseModel prices, double basePrice) {
         //make a hashmap that keeps track of every food in the list with its occurrences
@@ -38,7 +50,7 @@ public class TwoForOneCoupon extends Coupon {
         //this coupon could be made a little more interesting if we add a recipe id (like margherita pizza)
         double reduction = 0.0;
         for (Long key : foodMap.keySet()){
-            int reduced_times = (foodMap.get(key) / 2 - 1);
+            int reduced_times = foodMap.get(key) / 2;
             reduction += (double) reduced_times * prices.getIngredientPrices().get(key).getPrice();
         }
 
