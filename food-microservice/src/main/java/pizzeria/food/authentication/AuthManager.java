@@ -6,9 +6,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthManager {
 
-    public String getToken() {
-        return SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
-    }
+        /**
+        * Get the current user.
+        *
+        * @return The current user.
+        */
+        public String getCurrentUser() {
+            return SecurityContextHolder.getContext().getAuthentication().getName();
+        }
 
 
 }

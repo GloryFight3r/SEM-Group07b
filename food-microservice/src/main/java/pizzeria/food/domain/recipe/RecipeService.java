@@ -57,14 +57,14 @@ public class RecipeService {
      * database.
      */
     public Recipe updateFood(Recipe recipe, long id) throws RecipeNotFoundException, IngredientNotFoundException {
-        if (recipeRepository.existsById(id)) {
-            recipe.setId(id);
-            return recipeRepository.save(recipe);
-        }
         for (long idIngredients: recipe.getBaseToppings()){
             if (!ingredientRepository.existsById(idIngredients)){
                 throw new IngredientNotFoundException();
             }
+        }
+        if (recipeRepository.existsById(id)) {
+            recipe.setId(id);
+            return recipeRepository.save(recipe);
         }
         throw new RecipeNotFoundException();
     }

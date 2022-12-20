@@ -82,8 +82,9 @@ public class IngredientService {
         return prices;
     }
 
+
     /**
-     * @return List of ingredients that are the available extra toppings
+     * @return a list of all the extra ingredients of which the customers can choose to add to their pizza.
      */
     public List<Ingredient> getToppingsList(){
         List<Ingredient> ingredientList = ingredientRepository.findAll();
