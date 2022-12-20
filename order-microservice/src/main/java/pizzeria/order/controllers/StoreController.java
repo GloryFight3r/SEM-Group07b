@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.domain.store.Store;
+import pizzeria.order.models.DeleteStoreModel;
 import pizzeria.order.models.StoreModel;
 
 import java.util.List;
@@ -56,9 +57,9 @@ public class StoreController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteStore(@RequestBody Long storeId) {
+    public ResponseEntity deleteStore(@RequestBody DeleteStoreModel store) {
         try {
-            boolean flag = storeService.deleteStore(storeId);
+            boolean flag = storeService.deleteStore(store.getId());
             if (flag) {
                 return ResponseEntity.ok().build();
             } else {

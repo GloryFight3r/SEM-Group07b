@@ -21,6 +21,7 @@ import pizzeria.order.authentication.JwtTokenVerifier;
 import pizzeria.order.domain.store.Store;
 import pizzeria.order.domain.store.StoreRepository;
 import pizzeria.order.integration.utils.JsonUtil;
+import pizzeria.order.models.DeleteStoreModel;
 import pizzeria.order.models.StoreModel;
 
 import java.util.List;
@@ -30,8 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -309,8 +309,76 @@ public class StoreControllerTests {
     }
 
     @Test
-    void deleteStore_worksCorrectly() {
+    void deleteStore_worksCorrectly() throws Exception {
+        Store alreadySavedStore = new Store("NL-2624ME", "borislav@gmail.com");
+        storeRepo.save(alreadySavedStore);
 
+        DeleteStoreModel deleteStoreModel = new DeleteStoreModel();
+        deleteStoreModel.setId(1L);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/store/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(deleteStoreModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteStore_storeNotFound() throws Exception {
+        Store alreadySavedStore = new Store("NL-2624ME", "borislav@gmail.com");
+        storeRepo.save(alreadySavedStore);
+
+        DeleteStoreModel deleteStoreModel = new DeleteStoreModel();
+        deleteStoreModel.setId(2L);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/store/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(deleteStoreModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteStore_alreadyDeleted() throws Exception {
+        Store alreadySavedStore = new Store("NL-2624ME", "borislav@gmail.com");
+        storeRepo.save(alreadySavedStore);
+
+        storeRepo.deleteStoreById(1L);
+
+        DeleteStoreModel deleteStoreModel = new DeleteStoreModel();
+        deleteStoreModel.setId(1L);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/store/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(deleteStoreModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteStore_noAuthority() throws Exception {
+        Store alreadySavedStore = new Store("NL-2624ME", "borislav@gmail.com");
+        storeRepo.save(alreadySavedStore);
+
+        DeleteStoreModel deleteStoreModel = new DeleteStoreModel();
+        deleteStoreModel.setId(1L);
+
+        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/store/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(deleteStoreModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isForbidden());
     }
 
     @Test
