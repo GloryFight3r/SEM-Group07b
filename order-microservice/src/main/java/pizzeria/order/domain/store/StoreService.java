@@ -1,6 +1,7 @@
 package pizzeria.order.domain.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import pizzeria.order.domain.order.Order;
 
@@ -33,8 +34,8 @@ public class StoreService {
         return storeRepo.save(store);
     }
 
-    public boolean editStore(Store store) throws Exception {
-        Optional<Store> optionalStore = storeRepo.findById(store.getId());
+    public boolean editStore(Long id, Store store) throws Exception {
+        Optional<Store> optionalStore = storeRepo.findById(id);
 
         if (optionalStore.isEmpty()) {
             throw new StoreDoesNotExistException();
@@ -48,7 +49,11 @@ public class StoreService {
             throw new InvalidLocationException();
         }
 
-        storeRepo.save(store);
+        optionalStore.get().setContact(store.getContact());
+        optionalStore.get().setLocation(store.getLocation());
+
+        storeRepo.save(optionalStore.get());
+
         return true;
     }
 

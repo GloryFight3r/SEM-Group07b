@@ -44,7 +44,7 @@ public class StoreController {
         }
 
         try {
-            boolean isEdited = storeService.editStore(store.parseToStore());
+            boolean isEdited = storeService.editStore(store.getId(), store.parseToStore());
             if (isEdited) {
                 return ResponseEntity.ok().build();
             } else {
