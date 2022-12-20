@@ -2,7 +2,6 @@ package pizzeria.food.domain.recipe;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pizzeria.food.domain.HasEvents;
-
 import javax.persistence.*;
 import java.util.List;
 

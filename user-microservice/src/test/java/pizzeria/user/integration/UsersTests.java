@@ -27,7 +27,7 @@ import pizzeria.user.integration.utils.JsonUtil;
 import pizzeria.user.models.AllergiesModel;
 import pizzeria.user.models.LoginModel;
 import pizzeria.user.models.LoginResponseModel;
-import pizzeria.user.models.UserModel;
+import pizzeria.user.models.UserRegisterModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,10 +63,9 @@ public class UsersTests {
         final String testName = "borislav";
         final List<String> testAllergies = List.of("Allergy");
 
-        UserModel model = new UserModel();
+        UserRegisterModel model = new UserRegisterModel();
         model.setPassword(testPassword);
         model.setEmail(testEmail);
-        model.setRole(testRole);
         model.setName(testName);
         model.setAllergies(testAllergies);
 
@@ -83,7 +82,6 @@ public class UsersTests {
         User savedUser = userRepository.findUserByEmail(testEmail).orElseThrow();
 
         assertThat(savedUser.getEmail()).isEqualTo(testEmail);
-        assertThat(savedUser.getRole()).isEqualTo(testRole);
         assertThat(savedUser.getAllergies()).containsExactlyElementsOf(testAllergies);
         assertThat(savedUser.getName()).isEqualTo(testName);
     }
@@ -91,7 +89,6 @@ public class UsersTests {
     @Test
     public void updateAllergies_worksCorrectly() throws Exception {
         final String testPassword = "password123";
-        final String testRole = "ROLE_CUSTOMER";
         final String testEmail = "Borislav@gmail.com";
         final String testName = "borislav";
         final List<String> testAllergies = List.of("Allergy");
@@ -100,7 +97,7 @@ public class UsersTests {
         when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
         when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("asdasdasdas");
 
-        userRepository.save(new User(testRole, testName, testEmail, testAllergies));
+        userRepository.save(new User(testName, testEmail, testAllergies));
 
         User currentUser = userRepository.findUserByEmail(testEmail).get();
 
@@ -127,7 +124,6 @@ public class UsersTests {
     @Test
     public void getAllergies_worksCorrectly() throws Exception {
         final String testPassword = "password123";
-        final String testRole = "ROLE_CUSTOMER";
         final String testEmail = "Borislav@gmail.com";
         final String testName = "borislav";
         final List<String> testAllergies = List.of("Allergy", "Allergy2", "Allergy3");
@@ -135,7 +131,7 @@ public class UsersTests {
         when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
         when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("asdasdasdas");
 
-        userRepository.save(new User(testRole, testName, testEmail, testAllergies));
+        userRepository.save(new User(testName, testEmail, testAllergies));
 
         User currentUser = userRepository.findUserByEmail(testEmail).get();
 
@@ -159,11 +155,10 @@ public class UsersTests {
     public void loginUser_worksCorrectly() throws Exception {
         final String testEmail = "Borislav@gmail.com";
         final String testPassword = "password123";
-        final String testRole = "ROLE_MANAGER";
         final String testName = "Borislav";
         final List<String> testAllergies = List.of("Allergy", "Allergy2", "Allergy3");
 
-        userRepository.save(new User(testRole, testName, testEmail, testAllergies));
+        userRepository.save(new User(testName, testEmail, testAllergies));
 
         String id = "5aa88856-718e-4a45-9919-e7e9e14f6d5d";
 

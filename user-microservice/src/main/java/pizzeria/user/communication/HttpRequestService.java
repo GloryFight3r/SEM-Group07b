@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import pizzeria.user.domain.user.User;
 import pizzeria.user.models.AuthenticationResponseModel;
@@ -50,7 +51,6 @@ public class HttpRequestService {
         Map<String, Object> map = new HashMap<>();
         map.put("id", user.getId());
         map.put("password", password);
-        map.put("role", user.getRole());
 
         // build the request
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
@@ -87,13 +87,17 @@ public class HttpRequestService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
         // send POST request
-        ResponseEntity<AuthenticationResponseModel> response = this.restTemplate.postForEntity("http://localhost:8081/authenticate", entity, AuthenticationResponseModel.class);
 
-        // check response status code
-        if (response.getStatusCode() == HttpStatus.OK) {
-            String jwtToken = response.getBody().getToken();
-            return Optional.of(jwtToken);
-        } else {
+        try {
+            ResponseEntity<AuthenticationResponseModel> response = this.restTemplate.postForEntity("http://localhost:8081/authenticate", entity, AuthenticationResponseModel.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                String jwtToken = response.getBody().getToken();
+                return Optional.of(jwtToken);
+            } else {
+              return Optional.empty();
+            }
+        } catch (HttpStatusCodeException e) {
             return Optional.empty();
         }
     }

@@ -2,7 +2,7 @@ package pizzeria.user.domain.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pizzeria.user.models.UserModel;
+import pizzeria.user.models.UserRegisterModel;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class UserService {
      *
      * @param user UserModel containing information about the user
      */
-    public void saveUser(UserModel user) throws EmailAlreadyInUseException{
+    public void saveUser(UserRegisterModel user) throws EmailAlreadyInUseException{
         User userToSave = user.parseToUser();
 
         if (checkUniqueEmail(userToSave.getEmail())) {
