@@ -67,7 +67,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     if (jwtTokenVerifier.validateToken(token)) {
                         String netId = jwtTokenVerifier.getNetIdFromToken(token);
                         Collection<? extends GrantedAuthority> role = jwtTokenVerifier.getRoleFromToken(token);
-
+                        System.out.println(role);
                         var authenticationToken = new UsernamePasswordAuthenticationToken(
                                 netId,
                                 null, role // no credentials and no authorities

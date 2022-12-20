@@ -21,9 +21,11 @@ public class Ingredient {
     @Setter
     private String name;
     @Getter
+    @Setter
     private double price;
     @ElementCollection(fetch = FetchType.EAGER)
     @Getter
+    @Setter
     private List<String> allergens;
 
 

@@ -26,7 +26,7 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/hello").hasAuthority("ROLE_CUSTOMER")
+                .antMatchers("/hello").hasAuthority("ROLE_MANAGER")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

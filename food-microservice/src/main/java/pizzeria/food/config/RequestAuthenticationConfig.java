@@ -30,15 +30,14 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String role = "[ROLE_MANAGER]";
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/ingredient/save").hasRole(role)
-                .antMatchers("/ingredient/update").hasRole(role)
-                .antMatchers("/ingredient/delete").hasRole(role)
-                .antMatchers("/recipe/save").hasRole(role)
-                .antMatchers("/recipe/update").hasRole(role)
-                .antMatchers("/recipe/delete").hasRole(role)
+                .antMatchers("/ingredient/save").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/ingredient/update").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/ingredient/delete").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/recipe/save").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/recipe/update").hasAuthority("ROLE_MANAGER")
+                .antMatchers("/recipe/delete").hasAuthority("ROLE_MANAGER")
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
