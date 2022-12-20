@@ -41,6 +41,23 @@ public class Food {
     @Getter
     private enum foodType {PIZZA};
 
+    /**
+     * Food constructor for testing purposes
+     *
+     * @param id the food id
+     * @param recipeId the id of the recipe this food is based on
+     * @param orderId the id of the order this food belongs to
+     * @param base the list of base ingredient ids
+     * @param extra the list of extra ingredient ids
+     */
+    public Food(long id, long recipeId, long orderId, List<Long> base, List<Long> extra){
+        this.id = id;
+        this.recipeId = recipeId;
+        this.orderId = orderId;
+        this.baseIngredients = base;
+        this.extraIngredients = extra;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

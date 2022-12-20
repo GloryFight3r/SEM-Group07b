@@ -1,20 +1,58 @@
 package pizzeria.order.domain.coupon;
 
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sun.istack.NotNull;
+import lombok.Getter;
 import pizzeria.order.domain.order.Order;
+import pizzeria.order.models.GetPricesResponseModel;
 
-@Data
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.Objects;
+
+/**
+ * The type Coupon.
+ */
+@Entity
 public abstract class Coupon {
 
-    final String id;
+    /**
+     * The id of the coupon
+     * Serves as activation code for the customer
+     */
+    @Id
+    @Column(name = "couponId")
+    @Getter
+    @NotNull
+    protected String id;
 
-    @Autowired
-    public Coupon(String id) {
-        //TODO: persist this thing in a JPA repo, use the id in the constructor
-        this.id = id;
+    /**
+     * Empty constructor for database purposes
+     */
+    public Coupon() {
     }
 
-    public abstract boolean validate(String id);
-    public abstract double calculatePrice(Order order);
+    /**
+     * Calculate the price of an order using this coupon
+     * needs to be implemented by each subclass
+     *
+     * @param order     the order
+     * @param prices    the prices of ingredients and recipes
+     * @param basePrice the base price of the order
+     * @return the double
+     */
+    public abstract double calculatePrice(Order order, GetPricesResponseModel prices, double basePrice);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coupon)) return false;
+        Coupon coupon = (Coupon) o;
+        return Objects.equals(id, coupon.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

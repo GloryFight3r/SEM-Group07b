@@ -30,7 +30,7 @@ public class Order {
 
     @Column(name = "user_id")
     @Getter
-    private Long userId;
+    private String userId;
 
     @Column(name = "pickup_time")
     @Getter
@@ -50,6 +50,27 @@ public class Order {
 
     //default constructor
     public Order() {}
+
+    /**
+     * Order constructor for testing purposes
+     *
+     * @param orderId the order id
+     * @param foods the list of foods within the order
+     * @param storeId the store the order is assigned to
+     * @param userId the id of the user that placed it
+     * @param pickup the pickup time for the order
+     * @param price the price for the order
+     * @param coupons the list of applied coupon ids
+     */
+    public Order(Long orderId, List<Food> foods, long storeId, String userId, LocalDateTime pickup, double price, List<String> coupons){
+        this.orderId = orderId;
+        this.foods = foods;
+        this.storeId = storeId;
+        this.userId = userId;
+        this.pickupTime = pickup;
+        this.price = price;
+        this.couponIds = coupons;
+    }
 
     @Override
     public boolean equals(Object o) {
