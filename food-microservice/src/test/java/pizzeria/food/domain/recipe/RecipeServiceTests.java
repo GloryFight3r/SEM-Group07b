@@ -1,4 +1,4 @@
-package pizzeria.food.domain;
+package pizzeria.food.domain.recipe;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
-import pizzeria.food.domain.recipe.*;
 import pizzeria.food.models.prices.Tuple;
 
 import java.util.ArrayList;
