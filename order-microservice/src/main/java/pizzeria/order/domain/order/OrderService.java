@@ -23,7 +23,7 @@ public class OrderService {
     private final transient FoodRepository foodRepo;
     private final transient FoodPriceService foodPriceService;
     private transient final CouponRepository couponRepository;
-    private final ClockWrapper clockWrapper;
+    private transient final ClockWrapper clockWrapper;
 
     /**
      * Instantiates a new Order service with the respective repositories and services
