@@ -35,8 +35,12 @@ public class FoodPriceService {
      */
     public GetPricesResponseModel getFoodPrices(Order order) {
         List<Long> ingredients = new ArrayList<>();
-        for (Food f: order.getFoods())
+
+        for (Food f: order.getFoods()) {
             ingredients.addAll(f.getExtraIngredients());
+            ingredients.addAll(f.getBaseIngredients());
+        }
+
         List<Long> recipes = order.getFoods().stream()
                 .map(Food::getRecipeId).collect(Collectors.toList());
 
@@ -59,10 +63,18 @@ public class FoodPriceService {
         // send POST request
         ResponseEntity<GetPricesResponseModel> response =
                 this.restTemplate.postForEntity("http://localhost:8084/price/ids", entity, GetPricesResponseModel.class);
-
         // check response status code
+
         if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody();
+            GetPricesResponseModel responseModel = response.getBody();
+            if (responseModel.getFoodPrices() == null) {
+                responseModel.setFoodPrices(new HashMap<>());
+            }
+            if (responseModel.getIngredientPrices() == null) {
+                responseModel.setIngredientPrices(new HashMap<>());
+            }
+
+            return responseModel;
         } else {
             return null;
         }

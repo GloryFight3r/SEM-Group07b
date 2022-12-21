@@ -7,6 +7,7 @@ import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.domain.food.FoodPriceService;
 import pizzeria.order.domain.food.FoodRepository;
+import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.models.GetPricesResponseModel;
 
 import java.time.LocalDateTime;
@@ -21,27 +22,31 @@ import java.util.Optional;
 @Service
 public class OrderService {
     private final transient OrderRepository orderRepo;
-    private final transient FoodRepository foodRepo;
     private final transient FoodPriceService foodPriceService;
     private transient final CouponRepository couponRepository;
     private transient final ClockWrapper clockWrapper;
+
+    private final transient FoodRepository foodRepository;
+
+    private final transient StoreService storeService;
 
     /**
      * Instantiates a new Order service with the respective repositories and services
      *
      * @param orderRepo        the order repository
-     * @param foodRepo         the food repo repository
+     * @param foodRepository         the food repo repository
      * @param foodPriceService the food price service
      * @param couponRepository the coupon repository
      */
     @Autowired
-    public OrderService(OrderRepository orderRepo, FoodRepository foodRepo, FoodPriceService foodPriceService,
-                        CouponRepository couponRepository){
+    public OrderService(OrderRepository orderRepo, FoodRepository foodRepository, FoodPriceService foodPriceService,
+                        CouponRepository couponRepository, StoreService storeService){
         this.orderRepo = orderRepo;
-        this.foodRepo = foodRepo;
         this.foodPriceService = foodPriceService;
+        this.foodRepository = foodRepository;
         this.couponRepository = couponRepository;
         this.clockWrapper = new ClockWrapper();
+        this.storeService = storeService;
     }
 
     /**
@@ -61,7 +66,6 @@ public class OrderService {
     public Order processOrder(Order order) throws Exception {
         if (order == null)
             throw new CouldNotStoreException();
-
         // check if we are in 'edit mode' (the orderId is specified in the Order object)
         // then check if the order belongs to the user
         //when we find by id we return an optional, if for some reason this optional does not exist return new order, which has null fields for non-primitives
@@ -69,12 +73,16 @@ public class OrderService {
         if (order.orderId != null && !order.getUserId().equals(orderRepo.findById(order.orderId).orElse(new Order()).getUserId()))
             throw new InvalidEditException();
 
+        if (!storeService.existsById(order.getStoreId())) {
+            throw new InvalidStoreIdException();
+        }
+
         //check if the selected pickup time is 30 minutes or more in the future
         LocalDateTime current = clockWrapper.getNow();
         if (order.getPickupTime().isBefore(current.plusMinutes(30)))
             throw new TimeInvalidException();
-
         GetPricesResponseModel prices = foodPriceService.getFoodPrices(order); // get prices
+
         if (prices == null)
             //some food does not exist or something else went wrong in the food ms communication
             throw new FoodInvalidException();
@@ -87,6 +95,7 @@ public class OrderService {
         double sum = 0.0;
         for (Food f: order.getFoods()) {
             sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
+
             for (long l: f.getBaseIngredients())
                 sum += prices.getIngredientPrices().get(l).getPrice();
             for (long l: f.getExtraIngredients())
@@ -97,6 +106,11 @@ public class OrderService {
             if (Double.compare(order.price, sum) != 0) {
                 throw new PriceNotRightException();
             }
+
+            /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
+                foodRepository.deleteAll(orderRepo.findByOrderId(order.getOrderId()).get().getFoods());
+            }*/
+
             return orderRepo.save(order);
         }
 
@@ -113,6 +127,10 @@ public class OrderService {
 
         if (Double.compare(order.price, minPrice) != 0)
             throw new PriceNotRightException();
+
+        /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
+            foodRepository.deleteAll(orderRepo.findByOrderId(order.getOrderId()).get().getFoods());
+        }*/
 
         return orderRepo.save(order);
     }
@@ -184,6 +202,17 @@ public class OrderService {
         @Override
         public String getMessage(){
             return "The price calculated does not match the price given";
+        }
+    }
+
+    /**
+     * Store id does not exist
+     */
+    @SuppressWarnings("PMD")
+    public static class InvalidStoreIdException extends Exception {
+        @Override
+        public String getMessage(){
+            return "The store id does not exist";
         }
     }
 
