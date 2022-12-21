@@ -78,4 +78,14 @@ public class StoreController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
+
+    /*@PostMapping("/send_email")
+    public ResponseEntity<Email> sendEmail(@RequestBody SendEmailRequestModel model) {
+        try {
+            Email email = emailService.sendEmail(model.getStore(), model.getNotificationType(), model.getOrder());
+            return ResponseEntity.status(HttpStatus.OK).body(email);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
+    }*/
 }

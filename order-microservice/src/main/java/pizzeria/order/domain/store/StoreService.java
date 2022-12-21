@@ -2,7 +2,6 @@ package pizzeria.order.domain.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pizzeria.order.domain.order.Order;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -65,20 +64,35 @@ public class StoreService {
         return storeRepo.deleteStoreById(storeId) != 0;
     }
 
-    public boolean notifyStore(Long storeId, String notificationType, Order order) throws StoreDoesNotExistException {
+    /*public boolean notifyStore(Long storeId, String notificationType, Order order) throws StoreDoesNotExistException {
         Optional<Store> optionalStore = storeRepo.findById(storeId);
 
         if (optionalStore.isEmpty()) {
             throw new StoreDoesNotExistException();
         }
 
-        // send email
-        // storeEmail = optionalStore.get().getContact();
+        SendEmailRequestModel outgoing = new SendEmailRequestModel();
+        outgoing.setStore(storeId);
+        outgoing.setNotificationType(notificationType);
+        outgoing.setOrder(order);
 
-        // notify store via email
-        // using their contact in Store object
-        // email should include the type of notification and the order
-        return false;
+        RestTemplate restTemplate = new RestTemplate();
+
+        Email response = restTemplate.postForObject("http://localhost:8082/store/send_email", outgoing, Email.class);
+
+        return response != null;
+    }*/
+
+    /**
+     * Get the email corresponding to the storeID
+     * @param id ID of the store
+     * @return Email of the corresponding store
+     */
+    public String getEmailById(Long id) {
+        if (!storeRepo.existsById(id)) {
+            return null;
+        }
+        return storeRepo.findById(id).get().getContact();
     }
 
     public List<Store> getAllStores() {
