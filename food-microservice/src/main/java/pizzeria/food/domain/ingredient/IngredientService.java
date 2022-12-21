@@ -70,7 +70,12 @@ public class IngredientService {
      */
     @SuppressWarnings("PMD")
     public Map<Long, Tuple> getPrices(List<Long> ids) throws IngredientNotFoundException {
+        if (ids == null) {
+            return new HashMap<>();
+        }
+
         Map<Long, Tuple> prices = new HashMap<>(ids.size());
+
         for (long id: ids){
             if (ingredientRepository.existsById(id)){
                 Ingredient ingredient = ingredientRepository.findById(id).get();

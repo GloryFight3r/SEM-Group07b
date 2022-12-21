@@ -32,7 +32,7 @@ public class JwtTokenVerifier {
     }
 
     public Collection
-            <? extends GrantedAuthority> getRoleFromToken(String token) {
+            <GrantedAuthority> getRoleFromToken(String token) {
         System.out.println(getClaims(token));
         String role = getClaimFromToken(token, claims -> claims.get("role").toString());
         role = role.replace("[", "").replace("]", "");

@@ -3,6 +3,7 @@ package pizzeria.order.domain.order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 import pizzeria.order.domain.food.Food;
 
 import javax.persistence.*;
@@ -20,32 +21,36 @@ public class Order {
     @Getter
     protected Long orderId;
 
-    @OneToMany(mappedBy="orderId")
+    @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @Getter
+    @Setter
     private List<Food> foods;
 
     @Column(name = "store_id")
     @Getter
+    @Setter
     private long storeId;
 
     @Column(name = "user_id")
     @Getter
+    @Setter
     private String userId;
 
     @Column(name = "pickup_time")
     @Getter
+    @Setter
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime pickupTime;
 
     @Column(name = "price")
     @Getter
+    @Setter
     protected double price;
 
     @ElementCollection
-    @CollectionTable(name = "couponIds",
-        joinColumns = @JoinColumn(name = "id"))
     @Column(name = "couponIds")
     @Getter
+    @Setter
     protected List<String> couponIds;
 
     //default constructor
