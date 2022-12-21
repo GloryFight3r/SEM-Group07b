@@ -13,6 +13,7 @@ import pizzeria.order.domain.mailing.MailingService;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.domain.order.OrderService;
 import pizzeria.order.domain.store.StoreService;
+import pizzeria.order.models.DeleteModel;
 
 /**
  * The type Order controller.
@@ -90,9 +91,11 @@ public class OrderController {
             //similar checking to the place order endpoint, check the user is editing his own orders
             //if not then deny, else process and validate everything else
             String userId = authManager.getNetId();
+
             if (!userId.equals(incoming.getUserId())){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "You are trying to edit an order from someone else").build();
             }
+
             //return the order we just processed to the user
             Order processed = orderService.processOrder(incoming);
 
@@ -112,26 +115,26 @@ public class OrderController {
      * Delete order endpoint, deletes from the database if valid request
      * Includes user validation and processes order in order service
      *
-     * @param orderId the order id we want to remove
+     * @param deleteModel model containing the order id we want to remove
      * @return the response entity
      */
     @DeleteMapping("/delete")
     @SuppressWarnings("PMD")
-    public ResponseEntity<Order> deleteOrder(@RequestBody Long orderId) {
+    public ResponseEntity<Order> deleteOrder(@RequestBody DeleteModel deleteModel) {
         //get the user that is trying to delete the order
         String userId = authManager.getNetId();
         //check if the user is a manager
         boolean isManager = authManager.getRole().equals("[ROLE_MANAGER]");
 
-        Optional <Order> orderToBeDeleted = orderService.findOrder(orderId);
+        Optional <Order> orderToBeDeleted = orderService.findOrder(deleteModel.getOrderId());
 
         if (orderToBeDeleted.isPresent()) {
             Long storeId = orderToBeDeleted.get().getStoreId();
             String recipientEmail = storeService.getEmailById(storeId);
 
-            orderService.removeOrder(orderId, userId, isManager);
+            orderService.removeOrder(deleteModel.getOrderId(), userId, isManager);
 
-            mailingService.sendEmail(orderId, recipientEmail, MailingService.ProcessType.DELETED);
+            mailingService.sendEmail(deleteModel.getOrderId(), recipientEmail, MailingService.ProcessType.DELETED);
             //validate if we can delete this order, if we can ok else bad request
             return ResponseEntity.status(HttpStatus.OK).build();
         }

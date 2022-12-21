@@ -95,6 +95,15 @@ public class StoreService {
         return storeRepo.findById(id).get().getContact();
     }
 
+    /**
+     * Tells us whether a store exists with the given id
+     * @param id id of the store we want to check
+     * @return True or False depending on its existence
+     */
+    public boolean existsById(Long id) {
+        return storeRepo.existsById(id);
+    }
+
     public List<Store> getAllStores() {
         return storeRepo.findAll();
     }

@@ -19,6 +19,7 @@ public class Order {
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
+    @Setter
     protected Long orderId;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
