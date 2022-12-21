@@ -105,8 +105,6 @@ public class OrderService {
                 sum += prices.getIngredientPrices().get(l).getPrice();
         }
 
-        System.out.println(sum + " " + order.price);
-
         if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
             final double EPS = 1e-6;
             if (Math.abs(order.price - sum) > EPS) {
@@ -171,6 +169,7 @@ public class OrderService {
             orderRepo.deleteById(orderId);
             return true;
         }
+
         return false;
     }
 
