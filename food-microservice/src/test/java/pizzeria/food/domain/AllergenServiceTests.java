@@ -13,12 +13,12 @@ import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
 import pizzeria.food.domain.recipe.Recipe;
+import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeRepository;
 
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -348,6 +348,51 @@ public class AllergenServiceTests {
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
             assertTrue(false);
+        }
+    }
+
+    @Test
+    void testRecipeIdIsSafe(){
+        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17")));
+        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al1", "Al3")));
+        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al14", "Al23", "Al9", "Al12")));
+        Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
+        recipe = recipeRepository.save(recipe);
+        try{
+            assertThat(allergenService.checkIfSafeRecipeWithId(recipe.getId(), List.of("Al111", "Al23"))).isFalse();
+
+        } catch (RecipeNotFoundException | IngredientNotFoundException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testRecipeIdIsSafe2(){
+        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17")));
+        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al1", "Al3")));
+        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al14", "Al23", "Al9", "Al12")));
+        Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
+        recipe = recipeRepository.save(recipe);
+        try{
+            assertThat(allergenService.checkIfSafeRecipeWithId(recipe.getId(), List.of("Al111", "A233", "Al465"))).isTrue();
+
+        } catch (RecipeNotFoundException | IngredientNotFoundException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testRecipeIdIsSafe3(){
+        ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17")));
+        ingredientRepository.save(new Ingredient("Ingredient2", 10, List.of("Al1", "Al3")));
+        ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al14", "Al23", "Al9", "Al12")));
+        Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
+        recipe = recipeRepository.save(recipe);
+        try{
+            assertThat(allergenService.checkIfSafeRecipeWithId(recipe.getId(), List.of("Al3", "A23"))).isFalse();
+
+        } catch (RecipeNotFoundException | IngredientNotFoundException e) {
+            fail();
         }
     }
 }

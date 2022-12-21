@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
 import pizzeria.food.domain.recipe.Recipe;
+import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,5 +68,21 @@ public class AllergenService {
             }
         }
         return true;
+    }
+
+    /**
+     * @param recipeId id of the recipe we want to check for allergens
+     * @param allergens list of strings that represents the allergens
+     * @return true iff the recipe does not contain any of the allergens
+     * @throws RecipeNotFoundException when the recipe is not stored in the database
+     * @throws IngredientNotFoundException when an ingredient of this recipe is not stored in the database
+     */
+    public boolean checkIfSafeRecipeWithId(long recipeId, List<String> allergens) throws RecipeNotFoundException, IngredientNotFoundException {
+        if (recipeRepository.existsById(recipeId)){
+            Recipe recipe = recipeRepository.findById(recipeId).get();
+            return recipeIsSafe(recipe, allergens);
+        } else {
+            throw new RecipeNotFoundException();
+        }
     }
 }
