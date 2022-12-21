@@ -27,9 +27,7 @@ import pizzeria.order.domain.order.OrderRepository;
 import pizzeria.order.domain.store.Store;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.integration.utils.JsonUtil;
-import pizzeria.order.models.GetPricesResponseModel;
-import pizzeria.order.models.OrderPlaceModel;
-import pizzeria.order.models.Tuple;
+import pizzeria.order.models.*;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -40,6 +38,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -136,8 +135,6 @@ public class OrderControllerTests {
                 .header("Authorization", "Bearer MockedToken"));
 
         MvcResult response = resultActions.andExpect(status().isCreated()).andReturn();
-
-        System.out.println(response.getResponse().toString());
 
         Order actualOrder = JsonUtil.deserialize(response.getResponse().getContentAsString(), Order.class);
 
@@ -311,12 +308,229 @@ public class OrderControllerTests {
     }
 
     @Test
-    void editOrder() {
+    void placeOrder_nonAuthorised() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
 
+        OrderPlaceModel order = new OrderPlaceModel();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        when(clockWrapper.getNow()).thenReturn(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 31, 1));
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(order);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(false);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/place")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isForbidden());
     }
 
     @Test
-    void deleteOrder() {
+    void editOrder_worksCorrectly() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Food secondFood = new Food();
+        secondFood.setBaseIngredients(List.of(1L, 10L));
+        secondFood.setExtraIngredients(List.of(4L));
+        secondFood.setRecipeId(3L);
+
+        Order order = new Order();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        orderRepository.save(order);
+
+        OrderEditModel editOrder = new OrderEditModel();
+        editOrder.setUserId("Mocked Id");
+        editOrder.setCouponIds(List.of());
+        editOrder.setFoods(List.of(firstFood, secondFood));
+        editOrder.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        editOrder.setPrice(269.9);
+        editOrder.setStoreId(1L);
+        editOrder.setOrderId(order.getOrderId());
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        foodPrices.put(3L, new Tuple(100.0, "MockName5"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+        ingredientPrices.put(10L, new Tuple(14.3, "MockName4"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(editOrder);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isCreated());
+    }
+    @Test
+    void editOrder_nonAuthorised() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Food secondFood = new Food();
+        secondFood.setBaseIngredients(List.of(1L, 10L));
+        secondFood.setExtraIngredients(List.of(4L));
+        secondFood.setRecipeId(3L);
+
+        Order order = new Order();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        orderRepository.save(order);
+
+        OrderEditModel editOrder = new OrderEditModel();
+        editOrder.setUserId("Mocked Id2");
+        editOrder.setCouponIds(List.of());
+        editOrder.setFoods(List.of(firstFood, secondFood));
+        editOrder.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        editOrder.setPrice(269.9);
+        editOrder.setStoreId(1L);
+        editOrder.setOrderId(order.getOrderId());
+
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        foodPrices.put(3L, new Tuple(100.0, "MockName5"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+        ingredientPrices.put(10L, new Tuple(14.3, "MockName4"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(editOrder);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteOrder_worksCorrectly() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+
+        Order order = new Order();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        orderRepository.save(order);
+
+        Long orderId = order.getOrderId();
+
+        DeleteModel deleteModel = new DeleteModel();
+        deleteModel.setOrderId(order.getOrderId());
+
+        String serializedString = JsonUtil.serialize(deleteModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/order/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isOk());
+
+        assertThat(orderRepository.findByOrderId(orderId)).isEmpty();
+    }
+
+    @Test
+    void deleteOrder_noSuchOrder() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Order order = new Order();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        orderRepository.save(order);
+
+        Long orderId = order.getOrderId();
+
+        DeleteModel deleteModel = new DeleteModel();
+        deleteModel.setOrderId(100L);
+
+        String serializedString = JsonUtil.serialize(deleteModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/order/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test

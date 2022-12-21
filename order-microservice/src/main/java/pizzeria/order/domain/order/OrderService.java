@@ -70,8 +70,10 @@ public class OrderService {
         // then check if the order belongs to the user
         //when we find by id we return an optional, if for some reason this optional does not exist return new order, which has null fields for non-primitives
         //essentially check if the order is in the repo and belongs to the person trying to edit
-        if (order.orderId != null && !order.getUserId().equals(orderRepo.findById(order.orderId).orElse(new Order()).getUserId()))
+        if (order.orderId != null && !order.getUserId().equals(orderRepo.findById(order.orderId).orElse(new Order()).getUserId())) {
+            System.out.println(order.getUserId() + " " + orderRepo.findByOrderId(order.orderId));
             throw new InvalidEditException();
+        }
 
         if (!storeService.existsById(order.getStoreId())) {
             throw new InvalidStoreIdException();
@@ -103,8 +105,11 @@ public class OrderService {
                 sum += prices.getIngredientPrices().get(l).getPrice();
         }
 
+        System.out.println(sum + " " + order.price);
+
         if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
-            if (Double.compare(order.price, sum) != 0) {
+            final double EPS = 1e-6;
+            if (Math.abs(order.price - sum) > EPS) {
                 throw new PriceNotRightException();
             }
 
@@ -126,8 +131,10 @@ public class OrderService {
             }
         }
 
-        if (Double.compare(order.price, minPrice) != 0)
+        final double EPS = 1e-6;
+        if (Math.abs(order.price - minPrice) > EPS) {
             throw new PriceNotRightException();
+        }
 
         /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
             foodRepository.deleteAll(orderRepo.findByOrderId(order.getOrderId()).get().getFoods());
