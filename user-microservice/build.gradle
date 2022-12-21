@@ -73,6 +73,14 @@ repositories {
     mavenCentral()
 }
 
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        csv.enabled true
+    }
+}
+
 jacocoTestCoverageVerification() {
     dependsOn test
     violationRules {

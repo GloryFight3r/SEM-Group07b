@@ -8,7 +8,7 @@ public class RecipeAlreadyInUseException extends Exception{
      * call to {@link #initCause}.
      */
     public RecipeAlreadyInUseException() {
-        super("The recipe is already in the database");
+        super("The recipe is already stored in the database");
     }
 
     /**

@@ -2,10 +2,12 @@ package pizzeria.food.domain.recipe;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
 import pizzeria.food.models.prices.Tuple;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,14 +59,14 @@ public class RecipeService {
      * database.
      */
     public Recipe updateFood(Recipe recipe, long id) throws RecipeNotFoundException, IngredientNotFoundException {
-        if (recipeRepository.existsById(id)) {
-            recipe.setId(id);
-            return recipeRepository.save(recipe);
-        }
         for (long idIngredients: recipe.getBaseToppings()){
             if (!ingredientRepository.existsById(idIngredients)){
                 throw new IngredientNotFoundException();
             }
+        }
+        if (recipeRepository.existsById(id)) {
+            recipe.setId(id);
+            return recipeRepository.save(recipe);
         }
         throw new RecipeNotFoundException();
     }
@@ -111,5 +113,28 @@ public class RecipeService {
      */
     public List<Recipe> getMenu(){
         return recipeRepository.findAll();
+    }
+
+    /**
+     * given a recipe id return the associated ingredients
+     * @param id long value representing the id of the recipe
+     * @return List of Ingredients representing the basetoppings that are fetched from the ingredientRepository
+     */
+    @SuppressWarnings("PMD")
+    public List<Ingredient> getBaseToppings(long id) throws RecipeNotFoundException, IngredientNotFoundException {
+        if (recipeRepository.existsById(id)){
+            Recipe recipe = recipeRepository.findById(id).get();
+            List<Ingredient> baseToppings = new ArrayList<>();
+            for (long ingredientId: recipe.getBaseToppings()){
+                if (ingredientRepository.existsById(ingredientId)){
+                    baseToppings.add(ingredientRepository.findById(ingredientId).get());
+                } else {
+                    throw new IngredientNotFoundException("The ingredient with the id " + ingredientId + " was not found in the database");
+                }
+            }
+            return ingredientRepository.findAllById(recipe.getBaseToppings());
+        } else {
+            throw new RecipeNotFoundException("The Recipe with the id " + id + " was not found in the databases");
+        }
     }
 }

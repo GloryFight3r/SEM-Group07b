@@ -30,7 +30,7 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
         //we also make the manager only endpoints visible to only the managers
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/order/place").authenticated()
+                .antMatchers("/order/place").hasAuthority(authorizedRole)
                 .antMatchers("/order/list").authenticated()
                 .antMatchers("/order/delete").authenticated()
                 .antMatchers("/order/edit").authenticated()

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import pizzeria.order.domain.food.Food;
 
 import javax.persistence.*;
@@ -19,9 +21,11 @@ public class Order {
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
+    @Setter
     protected Long orderId;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
     private List<Food> foods;

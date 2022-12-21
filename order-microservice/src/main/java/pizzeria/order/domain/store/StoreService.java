@@ -64,25 +64,6 @@ public class StoreService {
         return storeRepo.deleteStoreById(storeId) != 0;
     }
 
-    /*public boolean notifyStore(Long storeId, String notificationType, Order order) throws StoreDoesNotExistException {
-        Optional<Store> optionalStore = storeRepo.findById(storeId);
-
-        if (optionalStore.isEmpty()) {
-            throw new StoreDoesNotExistException();
-        }
-
-        SendEmailRequestModel outgoing = new SendEmailRequestModel();
-        outgoing.setStore(storeId);
-        outgoing.setNotificationType(notificationType);
-        outgoing.setOrder(order);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        Email response = restTemplate.postForObject("http://localhost:8082/store/send_email", outgoing, Email.class);
-
-        return response != null;
-    }*/
-
     /**
      * Get the email corresponding to the storeID
      * @param id ID of the store
@@ -93,6 +74,15 @@ public class StoreService {
             return null;
         }
         return storeRepo.findById(id).get().getContact();
+    }
+
+    /**
+     * Tells us whether a store exists with the given id
+     * @param id id of the store we want to check
+     * @return True or False depending on its existence
+     */
+    public boolean existsById(Long id) {
+        return storeRepo.existsById(id);
     }
 
     public List<Store> getAllStores() {

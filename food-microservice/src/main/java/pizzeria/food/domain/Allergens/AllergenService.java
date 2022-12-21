@@ -1,12 +1,13 @@
 package pizzeria.food.domain.Allergens;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
 import pizzeria.food.domain.recipe.Recipe;
+import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class AllergenService {
         return menu;
     }
 
+
     /**
      * @param recipe Recipe we want to check for allergens
      * @param allergens list of strings that represents the allergens
@@ -50,16 +52,37 @@ public class AllergenService {
      */
     public boolean recipeIsSafe(Recipe recipe, List<String> allergens) throws IngredientNotFoundException {
         List<Long> ids = recipe.getBaseToppings();
-        for (long id: ids){
+        int size = ids.size();
+        for (int i = 0; i < size; i++){
+            long id = ids.get(i);
             if (ingredientRepository.existsById(id)){
                 List<String> allergensOfIngredient = ingredientRepository.findById(id).get().getAllergens();
                 for (String allergen: allergensOfIngredient){
-                    if (allergens.contains(allergen)) return false;
+                    if (allergens.contains(allergen)) {
+                        return false;
+                    }
                 }
+
             } else {
                 throw new IngredientNotFoundException();
             }
         }
         return true;
+    }
+
+    /**
+     * @param recipeId id of the recipe we want to check for allergens
+     * @param allergens list of strings that represents the allergens
+     * @return true iff the recipe does not contain any of the allergens
+     * @throws RecipeNotFoundException when the recipe is not stored in the database
+     * @throws IngredientNotFoundException when an ingredient of this recipe is not stored in the database
+     */
+    public boolean checkIfSafeRecipeWithId(long recipeId, List<String> allergens) throws RecipeNotFoundException, IngredientNotFoundException {
+        if (recipeRepository.existsById(recipeId)){
+            Recipe recipe = recipeRepository.findById(recipeId).get();
+            return recipeIsSafe(recipe, allergens);
+        } else {
+            throw new RecipeNotFoundException();
+        }
     }
 }

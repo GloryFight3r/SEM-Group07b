@@ -13,6 +13,8 @@ import pizzeria.order.domain.mailing.MailingService;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.domain.order.OrderService;
 import pizzeria.order.domain.store.StoreService;
+import pizzeria.order.models.DeleteModel;
+import pizzeria.order.models.OrdersResponse;
 
 /**
  * The type Order controller.
@@ -53,7 +55,6 @@ public class OrderController {
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
         try {
-
             //check if the order that is trying to be placed is by the user the request comes from
             //if not then we deny the operation, else we process the order (and validate everything else)
             String userId = authManager.getNetId();
@@ -90,9 +91,11 @@ public class OrderController {
             //similar checking to the place order endpoint, check the user is editing his own orders
             //if not then deny, else process and validate everything else
             String userId = authManager.getNetId();
+
             if (!userId.equals(incoming.getUserId())){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "You are trying to edit an order from someone else").build();
             }
+
             //return the order we just processed to the user
             Order processed = orderService.processOrder(incoming);
 
@@ -112,26 +115,28 @@ public class OrderController {
      * Delete order endpoint, deletes from the database if valid request
      * Includes user validation and processes order in order service
      *
-     * @param orderId the order id we want to remove
+     * @param deleteModel model containing the order id we want to remove
      * @return the response entity
      */
     @DeleteMapping("/delete")
     @SuppressWarnings("PMD")
-    public ResponseEntity<Order> deleteOrder(@RequestBody Long orderId) {
+    public ResponseEntity<Order> deleteOrder(@RequestBody DeleteModel deleteModel) {
         //get the user that is trying to delete the order
         String userId = authManager.getNetId();
         //check if the user is a manager
         boolean isManager = authManager.getRole().equals("[ROLE_MANAGER]");
 
-        Optional <Order> orderToBeDeleted = orderService.findOrder(orderId);
+        Optional <Order> orderToBeDeleted = orderService.findOrder(deleteModel.getOrderId());
 
         if (orderToBeDeleted.isPresent()) {
             Long storeId = orderToBeDeleted.get().getStoreId();
             String recipientEmail = storeService.getEmailById(storeId);
 
-            orderService.removeOrder(orderId, userId, isManager);
+            if (!orderService.removeOrder(deleteModel.getOrderId(), userId, isManager)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
 
-            mailingService.sendEmail(orderId, recipientEmail, MailingService.ProcessType.DELETED);
+            mailingService.sendEmail(deleteModel.getOrderId(), recipientEmail, MailingService.ProcessType.DELETED);
             //validate if we can delete this order, if we can ok else bad request
             return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -145,11 +150,11 @@ public class OrderController {
      * @return the response entity
      */
     @GetMapping("/list")
-    public ResponseEntity<List<Order>> listOrders() {
+    public ResponseEntity<OrdersResponse> listOrders() {
         String userId = authManager.getNetId();
         //get a list of the orders that belong to this user
         List<Order> orders = orderService.listOrders(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(new OrdersResponse(orders));
     }
 
     /**
@@ -159,9 +164,9 @@ public class OrderController {
      * @return the response entity
      */
     @GetMapping("/listAll")
-    public ResponseEntity<List<Order>> listAllOrders() {
+    public ResponseEntity<OrdersResponse> listAllOrders() {
         //get all the orders in the system
         List<Order> orders = orderService.listAllOrders();
-        return ResponseEntity.status(HttpStatus.OK).body(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(new OrdersResponse(orders));
     }
 }
