@@ -40,12 +40,12 @@ public class OrderService {
      */
     @Autowired
     public OrderService(OrderRepository orderRepo, FoodRepository foodRepository, FoodPriceService foodPriceService,
-                        CouponRepository couponRepository, StoreService storeService){
+                        CouponRepository couponRepository, ClockWrapper clockWrapper, StoreService storeService){
         this.orderRepo = orderRepo;
         this.foodPriceService = foodPriceService;
         this.foodRepository = foodRepository;
         this.couponRepository = couponRepository;
-        this.clockWrapper = new ClockWrapper();
+        this.clockWrapper = clockWrapper;
         this.storeService = storeService;
     }
 
@@ -79,10 +79,11 @@ public class OrderService {
 
         //check if the selected pickup time is 30 minutes or more in the future
         LocalDateTime current = clockWrapper.getNow();
+
         if (order.getPickupTime().isBefore(current.plusMinutes(30)))
             throw new TimeInvalidException();
-        GetPricesResponseModel prices = foodPriceService.getFoodPrices(order); // get prices
 
+        GetPricesResponseModel prices = foodPriceService.getFoodPrices(order); // get prices
         if (prices == null)
             //some food does not exist or something else went wrong in the food ms communication
             throw new FoodInvalidException();

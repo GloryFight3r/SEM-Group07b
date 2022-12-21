@@ -1,5 +1,6 @@
 package pizzeria.order.domain.food;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class FoodPriceService {
     private final transient RestTemplate restTemplate;
 
+    @Autowired
     /**
      * Instantiates a new Food price service.
      *
@@ -25,6 +27,10 @@ public class FoodPriceService {
      */
     public FoodPriceService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
+    }
+
+    public FoodPriceService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -60,10 +66,13 @@ public class FoodPriceService {
         // build the request
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
+
         // send POST request
         ResponseEntity<GetPricesResponseModel> response =
                 this.restTemplate.postForEntity("http://localhost:8084/price/ids", entity, GetPricesResponseModel.class);
         // check response status code
+
+        System.out.println("DAS");
 
         if (response.getStatusCode() == HttpStatus.OK) {
             GetPricesResponseModel responseModel = response.getBody();

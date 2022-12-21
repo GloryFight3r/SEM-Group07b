@@ -54,7 +54,6 @@ public class OrderController {
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
         try {
-
             //check if the order that is trying to be placed is by the user the request comes from
             //if not then we deny the operation, else we process the order (and validate everything else)
             String userId = authManager.getNetId();
