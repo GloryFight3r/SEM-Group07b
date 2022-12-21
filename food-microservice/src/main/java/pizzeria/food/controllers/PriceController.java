@@ -43,8 +43,7 @@ public class PriceController {
 
             //System.out.println(requestModel.getFoodIds() + " " + requestModel.getIngredientIds());
             Map<Long, Tuple> foodPrices = recipeService.getPrices(requestModel.getFoodIds());
-            Map<Long, Tuple> ingredientPrices = ingredientService.getPrices(requestModel.getIngredientIds());
-
+            Map<Long, Tuple> ingredientPrices = ingredientService.getDetails(requestModel.getIngredientIds());
             GetPricesResponseModel responseModel = new GetPricesResponseModel();
             responseModel.setFoodPrices(foodPrices);
             responseModel.setIngredientPrices(ingredientPrices);
