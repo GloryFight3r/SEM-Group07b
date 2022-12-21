@@ -12,6 +12,7 @@ import pizzeria.order.models.GetPricesResponseModel;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The type Order service
@@ -145,6 +146,15 @@ public class OrderService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the order given its id
+     * @param id id of the order
+     * @return Optional of type order
+     */
+    public Optional<Order> findOrder(Long id) {
+        return orderRepo.findByOrderId(id);
     }
 
     /**

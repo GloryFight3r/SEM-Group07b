@@ -1,14 +1,18 @@
 package pizzeria.order.controllers;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pizzeria.order.authentication.AuthManager;
+import pizzeria.order.domain.mailing.MailingService;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.domain.order.OrderService;
+import pizzeria.order.domain.store.StoreService;
 
 /**
  * The type Order controller.
@@ -21,6 +25,10 @@ public class OrderController {
     private final transient AuthManager authManager;
     private final transient OrderService orderService;
 
+    private final transient StoreService storeService;
+
+    private final transient MailingService mailingService;
+
     /**
      * Instantiates a new Order controller with the needed authentication manager and services
      *
@@ -28,9 +36,11 @@ public class OrderController {
      * @param orderService the order service
      */
     @Autowired
-    public OrderController(AuthManager authManager, OrderService orderService){
+    public OrderController(AuthManager authManager, OrderService orderService, MailingService mailingService, StoreService storeService) {
         this.authManager = authManager;
         this.orderService = orderService;
+        this.mailingService = mailingService;
+        this.storeService = storeService;
     }
 
     /**
@@ -51,6 +61,12 @@ public class OrderController {
             }
             //return the order we just processed to the user
             Order processed = orderService.processOrder(incoming);
+
+            Long storeId = processed.getStoreId();
+            String recipientEmail = storeService.getEmailById(storeId);
+
+            mailingService.sendEmail(processed.getOrderId(), recipientEmail, MailingService.ProcessType.CREATED);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(processed);
         } catch (Exception e) {
             //return bad request with whatever validation has failed
@@ -76,6 +92,12 @@ public class OrderController {
             }
             //return the order we just processed to the user
             Order processed = orderService.processOrder(incoming);
+
+            Long storeId = processed.getStoreId();
+            String recipientEmail = storeService.getEmailById(storeId);
+
+            mailingService.sendEmail(processed.getOrderId(), recipientEmail, MailingService.ProcessType.EDITED);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(processed);
         } catch (Exception e) {
             //return bad request with whatever validation has failed
@@ -91,14 +113,26 @@ public class OrderController {
      * @return the response entity
      */
     @DeleteMapping("/delete")
+    @SuppressWarnings("PMD")
     public ResponseEntity<Order> deleteOrder(@RequestBody Long orderId) {
         //get the user that is trying to delete the order
         String userId = authManager.getNetId();
         //check if the user is a manager
         boolean isManager = authManager.getRole().equals("[ROLE_MANAGER]");
-        if (orderService.removeOrder(orderId, userId, isManager))
+
+        Optional <Order> orderToBeDeleted = orderService.findOrder(orderId);
+
+        if (orderToBeDeleted.isPresent()) {
+            Long storeId = orderToBeDeleted.get().getStoreId();
+            String recipientEmail = storeService.getEmailById(storeId);
+
+            orderService.removeOrder(orderId, userId, isManager);
+
+            mailingService.sendEmail(orderId, recipientEmail, MailingService.ProcessType.DELETED);
             //validate if we can delete this order, if we can ok else bad request
             return ResponseEntity.status(HttpStatus.OK).build();
+        }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
