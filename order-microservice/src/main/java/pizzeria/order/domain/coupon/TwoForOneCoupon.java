@@ -53,7 +53,7 @@ public class TwoForOneCoupon extends Coupon {
         double reduction = 0.0;
         for (Long key : foodMap.keySet()){
             int reduced_times = foodMap.get(key) / 2;
-            reduction += (double) reduced_times * prices.getIngredientPrices().get(key).getPrice();
+            reduction += (double) reduced_times * prices.getFoodPrices().get(key).getPrice();
         }
 
         //return the base price - the reduction

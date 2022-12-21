@@ -91,8 +91,6 @@ public class OrderService {
         for (Food f: order.getFoods()) {
             sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
 
-            for (long l: f.getBaseIngredients())
-                sum += prices.getIngredientPrices().get(l).getPrice();
             for (long l: f.getExtraIngredients())
                 sum += prices.getIngredientPrices().get(l).getPrice();
         }
