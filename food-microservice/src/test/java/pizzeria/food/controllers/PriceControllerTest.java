@@ -1,19 +1,22 @@
 package pizzeria.food.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
+import pizzeria.food.integration.utils.JsonUtil;
 import pizzeria.food.models.prices.GetPricesRequestModel;
 import pizzeria.food.models.prices.GetPricesResponseModel;
 import pizzeria.food.models.prices.Tuple;
@@ -23,25 +26,27 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles({"test"})
+@ActiveProfiles({"test", "mockRecipeService", "mockIngredientService"})
+@AutoConfigureMockMvc
 class PriceControllerTest {
-
-    private transient PriceController priceController;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
     private transient RecipeService recipeService;
+    @Autowired
     private transient IngredientService ingredientService;
 
-    @BeforeEach
-    void setUp(){
-        ingredientService = Mockito.mock(IngredientService.class);
-        recipeService = Mockito.mock(RecipeService.class);
-        priceController = new PriceController(recipeService, ingredientService);
-    }
+
     @Test
-    void getPrices() {
+    void getPrices() throws Exception {
+
         List<Long> recipeIds = List.of(5L, 8L, 88L);
         List<Long> ingredientIds = List.of(52L, 4L, 78L, 99L);
 
@@ -58,26 +63,28 @@ class PriceControllerTest {
                 99L, new Tuple(99.0, "Test3")
         );
 
-        try {
-            when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
-            when(ingredientService.getDetails(ingredientIds)).thenReturn(ingredientPrices);
-            GetPricesRequestModel requestModel = new GetPricesRequestModel();
-            requestModel.setFoodIds(recipeIds);
-            requestModel.setIngredientIds(ingredientIds);
-            GetPricesResponseModel responseModel = priceController.getPrices(requestModel).getBody();
-            assertNotNull(responseModel);
-            assertThat(responseModel.getFoodPrices()).isEqualTo(recipePrices);
-            assertThat(responseModel.getIngredientPrices()).isEqualTo(ingredientPrices);
-        } catch (RecipeNotFoundException e) {
-            fail();
-        } catch (IngredientNotFoundException e) {
-            fail();
-        }
+        GetPricesRequestModel requestModel = new GetPricesRequestModel();
+        requestModel.setFoodIds(recipeIds);
+        requestModel.setIngredientIds(ingredientIds);
 
+        when(recipeService.getPrices(any())).thenReturn(recipePrices);
+        when(ingredientService.getDetails(any())).thenReturn(ingredientPrices);
+
+        ResultActions resultActions = mockMvc.perform(post("/price/ids")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(requestModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isOk());
+        GetPricesResponseModel responseModel = JsonUtil.deserialize(resultActions.andReturn().getResponse().getContentAsString(), GetPricesResponseModel.class);
+
+        assertNotNull(responseModel);
+        assertThat(responseModel.getFoodPrices()).isEqualTo(recipePrices);
+        assertThat(responseModel.getIngredientPrices()).isEqualTo(ingredientPrices);
     }
 
     @Test
-    void testGetPricesThrowsExceptionRecipeNotFound(){
+    void testGetPricesThrowsExceptionRecipeNotFound() throws Exception {
         List<Long> recipeIds = List.of(5L, 8L, 88L);
         List<Long> ingredientIds = List.of(52L, 4L, 78L, 99L);
 
@@ -88,26 +95,29 @@ class PriceControllerTest {
                 99L, new Tuple(99.0, "Test3")
         );
 
-        try {
-            when(recipeService.getPrices(recipeIds)).thenThrow(new RecipeNotFoundException());
-            when(ingredientService.getDetails(ingredientIds)).thenReturn(ingredientPrices);
-            GetPricesRequestModel requestModel = new GetPricesRequestModel();
-            requestModel.setFoodIds(recipeIds);
-            requestModel.setIngredientIds(ingredientIds);
-            ResponseEntity<GetPricesResponseModel> response = priceController.getPrices(requestModel);
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
 
-        } catch (IngredientNotFoundException e) {
-            fail();
-        } catch (RecipeNotFoundException e) {
-            fail();
-        }
+        when(recipeService.getPrices(recipeIds)).thenThrow(new RecipeNotFoundException());
+        when(ingredientService.getDetails(any())).thenReturn(ingredientPrices);
 
+        GetPricesRequestModel requestModel = new GetPricesRequestModel();
+        requestModel.setFoodIds(recipeIds);
+        requestModel.setIngredientIds(ingredientIds);
+
+        ResultActions resultActions = mockMvc.perform(post("/price/ids")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(requestModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+
+        MockHttpServletResponse response = resultActions.andReturn().getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(400); // BAD REQUEST
+        assertThat(response.getHeader("Warning")).isEqualTo("The recipe could not be found in the database");
     }
 
     @Test
-    void testGetPricesThrowsIngredientNotFoundException(){
+    void testGetPricesThrowsIngredientNotFoundException() throws Exception {
         List<Long> recipeIds = List.of(5L, 8L, 88L);
         List<Long> ingredientIds = List.of(52L, 4L, 78L, 99L);
 
@@ -117,21 +127,25 @@ class PriceControllerTest {
                     88L, new Tuple(88.0, "Test2")
             );
 
-            try {
-                when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
-                when(ingredientService.getDetails(ingredientIds)).thenThrow(new IngredientNotFoundException());
-                GetPricesRequestModel requestModel = new GetPricesRequestModel();
-                requestModel.setFoodIds(recipeIds);
-                requestModel.setIngredientIds(ingredientIds);
-                ResponseEntity<GetPricesResponseModel> response = priceController.getPrices(requestModel);
-                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
+        when(ingredientService.getDetails(ingredientIds)).thenThrow(new IngredientNotFoundException());
 
-            } catch (IngredientNotFoundException e) {
-                fail();
-            } catch (RecipeNotFoundException e) {
-                fail();
-            }
+        GetPricesRequestModel requestModel = new GetPricesRequestModel();
+        requestModel.setFoodIds(recipeIds);
+        requestModel.setIngredientIds(ingredientIds);
 
+        ResultActions resultActions = mockMvc.perform(post("/price/ids")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(requestModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+
+        MockHttpServletResponse response = resultActions.andReturn().getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(400); // BAD REQUEST
+        assertThat(response.getHeader("Warning")).isEqualTo("The ingredient was not found in the database");
     }
+
+
 }
