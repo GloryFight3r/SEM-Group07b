@@ -15,12 +15,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pizzeria.order.authentication.AuthManager;
 import pizzeria.order.authentication.JwtTokenVerifier;
-import pizzeria.order.domain.coupon.CouponRepository;
+import pizzeria.order.domain.coupon.Coupon_2for1_Repository;
+import pizzeria.order.domain.coupon.Coupon_percentage_Repository;
+import pizzeria.order.domain.coupon.PercentageCoupon;
 import pizzeria.order.integration.utils.JsonUtil;
 import pizzeria.order.models.CouponModel;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,7 +40,8 @@ class CouponControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private transient CouponRepository couponRepository;
+    private transient Coupon_percentage_Repository coupon_percentage_Repository;
+    private transient Coupon_2for1_Repository coupon_2for1_Repository;
 
     @Autowired
     private transient AuthManager mockAuthManager;
@@ -75,8 +79,8 @@ class CouponControllerTest {
         resultActions.andExpect(status().isCreated());
 
         //assert that the right coupon was saved
-//        PercentageCoupon newSavedCoupon = (PercentageCoupon) couponRepository.findById(id).orElseThrow();
-//        assertEquals(newSavedCoupon.getId(), id);
-//        assertEquals(newSavedCoupon.getPercentage(), percentage);
+        PercentageCoupon newSavedCoupon = (PercentageCoupon) coupon_percentage_Repository.findById(id).orElseThrow();
+        assertEquals(newSavedCoupon.getId(), id);
+        assertEquals(newSavedCoupon.getPercentage(), percentage);
     }
 }

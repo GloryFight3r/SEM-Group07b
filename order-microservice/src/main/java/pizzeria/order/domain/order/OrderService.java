@@ -2,7 +2,8 @@ package pizzeria.order.domain.order;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pizzeria.order.domain.coupon.CouponRepository;
+import pizzeria.order.domain.coupon.Coupon_2for1_Repository;
+import pizzeria.order.domain.coupon.Coupon_percentage_Repository;
 import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.domain.food.FoodPriceService;
@@ -21,23 +22,25 @@ import java.util.Optional;
 public class OrderService {
     private final transient OrderRepository orderRepo;
     private final transient FoodPriceService foodPriceService;
-    private transient final CouponRepository couponRepository;
+    private transient final Coupon_percentage_Repository coupon_percentage_repository;
+    private transient final Coupon_2for1_Repository coupon_2for1_repository;
     private transient final ClockWrapper clockWrapper;
 
     /**
      * Instantiates a new Order service with the respective repositories and services
      *
      * @param orderRepo        the order repository
-     * @param foodRepo         the food repo repository
      * @param foodPriceService the food price service
-     * @param couponRepository the coupon repository
+     * @param coupon_percentage_repository the percentage coupon repository
+     * @param coupon_2for1_repository the 2for1 coupon repository
      */
     @Autowired
     public OrderService(OrderRepository orderRepo, FoodPriceService foodPriceService,
-                        CouponRepository couponRepository){
+                        Coupon_percentage_Repository coupon_percentage_repository, Coupon_2for1_Repository coupon_2for1_repository){
         this.orderRepo = orderRepo;
         this.foodPriceService = foodPriceService;
-        this.couponRepository = couponRepository;
+        this.coupon_percentage_repository = coupon_percentage_repository;
+        this.coupon_2for1_repository = coupon_2for1_repository;
         this.clockWrapper = new ClockWrapper();
     }
 
@@ -78,7 +81,8 @@ public class OrderService {
             //some food does not exist or something else went wrong in the food ms communication
             throw new FoodInvalidException();
 
-        ArrayList<Coupon> coupons = new ArrayList<>(couponRepository.findAllById(order.couponIds));
+        ArrayList<Coupon> coupons = new ArrayList<>(coupon_percentage_repository.findAllById(order.couponIds));
+        coupons.addAll(coupon_2for1_repository.findAllById(order.couponIds));
         // this list only contains validated coupons, no need for additional checks
         order.couponIds.clear(); // clear the list, so we can send only the used one back
 
