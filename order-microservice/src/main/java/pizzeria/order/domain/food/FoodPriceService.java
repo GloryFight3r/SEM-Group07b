@@ -10,14 +10,29 @@ import pizzeria.order.models.GetPricesResponseModel;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The type Food price service
+ * Handles the communication with the food microservice to get prices and validate foods
+ */
 @Service
 public class FoodPriceService {
     private final transient RestTemplate restTemplate;
 
+    /**
+     * Instantiates a new Food price service.
+     *
+     * @param restTemplateBuilder the rest template builder
+     */
     public FoodPriceService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    /**
+     * Gets food prices from the food microservice
+     *
+     * @param order the order that we want the prices of
+     * @return the food prices
+     */
     public GetPricesResponseModel getFoodPrices(Order order) {
         List<Long> ingredients = new ArrayList<>();
         for (Food f: order.getFoods())
