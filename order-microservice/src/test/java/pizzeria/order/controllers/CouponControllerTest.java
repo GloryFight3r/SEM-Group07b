@@ -260,4 +260,48 @@ class CouponControllerTest {
         resultActions.andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void createPercentageCouponWhenNoAuthority() throws Exception {
+        final String id = "COUPON";
+        final double percentage = 0.2;
+        final String type = "PERCENTAGE";
+
+        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+
+        CouponModel couponModel = new CouponModel();
+        couponModel.setPercentage(percentage);
+        couponModel.setId(id);
+        couponModel.setType(type);
+        ResultActions resultActions = mockMvc.perform(post("/coupon/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(couponModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+
+        //assert the access is forbidden
+        resultActions.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void createTwoForOneCouponWhenNoAuthority() throws Exception {
+        final String id = "COUPON";
+        final String type = "TWO_FOR_ONE";
+
+        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
+        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+
+        CouponModel couponModel = new CouponModel();
+        couponModel.setId(id);
+        couponModel.setType(type);
+        ResultActions resultActions = mockMvc.perform(post("/coupon/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(couponModel))
+                .header("Authorization", "Bearer MockedToken"));
+
+
+        //assert the access is forbidden
+        resultActions.andExpect(status().isForbidden());
+    }
+
 }
