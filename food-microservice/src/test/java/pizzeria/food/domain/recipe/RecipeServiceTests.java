@@ -51,8 +51,7 @@ public class RecipeServiceTests {
             assertThat(test.size()).isEqualTo(1);
             assertThat(test.get(0).getName()).isEqualTo("test");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -73,8 +72,7 @@ public class RecipeServiceTests {
             assertThat(test.get(0).getName()).isEqualTo("test");
             assertThat(test.get(1).getName()).isEqualTo("test2");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -121,14 +119,11 @@ public class RecipeServiceTests {
             assertThat(test.get(0).getName()).isEqualTo("testName");
             assertThat(test.get(0).getBaseToppings()).containsExactlyElementsOf(List.of(1L, 2L, 3L));
         } catch (RecipeAlreadyInUseException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         } catch (IngredientNotFoundException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         } catch (RecipeNotFoundException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -174,14 +169,11 @@ public class RecipeServiceTests {
             List<Recipe> test = recipeRepository.findAll();
             assertThat(test.size()).isEqualTo(0);
         } catch (RecipeNotFoundException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         } catch (IngredientNotFoundException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         } catch (RecipeAlreadyInUseException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -221,8 +213,7 @@ public class RecipeServiceTests {
             assertThat(result.get(10L).getName()).isEqualTo("recipe6");
             assertThat(result.get(11L).getName()).isEqualTo("recipe7");
         } catch (RecipeNotFoundException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -275,8 +266,7 @@ public class RecipeServiceTests {
             assertThat(result.get(10L).getName()).isEqualTo("recipe6");
             assertThat(result.get(11L).getName()).isEqualTo("recipe7");
         } catch (RecipeNotFoundException e) {
-            System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -315,5 +305,48 @@ public class RecipeServiceTests {
         List<Recipe> result = recipeService.getMenu();
         assertThat(result.size()).isEqualTo(0);
     }
+
+    @Test
+    void testGetBaseToppings(){
+        // create 4 ingredients
+        Ingredient ingredient1 = ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
+        Ingredient ingredient2 = ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
+        Ingredient ingredient3 = ingredientRepository.save(new Ingredient("test3", 1.0, new ArrayList<>()));
+        Ingredient ingredient4 = ingredientRepository.save(new Ingredient("test4", 1.0, new ArrayList<>()));
+
+        Recipe recipe = new Recipe("recipe1", List.of(1L, 4L, 3L), 18.0);
+        recipe = recipeRepository.save(recipe);
+
+        try {
+            List<Ingredient> result = recipeService.getBaseToppings(recipe.getId());
+            assertThat(result.size()).isEqualTo(3);
+            assertThat(result).containsExactlyElementsOf(List.of(ingredient1, ingredient3, ingredient4));
+        } catch (RecipeNotFoundException | IngredientNotFoundException e) {
+            fail();
+        }
+
+    }
+
+    @Test
+    void testGetBaseToppingsThrowsException(){
+        Recipe recipe = new Recipe("recipe1", List.of(1L, 4L, 3L), 18.0);
+        recipe = recipeRepository.save(recipe);
+
+        assertThrows(RecipeNotFoundException.class, () -> recipeService.getBaseToppings(-1L));
+    }
+
+    @Test
+    void testGetBaseToppingsThrowsException2(){
+        Ingredient ingredient1 = ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
+        Ingredient ingredient2 = ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
+        Ingredient ingredient3 = ingredientRepository.save(new Ingredient("test3", 1.0, new ArrayList<>()));
+        Recipe recipe = new Recipe("recipe1", List.of(1L, 4L, 3L), 18.0);
+        recipe = recipeRepository.save(recipe);
+        long id = recipe.getId();
+
+        assertThrows(IngredientNotFoundException.class, () -> recipeService.getBaseToppings(id));
+    }
+
+
 
 }
