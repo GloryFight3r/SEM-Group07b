@@ -6,7 +6,6 @@ import pizzeria.order.domain.coupon.CouponRepository;
 import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.domain.food.FoodPriceService;
-import pizzeria.order.domain.food.FoodRepository;
 import pizzeria.order.models.GetPricesResponseModel;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,6 @@ import java.util.Optional;
 @Service
 public class OrderService {
     private final transient OrderRepository orderRepo;
-    private final transient FoodRepository foodRepo;
     private final transient FoodPriceService foodPriceService;
     private transient final CouponRepository couponRepository;
     private transient final ClockWrapper clockWrapper;
@@ -35,10 +33,9 @@ public class OrderService {
      * @param couponRepository the coupon repository
      */
     @Autowired
-    public OrderService(OrderRepository orderRepo, FoodRepository foodRepo, FoodPriceService foodPriceService,
+    public OrderService(OrderRepository orderRepo, FoodPriceService foodPriceService,
                         CouponRepository couponRepository){
         this.orderRepo = orderRepo;
-        this.foodRepo = foodRepo;
         this.foodPriceService = foodPriceService;
         this.couponRepository = couponRepository;
         this.clockWrapper = new ClockWrapper();
@@ -61,7 +58,7 @@ public class OrderService {
     public Order processOrder(Order order) throws Exception {
         if (order == null)
             throw new CouldNotStoreException();
-
+        //System.out.println("YES");
         // check if we are in 'edit mode' (the orderId is specified in the Order object)
         // then check if the order belongs to the user
         //when we find by id we return an optional, if for some reason this optional does not exist return new order, which has null fields for non-primitives
@@ -71,10 +68,12 @@ public class OrderService {
 
         //check if the selected pickup time is 30 minutes or more in the future
         LocalDateTime current = clockWrapper.getNow();
+        System.out.println(current);
         if (order.getPickupTime().isBefore(current.plusMinutes(30)))
             throw new TimeInvalidException();
-
+        //System.out.println("AA");
         GetPricesResponseModel prices = foodPriceService.getFoodPrices(order); // get prices
+
         if (prices == null)
             //some food does not exist or something else went wrong in the food ms communication
             throw new FoodInvalidException();
@@ -87,6 +86,7 @@ public class OrderService {
         double sum = 0.0;
         for (Food f: order.getFoods()) {
             sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
+
             for (long l: f.getBaseIngredients())
                 sum += prices.getIngredientPrices().get(l).getPrice();
             for (long l: f.getExtraIngredients())

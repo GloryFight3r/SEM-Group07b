@@ -90,6 +90,10 @@ public class RecipeService {
      */
     @SuppressWarnings("PMD")
     public Map<Long, Tuple> getPrices(List<Long> ids) throws RecipeNotFoundException {
+        if (ids == null) {
+            return new HashMap<>();
+        }
+
         Map<Long, Tuple> prices = new HashMap<>(ids.size());
         for (long id: ids){
             if (recipeRepository.existsById(id)) {

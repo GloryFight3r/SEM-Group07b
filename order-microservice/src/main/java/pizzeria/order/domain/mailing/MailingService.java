@@ -31,6 +31,8 @@ public class MailingService {
      */
     @SuppressWarnings("PMD")
     public void sendEmail(Long orderId, String recipientEmail, ProcessType processType) {
+        System.out.println(orderId + " " + recipientEmail + " " + processType);
+
         String host = "smtp.gmail.com";
 
         // Get system properties

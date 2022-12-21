@@ -53,12 +53,15 @@ public class OrderController {
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
         try {
+
             //check if the order that is trying to be placed is by the user the request comes from
             //if not then we deny the operation, else we process the order (and validate everything else)
             String userId = authManager.getNetId();
+
             if (!userId.equals(incoming.getUserId())){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "You are trying to place an order for someone else").build();
             }
+
             //return the order we just processed to the user
             Order processed = orderService.processOrder(incoming);
 
