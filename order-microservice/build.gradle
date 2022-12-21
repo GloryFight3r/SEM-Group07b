@@ -106,6 +106,15 @@ jacocoTestCoverageVerification() {
     }
 }
 
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        csv.enabled true
+    }
+}
+
+
 checkstyle {
     toolVersion "8.37"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")

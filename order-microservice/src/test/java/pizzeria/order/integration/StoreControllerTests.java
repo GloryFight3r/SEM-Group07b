@@ -55,7 +55,7 @@ public class StoreControllerTests {
     @BeforeEach
     public void init() {
         when(mockAuthManager.getNetId()).thenReturn("ExampleUser");
-        when(mockAuthManager.getRole()).thenReturn("ROLE_MANAGER");
+        when(mockAuthManager.getRole()).thenReturn("[ROLE_MANAGER]");
         when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(true);
         when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("ExampleUser");
         when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_MANAGER")));
