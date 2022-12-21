@@ -12,6 +12,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class PercentageCoupon extends Coupon {
+
     @Getter
     @Setter
     private double percentage;

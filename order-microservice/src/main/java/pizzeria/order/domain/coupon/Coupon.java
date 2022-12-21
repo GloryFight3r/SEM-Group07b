@@ -7,7 +7,6 @@ import pizzeria.order.domain.order.Order;
 import pizzeria.order.models.GetPricesResponseModel;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;

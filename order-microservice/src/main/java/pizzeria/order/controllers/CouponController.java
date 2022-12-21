@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pizzeria.order.domain.coupon.CouponService;
-import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.models.CouponModel;
 
 /**
@@ -38,7 +37,7 @@ public class CouponController {
      */
     @PostMapping("/create")
     public ResponseEntity<Void> createCoupon(@RequestBody CouponModel coupon) {
-        //if the coupon created has been succesful respond with created
+        //if the coupon created has been successful respond with created
         if (couponService.createCoupon(coupon))
             return ResponseEntity.status(HttpStatus.CREATED).build();
         //else bad request if any errors
