@@ -4,12 +4,14 @@ import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.models.GetPricesResponseModel;
 
+import javax.persistence.Entity;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * The type Two for one coupon.
  */
+@Entity
 public class TwoForOneCoupon extends Coupon {
 
     /**

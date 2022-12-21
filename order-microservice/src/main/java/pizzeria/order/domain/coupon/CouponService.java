@@ -2,6 +2,7 @@ package pizzeria.order.domain.coupon;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pizzeria.order.models.CouponModel;
 
 /**
  * The type Coupon service.
@@ -27,10 +28,16 @@ public class CouponService {
      * @param coupon the coupon to be created
      * @return the boolean
      */
-    public <T extends Coupon> boolean createCoupon(T coupon) {
+    public boolean createCoupon(CouponModel coupon) {
         try {
             //we save the coupon in the database (unless anything goes wrong)
-            couponRepository.save(coupon);
+            if (coupon.getType().equals("PERCENTAGE")) {
+                PercentageCoupon percentageCoupon = new PercentageCoupon(coupon.getId(), coupon.getPercentage());
+                couponRepository.save(percentageCoupon);
+            } else if (coupon.getType().equals("TWO_FOR_ONE")) {
+                TwoForOneCoupon twoForOneCoupon = new TwoForOneCoupon(coupon.getId());
+                couponRepository.save(twoForOneCoupon);
+            } else return false;
         } catch (Exception e) {
             return false;
         }
