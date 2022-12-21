@@ -24,7 +24,7 @@ public class HttpRequestService {
 
     /**
      * @param token The token of the user
-     * @return the list of the allergens of the user associated with the token from the user ms.
+     * @return the list of the allergens of the user associated with the JWT token from the user ms.
      */
     public Optional<List<String>> getUserAllergens(String token) {
         HttpHeaders headers = new HttpHeaders();
