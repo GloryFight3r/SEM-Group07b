@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,6 +14,7 @@ import pizzeria.order.domain.store.Store;
 import pizzeria.order.domain.store.StoreRepository;
 import pizzeria.order.domain.store.StoreService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles({"test"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StoreServiceTests {
-
     @Autowired
     private transient StoreService storeService;
 
@@ -74,7 +73,7 @@ public class StoreServiceTests {
                 Arguments.of(new Store("Nl-2624ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL-2624Me", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL-ME", correctEmail), StoreService.InvalidLocationException.class),
-                Arguments.of(new Store("NL-99991ME",correctEmail), StoreService.InvalidLocationException.class),
+                Arguments.of(new Store("NL-99991ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL999ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL999M2", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL99932", correctEmail), StoreService.InvalidLocationException.class)
@@ -148,7 +147,7 @@ public class StoreServiceTests {
                 Arguments.of(new Store("Nl-2624ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL-2624Me", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL-ME", correctEmail), StoreService.InvalidLocationException.class),
-                Arguments.of(new Store("NL-99991ME",correctEmail), StoreService.InvalidLocationException.class),
+                Arguments.of(new Store("NL-99991ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL999ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL999M2", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store("NL99932", correctEmail), StoreService.InvalidLocationException.class)
@@ -192,15 +191,50 @@ public class StoreServiceTests {
     }
 
     @Test
-    void getEmailById() {
-        
+    void getEmailById_worksCorrectly() throws Exception {
+        Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
+        storeService.addStore(newstore);
+
+        String actualEmail = storeService.getEmailById(1L);
+
+        assertThat(actualEmail).isEqualTo(newstore.getContact());
     }
 
     @Test
-    void existsById() {
+    void getEmailById_noSuchId() throws Exception {
+        Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
+        storeService.addStore(newstore);
+
+        String actualEmail = storeService.getEmailById(2L);
+
+        assertThat(actualEmail).isEqualTo(null);
     }
 
     @Test
-    void getAllStores() {
+    void existsById_worksCorrectly() throws Exception {
+        Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
+        storeService.addStore(newstore);
+
+        assertThat(storeService.existsById(1L)).isTrue();
+    }
+
+    @Test
+    void existsById_noSuchId() throws Exception {
+        Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
+        storeService.addStore(newstore);
+
+        assertThat(storeService.existsById(2L)).isFalse();
+    }
+
+    @Test
+    void getAllStores() throws Exception {
+        Store newStore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
+        Store newStore2 = new Store("NL-2625ME", "borislavsemerdzhiev2.02@gmail.com");
+        Store newStore3 = new Store("NL-2626ME", "borislavsemerdzhiev3.02@gmail.com");
+        storeService.addStore(newStore);
+        storeService.addStore(newStore2);
+        storeService.addStore(newStore3);
+
+        assertThat(storeService.getAllStores()).containsExactlyInAnyOrderElementsOf(List.of(newStore, newStore2, newStore3));
     }
 }
