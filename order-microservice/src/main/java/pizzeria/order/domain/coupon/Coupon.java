@@ -2,18 +2,19 @@ package pizzeria.order.domain.coupon;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.models.GetPricesResponseModel;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 /**
  * The type Coupon.
  */
-@Entity
+@MappedSuperclass
 public abstract class Coupon {
 
     /**
@@ -23,6 +24,7 @@ public abstract class Coupon {
     @Id
     @Column(name = "couponId")
     @Getter
+    @Setter
     @NotNull
     protected String id;
 
