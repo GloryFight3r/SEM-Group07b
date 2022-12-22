@@ -42,8 +42,7 @@ public class Food {
     @Setter
     private List<Long> extraIngredients;
 
-    @Getter
-    private enum foodType {PIZZA};
+    //private enum foodType {PIZZA};
 
     /**
      * Food constructor for testing purposes
