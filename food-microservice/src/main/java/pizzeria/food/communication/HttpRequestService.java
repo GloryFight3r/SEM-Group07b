@@ -21,6 +21,12 @@ public class HttpRequestService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    /**
+     * @param restTemplate The restTemplate that is used to send the request
+     */
+    public HttpRequestService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     /**
      * @param token The token of the user

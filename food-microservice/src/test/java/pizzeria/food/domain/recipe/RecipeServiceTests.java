@@ -101,6 +101,20 @@ public class RecipeServiceTests {
         });
     }
 
+    @Test
+    void registerFoodAlreadyExistsByID(){
+        ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test3", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test4", 1.0, new ArrayList<>()));
+
+        Recipe recipe = new Recipe("test", List.of(3L, 2L, 4L, 12L), 12.0);
+        recipe = recipeRepository.save(recipe);
+        Recipe recipe1 = new Recipe("test1", List.of(2L, 3L), 12.0);
+        recipe1.setId(recipe.getId());
+        assertThrows(RecipeAlreadyInUseException.class, () -> recipeService.registerFood(recipe1));
+    }
+
 
     @Test
     void updateFood() {
@@ -345,6 +359,16 @@ public class RecipeServiceTests {
         long id = recipe.getId();
 
         assertThrows(IngredientNotFoundException.class, () -> recipeService.getBaseToppings(id));
+    }
+
+    @Test
+    void testGetPricesWithNullInput(){
+        try {
+            Map<Long, Tuple> result = recipeService.getPrices(null);
+        } catch (RecipeNotFoundException e) {
+            fail();
+        }
+
     }
 
 

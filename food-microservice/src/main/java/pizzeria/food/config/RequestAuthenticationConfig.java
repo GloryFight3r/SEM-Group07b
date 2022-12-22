@@ -39,6 +39,8 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/recipe/save").hasAuthority(role)
                 .antMatchers("/recipe/update").hasAuthority(role)
                 .antMatchers("/recipe/delete").hasAuthority(role)
+                .antMatchers("/allergens/menu").authenticated()
+                .antMatchers("/allergens/warn").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

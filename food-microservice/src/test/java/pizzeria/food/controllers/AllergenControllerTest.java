@@ -124,4 +124,40 @@ class AllergenControllerTest {
         ResponseEntity<Boolean> response = allergenController.checkIfSafe("a", requestModel);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
+
+    @Test
+    void testCheckIfSafe4(){
+        List<String> allergens = List.of("gluten", "lactose");
+        when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
+        try {
+            when(allergenService.checkIfSafeRecipeWithId(1L, allergens)).thenThrow(new RecipeNotFoundException("Test"));
+            CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
+            requestModel.setId(1L);
+            ResponseEntity<Boolean> response = allergenController.checkIfSafe("a", requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertTrue(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (IngredientNotFoundException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testCheckIfSafe5(){
+        List<String> allergens = List.of("gluten", "lactose");
+        when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
+        try {
+            when(allergenService.checkIfSafeRecipeWithId(1L, allergens)).thenThrow(new IngredientNotFoundException("Test"));
+            CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
+            requestModel.setId(1L);
+            ResponseEntity<Boolean> response = allergenController.checkIfSafe("a", requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertTrue(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (IngredientNotFoundException e) {
+            fail();
+        }
+    }
 }
