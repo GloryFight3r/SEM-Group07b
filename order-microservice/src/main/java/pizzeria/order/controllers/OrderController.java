@@ -59,7 +59,7 @@ public class OrderController {
             //if not then we deny the operation, else we process the order (and validate everything else)
             String userId = authManager.getNetId();
 
-            if (!userId.equals(incoming.getUserId())){
+            if (!userId.equals(incoming.getUserId())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "You are trying to place an order for someone else").build();
             }
 

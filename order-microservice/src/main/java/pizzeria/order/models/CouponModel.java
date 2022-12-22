@@ -12,6 +12,4 @@ public class CouponModel {
     double percentage;
     String type;
 
-
-
 }

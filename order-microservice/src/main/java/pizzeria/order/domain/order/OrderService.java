@@ -14,6 +14,7 @@ import pizzeria.order.models.GetPricesResponseModel;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -72,14 +73,16 @@ public class OrderService {
      */
     @SuppressWarnings("PMD")
     public Order processOrder(Order order) throws Exception {
-        if (order == null)
+        // null-checks for all members
+        if (order == null || order.getFoods() == null || order.getUserId() == null
+                || order.getPickupTime() == null || order.getCouponIds() == null)
             throw new CouldNotStoreException();
         // check if we are in 'edit mode' (the orderId is specified in the Order object)
         // then check if the order belongs to the user
         //when we find by id we return an optional, if for some reason this optional does not exist return new order, which has null fields for non-primitives
         //essentially check if the order is in the repo and belongs to the person trying to edit
         if (order.orderId != null && !order.getUserId().equals(orderRepo.findById(order.orderId).orElse(new Order()).getUserId())) {
-            System.out.println(order.getUserId() + " " + orderRepo.findByOrderId(order.orderId));
+            //System.out.println(order.getUserId() + " " + orderRepo.findByOrderId(order.orderId));
             throw new InvalidEditException();
         }
 
@@ -118,16 +121,8 @@ public class OrderService {
                 throw new PriceNotRightException("Price is not right");
             }
 
-            /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
-                foodRepository.deleteAll(orderRepo.findByOrderId(order.getOrderId()).get().getFoods());
-            }*/
-
             return orderRepo.save(order);
         }
-
-//        for (Coupon c : coupons) {
-//            System.out.println(c.getId());
-//        }
 
         double minPrice = Double.MAX_VALUE;
         order.couponIds.add("0");
@@ -148,10 +143,6 @@ public class OrderService {
         if (Math.abs(order.price - minPrice) > EPS) {
             throw new PriceNotRightException("Price is not right");
         }
-
-        /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
-            foodRepository.deleteAll(orderRepo.findByOrderId(order.getOrderId()).get().getFoods());
-        }*/
 
         return orderRepo.save(order);
     }
@@ -223,7 +214,7 @@ public class OrderService {
     public static class PriceNotRightException extends Exception {
         private final String msg;
         public PriceNotRightException(String msg) {
-            this.msg = msg;
+            this.msg = Objects.requireNonNullElse(msg, "[err loading price]");
         }
         @Override
         public String getMessage(){
