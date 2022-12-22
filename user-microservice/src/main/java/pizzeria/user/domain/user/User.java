@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import pizzeria.user.domain.HasEvents;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-public class User extends HasEvents {
+public class User {
     @Id
     @Column(name = "id", nullable = false)
     //@GeneratedValue(strategy = GenerationType.AUTO)

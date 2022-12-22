@@ -67,9 +67,19 @@ public class UserService {
     /**
      * Deletes a user from the database, given his id
      *
-     * @param id Unique id of the user
+     * @param email Email of the user
      */
-    public void deleteUser(String id) {
+    public void deleteUserByEmail(String email) {
+        userRepository.deleteUserByEmail(email);
+    }
+
+
+    /**
+     * Deletes a user from the database, given his id
+     *
+     * @param id ID of the user
+     */
+    public void deleteUserById(String id) {
         userRepository.deleteById(id);
     }
 

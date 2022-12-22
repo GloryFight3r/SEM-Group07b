@@ -59,7 +59,7 @@ public class UserController {
 
             //registers the user in the authenticate-microservice database
             if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
-                userService.deleteUser(savedUser.get().getEmail());
+                userService.deleteUserByEmail(savedUser.get().getEmail());
 
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not communicate with " +
                         "authentication service");
@@ -88,7 +88,7 @@ public class UserController {
     @DeleteMapping("/delete_user")
     public ResponseEntity deleteUser() {
         if (userService.userExistsById(authManager.getNetId())) {
-            userService.deleteUser(authManager.getNetId());
+            userService.deleteUserById(authManager.getNetId());
             return ResponseEntity.ok().build();
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such id found");
