@@ -102,6 +102,15 @@ public class RecipeServiceTests {
     }
 
     @Test
+    void testUserInputThrowsInvalidException1(){
+        ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test3", 1.0, new ArrayList<>()));
+        Recipe recipe = null;
+        assertThrows(InvalidRecipeException.class, () -> recipeService.registerFood(recipe));
+    }
+
+    @Test
     void registerFoodAlreadyExistsByID(){
         ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
         ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
@@ -138,6 +147,8 @@ public class RecipeServiceTests {
             fail();
         } catch (RecipeNotFoundException e) {
             fail();
+        } catch (InvalidRecipeException e) {
+            fail();
         }
     }
 
@@ -171,6 +182,22 @@ public class RecipeServiceTests {
     }
 
     @Test
+    void updateFoodThrowsInvalidRecipeException(){
+        ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
+        ingredientRepository.save(new Ingredient("test3", 1.0, new ArrayList<>()));
+        Recipe recipe = new Recipe("test", List.of(1L, 2L), 12.0);
+
+        assertThrows(InvalidRecipeException.class, () -> {
+            recipeService.registerFood(recipe);
+            recipe.setId(1L);
+            recipe.setBaseToppings(List.of(1L, 2L, 3L));
+            recipe.setName(null);
+            recipeService.updateFood(recipe, recipe.getId());
+        });
+    }
+
+    @Test
     void deleteFood() {
         ingredientRepository.save(new Ingredient("test1", 1.0, new ArrayList<>()));
         ingredientRepository.save(new Ingredient("test2", 1.0, new ArrayList<>()));
@@ -187,6 +214,8 @@ public class RecipeServiceTests {
         } catch (IngredientNotFoundException e) {
             fail();
         } catch (RecipeAlreadyInUseException e) {
+            fail();
+        } catch (InvalidRecipeException e) {
             fail();
         }
     }
@@ -371,6 +400,40 @@ public class RecipeServiceTests {
 
     }
 
+    @Test
+    void testUserInputValidation1(){
+        assertFalse(recipeService.userInputValidation(null));
+    }
+
+    @Test
+    void testUserInputValidation2(){
+        assertFalse(recipeService.userInputValidation(new Recipe(null, null, 0.0)));
+    }
+
+    @Test
+    void testUserInputValidation3(){
+        assertFalse(recipeService.userInputValidation(new Recipe("", new ArrayList<>(), 1.0)));
+    }
+
+    @Test
+    void testUserInputValidation4(){
+        assertFalse(recipeService.userInputValidation(new Recipe("test", null, 0.0)));
+    }
+
+    @Test
+    void testUserInputValidation5(){
+        assertFalse(recipeService.userInputValidation(new Recipe("test", new ArrayList<>(), 0.0)));
+    }
+
+    @Test
+    void testUserInputValidation6(){
+        assertFalse(recipeService.userInputValidation(new Recipe("test", new ArrayList<>(), -1.0)));
+    }
+
+    @Test
+    void testUserInputValidation7(){
+        assertTrue(recipeService.userInputValidation(new Recipe("t", new ArrayList<>(), 1.0)));
+    }
 
 
 }
