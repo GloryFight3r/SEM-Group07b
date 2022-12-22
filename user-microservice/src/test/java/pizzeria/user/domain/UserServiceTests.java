@@ -104,7 +104,7 @@ public class UserServiceTests {
 
         Optional<User> user = userService.findUserByEmail(email);
 
-        userService.deleteUser(user.get().getId());
+        userService.deleteUserById(user.get().getId());
 
         assertThat(userRepository.findUserByEmail(email)).isEmpty();
     }

@@ -43,7 +43,8 @@ public class UserController {
     @PostMapping("/create_user")
     public ResponseEntity create(@RequestBody UserRegisterModel user) {
         // perform UserModel data validation
-        if (user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
+        if (user.getEmail() == null || user.getPassword() == null || user.getName() == null ||
+                user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Arguments for user are " +
                     "invalid", new InvalidUserArgumentsException(user));
         }
@@ -53,13 +54,11 @@ public class UserController {
 
             Optional<User> savedUser = userService.findUserByEmail(user.getEmail());
 
-            if (savedUser.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not store the user in the database");
-            }
-
             //registers the user in the authenticate-microservice database
             if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
-                userService.deleteUser(savedUser.get().getEmail());
+
+                System.out.println("DASDAS");
+                userService.deleteUserByEmail(savedUser.get().getEmail());
 
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not communicate with " +
                         "authentication service");
@@ -88,7 +87,7 @@ public class UserController {
     @DeleteMapping("/delete_user")
     public ResponseEntity deleteUser() {
         if (userService.userExistsById(authManager.getNetId())) {
-            userService.deleteUser(authManager.getNetId());
+            userService.deleteUserById(authManager.getNetId());
             return ResponseEntity.ok().build();
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such id found");
