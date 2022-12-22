@@ -44,7 +44,7 @@ public class JwtTokenVerifier {
      * @return A collection of granted authorities in the format ROLE_(Given role)
      */
     public Collection
-            <? extends GrantedAuthority> getRoleFromToken(String token) {
+            <GrantedAuthority> getRoleFromToken(String token) {
         String role = getClaimFromToken(token, claims -> claims.get("role").toString());
         role = role.replace("[", "").replace("]", "");
         return Collections.singleton(new SimpleGrantedAuthority(role));

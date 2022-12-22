@@ -43,7 +43,8 @@ public class UserController {
     @PostMapping("/create_user")
     public ResponseEntity create(@RequestBody UserRegisterModel user) {
         // perform UserModel data validation
-        if (user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
+        if (user.getEmail() == null || user.getPassword() == null || user.getName() == null ||
+                user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Arguments for user are " +
                     "invalid", new InvalidUserArgumentsException(user));
         }
@@ -52,10 +53,6 @@ public class UserController {
             userService.saveUser(user);
 
             Optional<User> savedUser = userService.findUserByEmail(user.getEmail());
-
-            if (savedUser.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not store the user in the database");
-            }
 
             //registers the user in the authenticate-microservice database
             if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
@@ -90,9 +87,8 @@ public class UserController {
         if (userService.userExistsById(authManager.getNetId())) {
             userService.deleteUserById(authManager.getNetId());
             return ResponseEntity.ok().build();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such id found");
         }
+        throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "No user with such id found");
     }
 
     /**
@@ -139,7 +135,8 @@ public class UserController {
      */
     @GetMapping("/login")
     public ResponseEntity<LoginResponseModel> loginUser(@RequestBody LoginModel loginModel) {
-        if (loginModel.getEmail().isEmpty() || loginModel.getPassword().isEmpty()) {
+        if (loginModel.getEmail() == null || loginModel.getPassword() == null ||
+                loginModel.getEmail().isEmpty() || loginModel.getPassword().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Login details' format is " +
                     "invalid", new InvalidLoginArgumentsException(loginModel));
         }

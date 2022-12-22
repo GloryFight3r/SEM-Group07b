@@ -83,6 +83,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+
     /**
      * Updates the allergies associated with the user with the given id
      *
