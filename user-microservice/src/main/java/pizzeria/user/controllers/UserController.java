@@ -56,8 +56,6 @@ public class UserController {
 
             //registers the user in the authenticate-microservice database
             if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
-
-                System.out.println("DASDAS");
                 userService.deleteUserByEmail(savedUser.get().getEmail());
 
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not communicate with " +

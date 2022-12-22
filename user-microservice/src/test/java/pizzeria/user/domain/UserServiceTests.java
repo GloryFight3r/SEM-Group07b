@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -69,6 +70,37 @@ public class UserServiceTests {
     }
 
     @Test
+    public void testSaveUserWrongEmailFormat(){
+        userModel.setEmail("test");
+        UserService.InvalidEmailException exception = assertThrows(UserService.InvalidEmailException.class, () -> {
+            userService.saveUser(userModel);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The email test is not valid");
+    }
+
+    @Test
+    public void testSaveUserEmailAlreadyInUse(){
+        try {
+            userService.saveUser(userModel);
+        } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
+            System.out.println("User with such email already exists");
+        }
+
+        Optional<User> actualUser = userRepository.findUserByEmail(email);
+
+        //make sure the user was saved properly
+        Assertions.assertThat(actualUser).isNotEmpty();
+
+        //now try to save the user again but the email is already in use
+        EmailAlreadyInUseException exception = assertThrows(EmailAlreadyInUseException.class, () -> {
+            userService.saveUser(userModel);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Test1@gmail.com");
+    }
+
+    @Test
     public void findUserByEmail_worksCorrectly() {
         User tempUser = new User(name, email, allergies);
 
@@ -97,7 +129,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void deleteUser_worksCorrectly() {
+    public void deleteUserById_worksCorrectly() {
         userRepository.save(new User(name, email, allergies));
 
         assertThat(userRepository.existsByEmail(email)).isTrue();
@@ -105,6 +137,19 @@ public class UserServiceTests {
         Optional<User> user = userService.findUserByEmail(email);
 
         userService.deleteUserById(user.get().getId());
+
+        assertThat(userRepository.findUserByEmail(email)).isEmpty();
+    }
+
+    @Test
+    public void deleteUserByEmail_worksCorrectly() {
+        userRepository.save(new User(name, email, allergies));
+
+        assertThat(userRepository.existsByEmail(email)).isTrue();
+
+        Optional<User> user = userService.findUserByEmail(email);
+
+        userService.deleteUserByEmail(user.get().getEmail());
 
         assertThat(userRepository.findUserByEmail(email)).isEmpty();
     }
@@ -135,6 +180,20 @@ public class UserServiceTests {
 
         Assertions.assertThat(actualUser).isNotEmpty();
 
-        assertThat(actualUser.get().getAllergies()).containsExactlyInAnyOrderElementsOf(allergies);
+        assertThat(userService.getAllergies(tempUser.getId())).containsExactlyInAnyOrderElementsOf(allergies);
+    }
+
+    @Test
+    public void getAllergiesOnNonExistingUser(){
+        User tempUser = new User(name, email, allergies);
+
+        userRepository.save(tempUser);
+
+        //uuid's are 32 base-16 character strings so "test" will never be generated
+        Optional <User> actualUser = userRepository.findUserById("test");
+
+        Assertions.assertThat(actualUser).isEmpty();
+
+        assertThat(userService.getAllergies("test")).isNull();
     }
 }

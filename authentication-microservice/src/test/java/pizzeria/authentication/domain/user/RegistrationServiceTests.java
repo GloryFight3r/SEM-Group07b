@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -45,6 +46,32 @@ public class RegistrationServiceTests {
 
         assertThat(savedUser.getId()).isEqualTo(testUser);
         assertThat(savedUser.getPassword()).isEqualTo(testHashedPassword);
+    }
+
+    @Test
+    void testRegisterMoreThan5Users() {
+        HashedPassword hp = new HashedPassword("pass");
+        Password p = new Password("pass");
+        AppUser user1 = new AppUser("id1", hp);
+        AppUser user2 = new AppUser("id2", hp);
+        AppUser user3 = new AppUser("id3", hp);
+        AppUser user4 = new AppUser("id4", hp);
+        AppUser user5 = new AppUser("id5", hp);
+        AppUser user6 = new AppUser("id6", hp);
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+        userRepository.save(user5);
+
+        assertEquals(userRepository.count(), 5L);
+        when(mockPasswordEncoder.hash(p)).thenReturn(hp);
+        try {
+            assertEquals(registrationService.registerUser("id6", p), user6);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
