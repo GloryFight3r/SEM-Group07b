@@ -1,32 +1,33 @@
 # Five nights at Annie's
 
-Backend for a pizza place order management application, implemented using microservices.
-To get started see the template code.
+Backend for a pizzeria chain order management solution, implemented using microservices.
 
-## Lab Template
+Credits go to [Raul Cotar](gitlab.ewi.tudelft.nl/rcotar), [Borislav Semerdzhiev](gitlab.ewi.tudelft.nl/bsemerdzhiev), [Juan Tarazona](https://gitlab.ewi.tudelft.nl/jtarazonarodri), [Laurens Michielsen](gitlab.ewi.tudelft.nl/llmichielsen), [Pavlos Markesinis](gitlab.ewi.tudelft.nl/pmarkesinis), [Francisco Ruas Vaz](gitlab.ewi.tudelft.nl/fruasvaz).
 
-This template contains two microservices:
+## Abilities
+
+Our solution primarily provides a way for clients to interact with the pizzerias and manage their orders and for the stores to receive these orders. On top of that, it provides a way for reginal managers to analyze and do arbitrary changes to the data managed by the system (e.g: orders, coupons).
+
+## Structure
+
+This project contains 4 microservices:
 - authentication-microservice
-- example-microservice
+- user-microservice
+- food-microservice
+- order-microservice
 
-The `authentication-microservice` is responsible for registering new users and authenticating current ones. After successful authentication, this microservice will provide a JWT token which can be used to bypass the security on the `example-microservice`. This token contains the *NetID* of the user that authenticated. If your scenario includes different roles, these will have to be added to the authentication-microservice and to the JWT token. To do this, you will have to:
-- Add a concept of roles to the `AppUser`
-- Add the roles to the `UserDetails` in `JwtUserDetailsService`
-- Add the roles as claims to the JWT token in `JwtTokenGenerator`
+The `authentication-microservice` is responsible for authenticating andd authorizing users. After successful authentication, this microservice will provide a JWT token which can be used to prove a user's identity to the other microservices. Users never communicate directly with this server.
 
-The `example-microservice` is just an example and needs to be modified to suit the domain you are modeling based on your scenario.
+The `user-microservice` is responsible for registering and logging in uor clients (and managers). It acts as a proxy for the Auth server, and it also stores user data such as alergens.
 
-The `domain` and `application` packages contain the code for the domain layer and application layer. The code for the framework layer is the root package as *Spring* has some limitations on were certain files are located in terms of autowiring.
+The `food-microservice` handles the manu and the available foods and ingredients that are avalable for purchase. It is relied upon by the frontend as well as the next microservice.
 
-### Running the microservices
+The `order-microservice` is the biggest microservice in our system. I handles order placement/editing/deletion and all the associated checks and functionality. I communicates with the previous 2 microservices in order to ensure that oreders are processed correctly. Most of the core business logic is implemented in here (e.g: coupons, price calculation, order placement).
 
-You can run the two microservices individually by starting the Spring applications. Then, you can use *Postman* to perform the different requests:
+## Testing
 
-Register:
-![image](instructions/register.png)
+Our project has a close to 100% meaningful test coverage, made possible by our extensive suite of unit and integration tests. We want ot make usre that our clients have a save and reliable solution.
 
-Authenticate:
-![image](instructions/authenticate.png)
+## Running the microservices
 
-Hello:
-![image](instructions/hello.png)
+You can run the two microservices individually by starting the Spring applications. There are 4 microservices: `Authentication` (start first), `User`, `Food`, and `Order`. You can manually test the system by using [Postman](https://www.postman.com/) to access the API.

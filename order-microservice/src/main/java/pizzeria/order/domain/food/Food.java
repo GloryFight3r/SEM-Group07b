@@ -2,6 +2,10 @@ package pizzeria.order.domain.food;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="food")
+@NoArgsConstructor
 public class Food {
 
     @Id
@@ -16,26 +21,25 @@ public class Food {
     @NotNull
     @Column(name="id")
     @Getter
+    @Setter
     private long id;
 
     @Getter
+    @Setter
     private long recipeId;
 
-    @Getter
-    private long orderId;
-
     @ElementCollection
-    @CollectionTable(name = "baseIngredients",
-            joinColumns = @JoinColumn(name = "id"))
     @Column(name = "baseIngredients")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
+    @Setter
     private List<Long> baseIngredients;
 
     @ElementCollection
-    @CollectionTable(name = "extraIngredients",
-            joinColumns = @JoinColumn(name = "id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Column(name = "extraIngredients")
     @Getter
+    @Setter
     private List<Long> extraIngredients;
 
     @Getter
@@ -53,7 +57,6 @@ public class Food {
     public Food(long id, long recipeId, long orderId, List<Long> base, List<Long> extra){
         this.id = id;
         this.recipeId = recipeId;
-        this.orderId = orderId;
         this.baseIngredients = base;
         this.extraIngredients = extra;
     }

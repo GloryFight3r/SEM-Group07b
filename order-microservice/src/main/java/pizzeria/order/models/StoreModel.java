@@ -9,6 +9,6 @@ public class StoreModel {
     String location;
     String contact;
     public Store parseToStore() {
-        return new Store(id, location, contact);
+        return new Store(location, contact);
     }
 }

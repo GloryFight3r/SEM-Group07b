@@ -1,5 +1,6 @@
 package pizzeria.order.domain.food;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class FoodPriceService {
     private final transient RestTemplate restTemplate;
 
+    @Autowired
     /**
      * Instantiates a new Food price service.
      *
@@ -25,6 +27,10 @@ public class FoodPriceService {
      */
     public FoodPriceService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
+    }
+
+    public FoodPriceService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -35,8 +41,12 @@ public class FoodPriceService {
      */
     public GetPricesResponseModel getFoodPrices(Order order) {
         List<Long> ingredients = new ArrayList<>();
-        for (Food f: order.getFoods())
+
+        for (Food f: order.getFoods()) {
             ingredients.addAll(f.getExtraIngredients());
+            ingredients.addAll(f.getBaseIngredients());
+        }
+
         List<Long> recipes = order.getFoods().stream()
                 .map(Food::getRecipeId).collect(Collectors.toList());
 
@@ -56,13 +66,24 @@ public class FoodPriceService {
         // build the request
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
+
         // send POST request
         ResponseEntity<GetPricesResponseModel> response =
                 this.restTemplate.postForEntity("http://localhost:8084/price/ids", entity, GetPricesResponseModel.class);
-
         // check response status code
+
+        System.out.println("DAS");
+
         if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody();
+            GetPricesResponseModel responseModel = response.getBody();
+            if (responseModel.getFoodPrices() == null) {
+                responseModel.setFoodPrices(new HashMap<>());
+            }
+            if (responseModel.getIngredientPrices() == null) {
+                responseModel.setIngredientPrices(new HashMap<>());
+            }
+
+            return responseModel;
         } else {
             return null;
         }

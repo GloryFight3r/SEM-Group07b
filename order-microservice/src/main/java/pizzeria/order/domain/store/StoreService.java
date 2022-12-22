@@ -2,8 +2,6 @@ package pizzeria.order.domain.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pizzeria.order.domain.order.Order;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -33,8 +31,8 @@ public class StoreService {
         return storeRepo.save(store);
     }
 
-    public boolean editStore(Store store) throws Exception {
-        Optional<Store> optionalStore = storeRepo.findById(store.getId());
+    public boolean editStore(Long id, Store store) throws Exception {
+        Optional<Store> optionalStore = storeRepo.findById(id);
 
         if (optionalStore.isEmpty()) {
             throw new StoreDoesNotExistException();
@@ -48,7 +46,11 @@ public class StoreService {
             throw new InvalidLocationException();
         }
 
-        storeRepo.save(store);
+        optionalStore.get().setContact(store.getContact());
+        optionalStore.get().setLocation(store.getLocation());
+
+        storeRepo.save(optionalStore.get());
+
         return true;
     }
 
@@ -62,20 +64,25 @@ public class StoreService {
         return storeRepo.deleteStoreById(storeId) != 0;
     }
 
-    public boolean notifyStore(Long storeId, String notificationType, Order order) throws StoreDoesNotExistException {
-        Optional<Store> optionalStore = storeRepo.findById(storeId);
-
-        if (optionalStore.isEmpty()) {
-            throw new StoreDoesNotExistException();
+    /**
+     * Get the email corresponding to the storeID
+     * @param id ID of the store
+     * @return Email of the corresponding store
+     */
+    public String getEmailById(Long id) {
+        if (!storeRepo.existsById(id)) {
+            return null;
         }
+        return storeRepo.findById(id).get().getContact();
+    }
 
-        // send email
-        // storeEmail = optionalStore.get().getContact();
-
-        // notify store via email
-        // using their contact in Store object
-        // email should include the type of notification and the order
-        return false;
+    /**
+     * Tells us whether a store exists with the given id
+     * @param id id of the store we want to check
+     * @return True or False depending on its existence
+     */
+    public boolean existsById(Long id) {
+        return storeRepo.existsById(id);
     }
 
     public List<Store> getAllStores() {

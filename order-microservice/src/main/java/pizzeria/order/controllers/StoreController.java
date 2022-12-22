@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.domain.store.Store;
+import pizzeria.order.models.DeleteStoreModel;
 import pizzeria.order.models.StoreModel;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class StoreController {
 
     @PostMapping("/create")
     public ResponseEntity<Store> createStore(@RequestBody StoreModel store) {
-        if (store.getId() != null || store.getLocation().isEmpty() || store.getContact().isEmpty()) {
+        if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
         }
 
@@ -39,12 +40,12 @@ public class StoreController {
 
     @PutMapping("/edit")
     public ResponseEntity editStore(@RequestBody StoreModel store) {
-        if (store.getId() != null || store.getLocation().isEmpty() || store.getContact().isEmpty()) {
+        if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
         }
 
         try {
-            boolean isEdited = storeService.editStore(store.parseToStore());
+            boolean isEdited = storeService.editStore(store.getId(), store.parseToStore());
             if (isEdited) {
                 return ResponseEntity.ok().build();
             } else {
@@ -56,9 +57,9 @@ public class StoreController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteStore(@RequestBody Long storeId) {
+    public ResponseEntity deleteStore(@RequestBody DeleteStoreModel store) {
         try {
-            boolean flag = storeService.deleteStore(storeId);
+            boolean flag = storeService.deleteStore(store.getId());
             if (flag) {
                 return ResponseEntity.ok().build();
             } else {
@@ -77,4 +78,14 @@ public class StoreController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
+
+    /*@PostMapping("/send_email")
+    public ResponseEntity<Email> sendEmail(@RequestBody SendEmailRequestModel model) {
+        try {
+            Email email = emailService.sendEmail(model.getStore(), model.getNotificationType(), model.getOrder());
+            return ResponseEntity.status(HttpStatus.OK).body(email);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
+    }*/
 }
