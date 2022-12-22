@@ -2,6 +2,8 @@ package pizzeria.food.domain.recipe;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pizzeria.food.domain.ingredient.Ingredient;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,5 +123,14 @@ class RecipeTest {
     void setBasePrice() {
         recipe.setBasePrice(11.0);
         assertEquals(11.0, recipe.getBasePrice());
+    }
+
+    @Test
+    void testEqualsIsNotInstanceOfRecipe(){
+        Recipe recipe = new Recipe("Test", List.of(1L, 2L, 3L), 10.0);
+        Ingredient ingredient = new Ingredient("Test", 10.0);
+        recipe.setId(1L);
+        ingredient.setId(1L);
+        assertNotEquals(recipe, ingredient);
     }
 }
