@@ -37,6 +37,7 @@ public class TwoForOneCoupon extends Coupon {
     @Override
     public double calculatePrice(Order order, GetPricesResponseModel prices, double basePrice) {
         //make a hashmap that keeps track of every food in the list with its occurrences
+
         Map<Long, Integer> foodMap = new HashMap<>();
         for (Food f : order.getFoods()){
             //if this recipe is already in the choices, add an occurrence else put it with 1 occurrence
@@ -48,12 +49,12 @@ public class TwoForOneCoupon extends Coupon {
         }
 
         //now every time we have 2 times an item we only charge it once
-        //so essentially we subtract from the price (occurrences)/2 - 1 per recipe
+        //so essentially we subtract from the price (occurrences)/2 per recipe
         //this coupon could be made a little more interesting if we add a recipe id (like margherita pizza)
         double reduction = 0.0;
         for (Long key : foodMap.keySet()){
             int reduced_times = foodMap.get(key) / 2;
-            reduction += (double) reduced_times * prices.getIngredientPrices().get(key).getPrice();
+            reduction += (double) reduced_times * prices.getFoodPrices().get(key).getPrice();
         }
 
         //return the base price - the reduction

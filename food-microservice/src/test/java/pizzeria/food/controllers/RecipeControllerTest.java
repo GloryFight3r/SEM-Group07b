@@ -89,7 +89,7 @@ class RecipeControllerTest {
     @Test
     void updateFood() {
         Recipe recipe = new Recipe("Test", List.of(1L, 55L, 3L), 12.0);
-        try{
+        try {
             when(recipeService.updateFood(recipe, 1L)).thenReturn(recipe);
             UpdateFoodRequestModel requestModel = new UpdateFoodRequestModel();
             requestModel.setRecipe(recipe);
@@ -107,7 +107,7 @@ class RecipeControllerTest {
     @Test
     void updateFoodThrowsException(){
         Recipe recipe = new Recipe("Test", List.of(1L, 55L, 3L), 12.0);
-        try{
+        try {
             when(recipeService.updateFood(recipe, 1L)).thenThrow(IngredientNotFoundException.class);
             UpdateFoodRequestModel requestModel = new UpdateFoodRequestModel();
             requestModel.setRecipe(recipe);
@@ -125,7 +125,7 @@ class RecipeControllerTest {
     @Test
     void updateFoodThrowsException2(){
         Recipe recipe = new Recipe("Test", List.of(1L, 55L, 3L), 12.0);
-        try{
+        try {
             when(recipeService.updateFood(recipe, 1L)).thenThrow(RecipeNotFoundException.class);
             UpdateFoodRequestModel requestModel = new UpdateFoodRequestModel();
             requestModel.setRecipe(recipe);
@@ -142,7 +142,7 @@ class RecipeControllerTest {
 
     @Test
     void deleteFood() {
-        try{
+        try {
             when(recipeService.deleteFood(1L)).thenReturn(true);
             DeleteFoodRequestModel requestModel = new DeleteFoodRequestModel();
             requestModel.setId(1L);
@@ -155,7 +155,7 @@ class RecipeControllerTest {
 
     @Test
     void testDeleteFoodThrowsException(){
-        try{
+        try {
             when(recipeService.deleteFood(1L)).thenThrow(RecipeNotFoundException.class);
             DeleteFoodRequestModel requestModel = new DeleteFoodRequestModel();
             requestModel.setId(1L);

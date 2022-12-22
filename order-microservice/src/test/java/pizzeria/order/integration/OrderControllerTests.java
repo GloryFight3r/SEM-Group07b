@@ -17,6 +17,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.client.RestTemplate;
 import pizzeria.order.authentication.AuthManager;
 import pizzeria.order.authentication.JwtTokenVerifier;
+import pizzeria.order.domain.coupon.Coupon_2for1_Repository;
+import pizzeria.order.domain.coupon.Coupon_percentage_Repository;
+import pizzeria.order.domain.coupon.PercentageCoupon;
+import pizzeria.order.domain.coupon.TwoForOneCoupon;
 import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.food.FoodPriceService;
 import pizzeria.order.domain.food.FoodRepository;
@@ -77,6 +81,11 @@ public class OrderControllerTests {
 
     @Autowired
     private transient ClockWrapper clockWrapper;
+
+    @Autowired
+    private transient Coupon_percentage_Repository coupon_percentage_repository;
+    @Autowired
+    private transient Coupon_2for1_Repository coupon_2for1_repository;
 
     @BeforeEach
     public void init() {
@@ -146,58 +155,243 @@ public class OrderControllerTests {
         }
     }
 
-//    @Test
-//    void placeOrder_checkCouponFunctionality() throws Exception {
-//        PercentageCoupon percentageCoupon = new PercentageCoupon("Coupon", 0.2);
-//
-//        Food firstFood = new Food();
-//        firstFood.setBaseIngredients(List.of(1L));
-//        firstFood.setExtraIngredients(List.of(4L));
-//        firstFood.setRecipeId(2L);
-//
-//        OrderPlaceModel order = new OrderPlaceModel();
-//        order.setUserId("Mocked Id");
-//        order.setCouponIds(List.of("Coupon"));
-//        order.setFoods(List.of(firstFood));
-//        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
-//        order.setPrice(127.8);
-//        order.setStoreId(1L);
-//
-//        Map<Long, Tuple> foodPrices = new HashMap<>();
-//        Map<Long, Tuple> ingredientPrices = new HashMap<>();
-//
-//        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
-//        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
-//        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
-//
-//        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
-//        pricesResponseModel.setIngredientPrices(ingredientPrices);
-//        pricesResponseModel.setFoodPrices(foodPrices);
-//
-//        String serializedString = JsonUtil.serialize(order);
-//
-//        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
-//
-//        // Act
-//        ResultActions resultActions = mockMvc.perform(post("/order/place")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(serializedString)
-//                .header("Authorization", "Bearer MockedToken"));
-//
-//        MvcResult response = resultActions.andExpect(status().isCreated()).andReturn();
-//
-//        Order actualOrder = JsonUtil.deserialize(response.getResponse().getContentAsString(), Order.class);
-//
-//        assertThat(actualOrder.getStoreId()).isEqualTo(order.getStoreId());
-//        assertThat(actualOrder.getUserId()).isEqualTo(order.getUserId());
-//        assertThat(actualOrder.getPickupTime()).isEqualTo(order.getPickupTime());
-//        assertThat(actualOrder.getCouponIds()).containsExactlyInAnyOrderElementsOf(order.getCouponIds());
-//        for (Food currentFood : actualOrder.getFoods()) {
-//            assertThat(currentFood.getRecipeId()).isEqualTo(foodRepository.findById(currentFood.getId()).get().getRecipeId());
-//            assertThat(currentFood.getBaseIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getBaseIngredients());
-//            assertThat(currentFood.getExtraIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getExtraIngredients());
-//        }
-//    }
+    @Test
+    void placeOrder_checkCouponFunctionality() throws Exception {
+        PercentageCoupon percentageCoupon = new PercentageCoupon("Coupon", 0.2);
+
+        coupon_percentage_repository.save(percentageCoupon);
+
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        OrderPlaceModel order = new OrderPlaceModel();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of("Coupon"));
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
+        order.setPrice(102.24);
+        order.setStoreId(1L);
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(order);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/place")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        MvcResult response = resultActions.andExpect(status().isCreated()).andReturn();
+
+        Order actualOrder = JsonUtil.deserialize(response.getResponse().getContentAsString(), Order.class);
+
+        assertThat(actualOrder.getStoreId()).isEqualTo(order.getStoreId());
+        assertThat(actualOrder.getUserId()).isEqualTo(order.getUserId());
+        assertThat(actualOrder.getPickupTime()).isEqualTo(order.getPickupTime());
+        assertThat(actualOrder.getCouponIds()).containsExactlyInAnyOrderElementsOf(order.getCouponIds());
+        for (Food currentFood : actualOrder.getFoods()) {
+            assertThat(currentFood.getRecipeId()).isEqualTo(foodRepository.findById(currentFood.getId()).get().getRecipeId());
+            assertThat(currentFood.getBaseIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getBaseIngredients());
+            assertThat(currentFood.getExtraIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getExtraIngredients());
+        }
+    }
+
+    @Test
+    void placeOrder_twoCoupons() throws Exception {
+        PercentageCoupon percentageCoupon = new PercentageCoupon("Coupon", 0.2);
+
+        coupon_percentage_repository.save(percentageCoupon);
+
+        PercentageCoupon percentageCoupon2 = new PercentageCoupon("Coupon", 0.4);
+
+        coupon_percentage_repository.save(percentageCoupon2);
+
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        OrderPlaceModel order = new OrderPlaceModel();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of("Coupon"));
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
+        order.setPrice(76.68);
+        order.setStoreId(1L);
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(order);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/place")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        MvcResult response = resultActions.andExpect(status().isCreated()).andReturn();
+
+        Order actualOrder = JsonUtil.deserialize(response.getResponse().getContentAsString(), Order.class);
+
+        assertThat(actualOrder.getStoreId()).isEqualTo(order.getStoreId());
+        assertThat(actualOrder.getUserId()).isEqualTo(order.getUserId());
+        assertThat(actualOrder.getPickupTime()).isEqualTo(order.getPickupTime());
+        assertThat(actualOrder.getCouponIds()).containsExactlyInAnyOrderElementsOf(order.getCouponIds());
+        for (Food currentFood : actualOrder.getFoods()) {
+            assertThat(currentFood.getRecipeId()).isEqualTo(foodRepository.findById(currentFood.getId()).get().getRecipeId());
+            assertThat(currentFood.getBaseIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getBaseIngredients());
+            assertThat(currentFood.getExtraIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getExtraIngredients());
+        }
+    }
+
+    @Test
+    void placeOrder_twoForOneCoupon() throws Exception {
+        TwoForOneCoupon twoForOneCoupon = new TwoForOneCoupon("Coupon");
+
+        coupon_2for1_repository.save(twoForOneCoupon);
+
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Food secondFood = new Food();
+        secondFood.setBaseIngredients(List.of(1L));
+        secondFood.setExtraIngredients(List.of(4L));
+        secondFood.setRecipeId(2L);
+
+        OrderPlaceModel order = new OrderPlaceModel();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of("Coupon"));
+        order.setFoods(List.of(firstFood, secondFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
+        order.setPrice(100.0 + 2*27.8);
+        order.setStoreId(1L);
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(order);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/place")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        MvcResult response = resultActions.andExpect(status().isCreated()).andReturn();
+
+        Order actualOrder = JsonUtil.deserialize(response.getResponse().getContentAsString(), Order.class);
+
+        assertThat(actualOrder.getStoreId()).isEqualTo(order.getStoreId());
+        assertThat(actualOrder.getUserId()).isEqualTo(order.getUserId());
+        assertThat(actualOrder.getPickupTime()).isEqualTo(order.getPickupTime());
+        assertThat(actualOrder.getCouponIds()).containsExactlyInAnyOrderElementsOf(order.getCouponIds());
+        for (Food currentFood : actualOrder.getFoods()) {
+            assertThat(currentFood.getRecipeId()).isEqualTo(foodRepository.findById(currentFood.getId()).get().getRecipeId());
+            assertThat(currentFood.getBaseIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getBaseIngredients());
+            assertThat(currentFood.getExtraIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getExtraIngredients());
+        }
+    }
+
+    @Test
+    void placeOrder_threeCoupon() throws Exception {
+        TwoForOneCoupon twoForOneCoupon = new TwoForOneCoupon("Coupon");
+
+        coupon_2for1_repository.save(twoForOneCoupon);
+
+        PercentageCoupon percentageCoupon = new PercentageCoupon("Coupon2", 0.05);
+
+        coupon_percentage_repository.save(percentageCoupon);
+
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Food secondFood = new Food();
+        secondFood.setBaseIngredients(List.of(1L));
+        secondFood.setExtraIngredients(List.of(4L));
+        secondFood.setRecipeId(2L);
+
+        OrderPlaceModel order = new OrderPlaceModel();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of("Coupon", "Coupon2"));
+        order.setFoods(List.of(firstFood, secondFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
+        order.setPrice(100.0 + 2*27.8);
+        order.setStoreId(1L);
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(order);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/place")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        MvcResult response = resultActions.andExpect(status().isCreated()).andReturn();
+
+        Order actualOrder = JsonUtil.deserialize(response.getResponse().getContentAsString(), Order.class);
+
+        assertThat(actualOrder.getStoreId()).isEqualTo(order.getStoreId());
+        assertThat(actualOrder.getUserId()).isEqualTo(order.getUserId());
+        assertThat(actualOrder.getPickupTime()).isEqualTo(order.getPickupTime());
+        assertThat(actualOrder.getCouponIds()).containsExactly(twoForOneCoupon.getId());
+        for (Food currentFood : actualOrder.getFoods()) {
+            assertThat(currentFood.getRecipeId()).isEqualTo(foodRepository.findById(currentFood.getId()).get().getRecipeId());
+            assertThat(currentFood.getBaseIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getBaseIngredients());
+            assertThat(currentFood.getExtraIngredients()).containsExactlyInAnyOrderElementsOf(foodRepository.findById(currentFood.getId()).get().getExtraIngredients());
+        }
+    }
 
     @Test
     void placeOrder_invalidStore() throws Exception {

@@ -87,7 +87,7 @@ class AllergenControllerTest {
     @Test
     void testCheckIfSafe(){
         List<String> allergens = List.of("gluten", "lactose");
-        try{
+        try {
             when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
             CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
             requestModel.setId(1L);
@@ -103,7 +103,7 @@ class AllergenControllerTest {
     @Test
     void testCheckIfSafe2(){
         List<String> allergens = List.of("gluten", "lactose");
-        try{
+        try {
             when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
             CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
             requestModel.setId(1L);

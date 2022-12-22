@@ -127,13 +127,21 @@ public class OrderService {
             return orderRepo.save(order);
         }
 
+//        for (Coupon c : coupons) {
+//            System.out.println(c.getId());
+//        }
+
         double minPrice = Double.MAX_VALUE;
+        order.couponIds.add("0");
+
         for (Coupon c: coupons) {
             //iterate over the list of valid coupons
             double price = c.calculatePrice(order, prices, sum);
+
             if (Double.compare(price, minPrice) < 0) {
                 minPrice = price;
                 //set the first element in the coupon ids to the coupon used
+                //order.couponIds.clear();
                 order.couponIds.set(0, c.getId());
             }
         }
