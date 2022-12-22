@@ -1,8 +1,8 @@
 package pizzeria.order.integration;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 // activate profiles to have spring use mocks during auto-injection of certain beans.
-@ActiveProfiles({"test", "mockStoreService", "mockFoodPriceService", "mockCouponRepository"})
+@ActiveProfiles({"test", "restTemplateProfile", "mockPriceService"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class OrderServiceTest {
     @Autowired
@@ -57,16 +60,27 @@ public class OrderServiceTest {
     void beforeEach() throws Exception {
         // contains one peperoni with salami as base and extra pineapple and mushrooms, and 2 basic margheritas
         // normal price = 36.0, percentage discount price = 18.0, 2for1 discount price = 26.0
-        ArrayList<Food> foodList = new ArrayList<Food>(List.of(
-                new Food(0L, 1L, 0L, List.of(1L), List.of(0L, 2L)),
-                new Food(1L, 0L, 0L, List.of(), List.of()),
-                new Food(2L, 0L, 0L, List.of(), List.of())
-        ));
+        Food f1 = new Food();
+        f1.setRecipeId(1L);
+        f1.setBaseIngredients(List.of(1L));
+        f1.setExtraIngredients(List.of(0L, 2L));
+
+        Food f2 = new Food();
+        f2.setRecipeId(0L);
+        f2.setBaseIngredients(List.of());
+        f2.setExtraIngredients(List.of());
+
+        Food f3 = new Food();
+        f3.setRecipeId(0L);
+        f3.setBaseIngredients(List.of());
+        f3.setExtraIngredients(List.of());
+
+        ArrayList<Food> foodList = new ArrayList<Food>(List.of(f1, f2, f3));
         ArrayList<Food> invalidFoodList = new ArrayList<Food>(List.of(
                 new Food(99L, 99L, 99L, List.of(99L), List.of(99L))
         ));
 
-        Store st = storeService.addStore(new Store("NL-2624ME", "ba@abv.bg"));
+        Store st = storeService.addStore(new Store("NL-2624ME", "baa@gmail.com"));
 
         HashMap<Long, Tuple> recipePrices = new HashMap<>();
         recipePrices.put(0L, new Tuple(11, "Margherita"));
@@ -77,41 +91,45 @@ public class OrderServiceTest {
         ingredientPrices.put(2L, new Tuple(1, "Mushrooms"));
         pricesResponseModel = new GetPricesResponseModel(recipePrices, ingredientPrices);
 
-      //  when(storeService.existsById(any())).thenReturn(true);
-
-       // when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
-
-        //System.out.println("DASDAS" + st.getId());
-
         coupon_percentage_repository.save(new PercentageCoupon("percentage", 0.5));
         coupon_2for1_repository.save( new TwoForOneCoupon("2for1"));
 
         order_invalidTime = new Order(null, foodList, 1L, "uid", LocalDateTime.now(), 36, new ArrayList<String>(List.of()));
         order_invalidFood = new Order(null, invalidFoodList, 1L, "uid", LocalDateTime.now().plusHours(1), 36, new ArrayList<String>(List.of()));
-        order_invalidCoupons = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 36, new ArrayList<String>(List.of("invalid")));
+        order_invalidCoupons = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 37, new ArrayList<String>(List.of("invalid")));
         order_invalidPrice = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 26, new ArrayList<String>(List.of("percentage", "2for1")));
-        order_valid = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 18, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
+        order_valid = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 18.5, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
     }
 
-    //@Test
-    void testListAllOrders() throws Exception {
+    @Test
+    void testListValidOrder() throws Exception {
         // assert 0 orders
         assertTrue(orderService.listAllOrders().isEmpty());
 
-        // assert with 2 orders
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
         orderService.processOrder(order_valid);
-       // assertEquals(orderService.listAllOrders().size(), 1);
-       // orderService.processOrder(order_invalidCoupons);
-
-        //List<Order> orders = orderService.listAllOrders();
-        //assertEquals(orders.size(), 2);
-        //assertTrue(orders.contains(order_valid));
-       // assertTrue(orders.contains(order_invalidCoupons));
-
+        assertEquals(orderService.listAllOrders().size(), 1);
     }
 
-    //@Test
-    void testProcessOrder() throws Exception {
-        assertThrows(OrderService.TimeInvalidException.class, (Executable) orderService.processOrder(order_invalidTime));
+    @Test
+    void testListInvalidCoupons() throws Exception {
+        // assert 0 orders
+        assertTrue(orderService.listAllOrders().isEmpty());
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        orderService.processOrder(order_invalidCoupons);
+
+        List<Order> orders = orderService.listAllOrders();
+        assertEquals(orders.size(), 1);
+    }
+
+    @Test
+    void testProcessOrder_invalidTime() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        assertThatThrownBy(() -> {
+            orderService.processOrder(order_invalidTime);
+        }).isInstanceOf(OrderService.TimeInvalidException.class);
     }
 }

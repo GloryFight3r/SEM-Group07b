@@ -20,8 +20,6 @@ public class StoreService {
             throw new StoreAlreadyExistException();
         }
 
-        System.out.println("DAS");
-
         if (!verifyEmailFormat(store.getContact())) {
             throw new InvalidEmailException();
         }

@@ -107,14 +107,10 @@ public class OrderService {
         double sum = 0.0;
         for (Food f: order.getFoods()) {
             sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
-            //System.out.println(sum + " " + prices.getFoodPrices().get(f.getRecipeId()).getPrice());
             for (long l: f.getExtraIngredients()) {
                 sum += prices.getIngredientPrices().get(l).getPrice();
-                System.out.println(l + " " + prices.getIngredientPrices().get(l).getPrice());
             }
         }
-
-        //System.out.println(sum + " " + order.price);
 
         if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
             final double EPS = 1e-6;
