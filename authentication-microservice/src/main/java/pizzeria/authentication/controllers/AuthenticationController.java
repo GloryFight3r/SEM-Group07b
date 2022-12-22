@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,8 +65,6 @@ public class AuthenticationController {
                     new UsernamePasswordAuthenticationToken(
                             request.getId(),
                             request.getPassword()));
-        } catch (DisabledException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USER_DISABLED", e);
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", e);
         }
@@ -88,14 +85,9 @@ public class AuthenticationController {
     @SuppressWarnings("PMD")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
         try {
-
             String id = request.getId();
             Password password = new Password(request.getPassword());
-//            if (!AppUser.containsRole(request.getRole())) {
-//                throw new IllegalArgumentException();
-//            }
-//
-//            String role = request.getRole();
+
             registrationService.registerUser(id, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

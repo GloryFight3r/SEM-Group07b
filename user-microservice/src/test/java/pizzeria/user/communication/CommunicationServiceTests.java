@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import pizzeria.user.domain.user.User;
 import pizzeria.user.models.AuthenticationResponseModel;
@@ -39,9 +40,19 @@ public class CommunicationServiceTests {
 
         HttpRequestService httpRequestService = new HttpRequestService(restTemplate);
 
-        boolean flag = httpRequestService.registerUser(new User("ROLE_ADMIN", "Borislav", "Borislav@gmail.com", List.of("Allergy1")), "Password1");
+        boolean flag = httpRequestService.registerUser(new User("Borislav", "Borislav@gmail.com", List.of("Allergy1")), "Password1");
 
         assertThat(flag).isEqualTo(true);
+    }
+
+    @Test
+    public void registerUser_NotOkStatus() {
+        when(restTemplate.postForEntity(eq("http://localhost:8081/register"), any(), eq(ResponseEntity.class)))
+                .thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+
+        HttpRequestService httpRequestService = new HttpRequestService(restTemplate);
+
+        assertThat(httpRequestService.registerUser(new User("Borislav", "Borislav@gmail.com", List.of("Allergy1")), "Password1")).isEqualTo(false);
     }
 
     @Test
@@ -59,5 +70,29 @@ public class CommunicationServiceTests {
         Optional <String> actualToken = httpRequestService.loginUser("mockedId", "Password1");
 
         assertThat(actualToken.get()).isEqualTo(token);
+    }
+
+    @Test
+    public void loginUser_fails() {
+        when(restTemplate.postForEntity(eq("http://localhost:8081/authenticate"), any(), eq(AuthenticationResponseModel.class)))
+                .thenReturn(ResponseEntity.badRequest().build());
+
+        HttpRequestService httpRequestService = new HttpRequestService(restTemplate);
+
+        Optional <String> actualToken = httpRequestService.loginUser("mockedId", "Password1");
+
+        assertThat(actualToken).isEmpty();
+    }
+
+    @Test
+    public void loginUser_isEmpty() {
+        when(restTemplate.postForEntity(eq("http://localhost:8081/authenticate"), any(), eq(AuthenticationResponseModel.class)))
+                .thenThrow(new HttpServerErrorException(HttpStatus.CREATED));
+
+        HttpRequestService httpRequestService = new HttpRequestService(restTemplate);
+
+        Optional <String> actualToken = httpRequestService.loginUser("mockedId", "Password1");
+
+        assertThat(actualToken).isEmpty();
     }
 }

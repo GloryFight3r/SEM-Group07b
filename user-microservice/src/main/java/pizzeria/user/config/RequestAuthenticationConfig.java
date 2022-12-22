@@ -33,6 +33,7 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user/update_allergies").authenticated()
                 .antMatchers("/user/get_allergies").authenticated()
+                .antMatchers("/user/delete_user").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

@@ -1,6 +1,5 @@
 package pizzeria.authentication.domain.user;
 
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 import lombok.NoArgsConstructor;
@@ -24,11 +23,6 @@ public class AppUser extends HasEvents {
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
-    public static boolean containsRole(String role) {
-        List<String> roles = List.of("ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_MANAGER");
-        return roles.contains(role);
-    }
-
     @Column(name = "role", nullable = false)
     private String role;
 
@@ -47,6 +41,18 @@ public class AppUser extends HasEvents {
         this.password = password;
         this.role = "ROLE_CUSTOMER";
         this.recordThat(new UserWasCreatedEvent(id));
+    }
+
+    /**
+     * Create a new manager
+     * @param id id of the manager
+     * @param password password of the manager
+     * @return AppUser object that is a manager
+     */
+    public static AppUser createManager(String id, HashedPassword password) {
+        AppUser manager = new AppUser(id, password);
+        manager.role = "ROLE_MANAGER";
+        return manager;
     }
 
     public void changePassword(HashedPassword password) {

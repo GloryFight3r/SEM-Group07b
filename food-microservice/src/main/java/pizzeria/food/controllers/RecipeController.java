@@ -5,11 +5,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
-import pizzeria.food.domain.recipe.RecipeNotFoundException;
-import pizzeria.food.domain.recipe.RecipeService;
-import pizzeria.food.domain.recipe.Recipe;
-import pizzeria.food.domain.recipe.RecipeAlreadyInUseException;
+import pizzeria.food.domain.recipe.*;
+import pizzeria.food.models.ingredient.GetBaseToppingsRequestModel;
+import pizzeria.food.models.ingredient.GetBaseToppingsResponseModel;
 import pizzeria.food.models.recipe.*;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class RecipeController {
             responseModel.setId(saved.getId());
             responseModel.setRecipe(saved);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
-        } catch (RecipeAlreadyInUseException | IngredientNotFoundException e){
+        } catch (RecipeAlreadyInUseException | IngredientNotFoundException | InvalidRecipeException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
@@ -60,7 +60,7 @@ public class RecipeController {
             responseModel.setId(updated.getId());
             responseModel.setRecipe(updated);
             return ResponseEntity.status(HttpStatus.OK).body(responseModel);
-        } catch (RecipeNotFoundException | IngredientNotFoundException e){
+        } catch (RecipeNotFoundException | IngredientNotFoundException | InvalidRecipeException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
@@ -87,6 +87,20 @@ public class RecipeController {
         MenuResponseModel responseModel = new MenuResponseModel();
         responseModel.setMenu(menu);
         return ResponseEntity.ok().body(responseModel);
+    }
+
+    @GetMapping("/getBaseToppings")
+    public ResponseEntity<GetBaseToppingsResponseModel> getBaseToppings(@RequestBody GetBaseToppingsRequestModel requestModel){
+        try {
+            List<Ingredient> baseToppings = foodService.getBaseToppings(requestModel.getRecipeId());
+            GetBaseToppingsResponseModel responseModel = new GetBaseToppingsResponseModel();
+            responseModel.setBaseToppings(baseToppings);
+            return ResponseEntity.ok().body(responseModel);
+        } catch (RecipeNotFoundException e) {
+            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+        } catch (IngredientNotFoundException e) {
+            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
     }
 
 }

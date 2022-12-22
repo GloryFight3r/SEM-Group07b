@@ -13,12 +13,13 @@ import pizzeria.user.domain.user.EmailAlreadyInUseException;
 import pizzeria.user.domain.user.User;
 import pizzeria.user.domain.user.UserRepository;
 import pizzeria.user.domain.user.UserService;
-import pizzeria.user.models.UserModel;
+import pizzeria.user.models.UserRegisterModel;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -32,32 +33,30 @@ public class UserServiceTests {
     @Autowired
     private transient UserRepository userRepository;
 
-    private UserModel userModel;
-    private String email, name, password, role;
+    private UserRegisterModel userModel;
+    private String email, name, password;
     private List<String> allergies;
 
     @BeforeEach
     public void init() {
-        email = "Test1";
+        email = "Test1@gmail.com";
         name = "Test1";
         password = "coolpassword";
-        role = "ROLE_MANAGER";
         allergies = List.of("Al1", "Al2", "Al3");
 
 
-        userModel = new UserModel();
+        userModel = new UserRegisterModel();
         userModel.setEmail(email);
         userModel.setName(name);
         userModel.setPassword(password);
         userModel.setAllergies(allergies);
-        userModel.setRole(role);
     }
 
     @Test
     public void saveUser_worksCorrectly() {
         try {
             userService.saveUser(userModel);
-        } catch (EmailAlreadyInUseException e) {
+        } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
             System.out.println("User with such email already exists");
         }
 
@@ -67,13 +66,43 @@ public class UserServiceTests {
 
         assertThat(actualUser.get().getEmail()).isEqualTo(email);
         assertThat(actualUser.get().getName()).isEqualTo(name);
-        assertThat(actualUser.get().getRole()).isEqualTo(role);
         assertThat(actualUser.get().getAllergies()).containsExactlyElementsOf(allergies);
     }
 
     @Test
+    public void testSaveUserWrongEmailFormat(){
+        userModel.setEmail("test");
+        UserService.InvalidEmailException exception = assertThrows(UserService.InvalidEmailException.class, () -> {
+            userService.saveUser(userModel);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The email test is not valid");
+    }
+
+    @Test
+    public void testSaveUserEmailAlreadyInUse(){
+        try {
+            userService.saveUser(userModel);
+        } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
+            System.out.println("User with such email already exists");
+        }
+
+        Optional<User> actualUser = userRepository.findUserByEmail(email);
+
+        //make sure the user was saved properly
+        Assertions.assertThat(actualUser).isNotEmpty();
+
+        //now try to save the user again but the email is already in use
+        EmailAlreadyInUseException exception = assertThrows(EmailAlreadyInUseException.class, () -> {
+            userService.saveUser(userModel);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Test1@gmail.com");
+    }
+
+    @Test
     public void findUserByEmail_worksCorrectly() {
-        User tempUser = new User(role, name, email, allergies);
+        User tempUser = new User(name, email, allergies);
 
         userRepository.save(tempUser);
 
@@ -86,9 +115,9 @@ public class UserServiceTests {
 
     @Test
     public void getAllUsers_worksCorrectly() {
-        User tempUser1 = new User(role, name, email, allergies);
-        User tempUser2 = new User(role, name, "borislav2@gmail.com", allergies);
-        User tempUser3 = new User(role, name, "borislav3@gmail.com", allergies);
+        User tempUser1 = new User(name, email, allergies);
+        User tempUser2 = new User(name, "borislav2@gmail.com", allergies);
+        User tempUser3 = new User(name, "borislav3@gmail.com", allergies);
 
         userRepository.save(tempUser1);
         userRepository.save(tempUser2);
@@ -96,25 +125,38 @@ public class UserServiceTests {
 
         List<User> getActualUsers = userService.getAllUsers();
 
-        assertThat(List.of(tempUser1, tempUser2, tempUser3)).containsExactlyInAnyOrderElementsOf(getActualUsers);
+        assertThat(getActualUsers).containsAll(List.of(tempUser1, tempUser2, tempUser3));
     }
 
     @Test
-    public void deleteUser_worksCorrectly() {
-        userRepository.save(new User(role, name, email, allergies));
+    public void deleteUserById_worksCorrectly() {
+        userRepository.save(new User(name, email, allergies));
 
         assertThat(userRepository.existsByEmail(email)).isTrue();
 
         Optional<User> user = userService.findUserByEmail(email);
 
-        userService.deleteUser(user.get().getId());
+        userService.deleteUserById(user.get().getId());
+
+        assertThat(userRepository.findUserByEmail(email)).isEmpty();
+    }
+
+    @Test
+    public void deleteUserByEmail_worksCorrectly() {
+        userRepository.save(new User(name, email, allergies));
+
+        assertThat(userRepository.existsByEmail(email)).isTrue();
+
+        Optional<User> user = userService.findUserByEmail(email);
+
+        userService.deleteUserByEmail(user.get().getEmail());
 
         assertThat(userRepository.findUserByEmail(email)).isEmpty();
     }
 
     @Test
     public void updateUserAllergies_worksCorrectly() {
-        User tempUser = new User(role, name, email, allergies);
+        User tempUser = new User(name, email, allergies);
         List <String> newAllergies = List.of("newAllergy1", "newAllergy2", "newAllergy3");
 
         userRepository.save(tempUser);
@@ -130,7 +172,7 @@ public class UserServiceTests {
 
     @Test
     public void getAllergies_worksCorrectly() {
-        User tempUser = new User(role, name, email, allergies);
+        User tempUser = new User(name, email, allergies);
 
         userRepository.save(tempUser);
 
@@ -138,6 +180,20 @@ public class UserServiceTests {
 
         Assertions.assertThat(actualUser).isNotEmpty();
 
-        assertThat(actualUser.get().getAllergies()).containsExactlyInAnyOrderElementsOf(allergies);
+        assertThat(userService.getAllergies(tempUser.getId())).containsExactlyInAnyOrderElementsOf(allergies);
+    }
+
+    @Test
+    public void getAllergiesOnNonExistingUser(){
+        User tempUser = new User(name, email, allergies);
+
+        userRepository.save(tempUser);
+
+        //uuid's are 32 base-16 character strings so "test" will never be generated
+        Optional <User> actualUser = userRepository.findUserById("test");
+
+        Assertions.assertThat(actualUser).isEmpty();
+
+        assertThat(userService.getAllergies("test")).isNull();
     }
 }

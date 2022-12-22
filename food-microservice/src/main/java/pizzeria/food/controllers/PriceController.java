@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
@@ -40,14 +37,17 @@ public class PriceController {
      * from which we want the prices
      * @return two list of doubles representing the prices of the requested recipes and ingredients
      */
-    @GetMapping("/ids")
+    @PostMapping("/ids")
     public ResponseEntity<GetPricesResponseModel> getPrices(@RequestBody GetPricesRequestModel requestModel) {
         try {
+
+            //System.out.println(requestModel.getFoodIds() + " " + requestModel.getIngredientIds());
             Map<Long, Tuple> foodPrices = recipeService.getPrices(requestModel.getFoodIds());
-            Map<Long, Tuple> ingredientPrices = ingredientService.getPrices(requestModel.getIngredientIds());
+            Map<Long, Tuple> ingredientPrices = ingredientService.getDetails(requestModel.getIngredientIds());
             GetPricesResponseModel responseModel = new GetPricesResponseModel();
             responseModel.setFoodPrices(foodPrices);
             responseModel.setIngredientPrices(ingredientPrices);
+
             return ResponseEntity.status(HttpStatus.OK).body(responseModel);
         } catch (RecipeNotFoundException | IngredientNotFoundException e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
