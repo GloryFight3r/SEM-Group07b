@@ -1,4 +1,4 @@
-package pizzeria.order.domain;
+package pizzeria.order.domain.store;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,16 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import pizzeria.order.domain.store.Store;
-import pizzeria.order.domain.store.StoreRepository;
-import pizzeria.order.domain.store.StoreService;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -56,11 +53,31 @@ public class StoreServiceTests {
         assertThat(storeRepository.existsById(1L)).isFalse();
     }
 
+    @Test
+    void addStore_storeIsNull() throws Exception{
+        StoreService.StoreIsNullException exception = assertThrows(StoreService.StoreIsNullException.class, () -> {
+            storeService.addStore(null);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The store that is provided is null");
+    }
+
+    @Test
+    void addStore_storeAlreadyExists() throws Exception{
+        Store store = new Store("NL-2624ME", "bor@gmail.com");
+        storeService.addStore(store);
+        StoreService.StoreAlreadyExistException exception = assertThrows(StoreService.StoreAlreadyExistException.class, () -> {
+            storeService.addStore(store);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("There already exists a store with the same id");
+    }
+
     static Stream<Arguments> invalidArgumentsSuite() {
         final String correctEmail = "borislavsemerdzhiev.02@gmail.com";
         final String correctLocation = "NL-2624ME";
         return Stream.of(
-                Arguments.of(null, StoreService.StoreAlreadyExistException.class),
+                Arguments.of(null, StoreService.StoreIsNullException.class),
                 Arguments.of(new Store("Nl-2624ME", correctEmail), StoreService.InvalidLocationException.class),
                 Arguments.of(new Store(correctLocation, "borislav@gmail."), StoreService.InvalidEmailException.class),
                 Arguments.of(new Store(correctLocation, "borislav@gmail"), StoreService.InvalidEmailException.class),
