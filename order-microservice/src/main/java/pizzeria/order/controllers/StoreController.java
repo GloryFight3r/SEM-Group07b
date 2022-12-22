@@ -45,12 +45,8 @@ public class StoreController {
         }
 
         try {
-            boolean isEdited = storeService.editStore(store.getId(), store.parseToStore());
-            if (isEdited) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            storeService.editStore(store.getId(), store.parseToStore());
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
@@ -59,12 +55,8 @@ public class StoreController {
     @DeleteMapping("/delete")
     public ResponseEntity deleteStore(@RequestBody DeleteStoreModel store) {
         try {
-            boolean flag = storeService.deleteStore(store.getId());
-            if (flag) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            storeService.deleteStore(store.getId());
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
@@ -72,11 +64,7 @@ public class StoreController {
 
     @GetMapping("/get_stores")
     public List<Store> getStores() {
-        try {
-            return storeService.getAllStores();
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        return storeService.getAllStores();
     }
 
     /*@PostMapping("/send_email")

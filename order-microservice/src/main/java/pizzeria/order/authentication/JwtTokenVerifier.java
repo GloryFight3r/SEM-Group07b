@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import pizzeria.order.Application;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ public class JwtTokenVerifier {
     /**
      * Validate the JWT token for expiration.
      */
+    @Application.ExcludeFromJacocoGeneratedReport
     public boolean validateToken(String token) {
         return !isTokenExpired(token);
     }
@@ -64,6 +66,7 @@ public class JwtTokenVerifier {
      */
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
+
         return expiration.before(new Date());
     }
 

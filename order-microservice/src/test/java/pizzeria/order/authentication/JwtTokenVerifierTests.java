@@ -4,8 +4,6 @@ import io.jsonwebtoken.*;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pizzeria.order.authentication.JwtTokenVerifier;
-
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +46,15 @@ public class JwtTokenVerifierTests {
         // Assert
         assertThatExceptionOfType(ExpiredJwtException.class)
                 .isThrownBy(action);
+    }
+
+    @Test
+    public void validateExpiredToken_isTrue() {
+        // Arrange
+        String token = generateToken(secret, "user123", -5_000_000, 1_000_000, "ROLE_CUSTOMER");
+
+        // Act
+        assertThat(jwtTokenVerifier.validateToken(token)).isTrue();
     }
 
     @Test

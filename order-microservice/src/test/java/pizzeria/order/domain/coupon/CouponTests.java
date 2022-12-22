@@ -31,6 +31,21 @@ public class CouponTests {
     }
 
     @Test
+    public void coupon_equalsDifferentObjects() {
+        PercentageCoupon couponOne = new PercentageCoupon("TestCoupon", 0.2);
+        Object otherObject = "Random string";
+
+        assertThat(couponOne.equals(otherObject)).isFalse();
+    }
+
+    @Test
+    public void coupon_sameObjects() {
+        PercentageCoupon couponOne = new PercentageCoupon("TestCoupon", 0.2);
+
+        assertThat(couponOne.equals(couponOne)).isTrue();
+    }
+
+    @Test
     public void coupon_notEqualsWorksCorrectly() {
         PercentageCoupon couponOne = new PercentageCoupon("TestCoupon", 0.2);
         PercentageCoupon couponTwo = new PercentageCoupon("TestCoupon2", 0.2);

@@ -17,10 +17,12 @@ import pizzeria.order.models.GetPricesResponseModel;
 import pizzeria.order.models.Tuple;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 // activate profiles to have spring use mocks during auto-injection of certain beans.
-@ActiveProfiles({"test", "restTemplateProfile", "mockPriceService"})
+@ActiveProfiles({"test", "restTemplateProfile", "mockPriceService", "clockWrapper"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class OrderServiceTest {
     @Autowired
@@ -40,6 +42,9 @@ public class OrderServiceTest {
     private transient StoreService storeService;
     @Autowired
     private transient FoodPriceService foodPriceService;
+
+    @Autowired
+    private transient ClockWrapper clockWrapper;
 
     @Autowired
     private transient Coupon_2for1_Repository coupon_2for1_repository;
@@ -77,7 +82,7 @@ public class OrderServiceTest {
                 new Food(99L, 99L, 99L, List.of(99L), List.of(99L))
         ));
 
-        Store st = storeService.addStore(new Store("NL-2624ME", "baa@gmail.com"));
+        storeService.addStore(new Store("NL-2624ME", "baa@gmail.com"));
 
         HashMap<Long, Tuple> recipePrices = new HashMap<>();
         recipePrices.put(0L, new Tuple(11, "Margherita"));
@@ -96,6 +101,8 @@ public class OrderServiceTest {
         order_invalidCoupons = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 37, new ArrayList<String>(List.of("invalid")));
         order_invalidPrice = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 26, new ArrayList<String>(List.of("percentage", "2for1")));
         order_valid = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 18.5, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
+
+        when(clockWrapper.getNow()).thenReturn(LocalDateTime.now());
     }
 
     @Test
@@ -132,9 +139,11 @@ public class OrderServiceTest {
 
     @Test
     void testProcessOrder_orderIsNull() throws Exception {
-        assertThatThrownBy(() -> {
+        OrderService.CouldNotStoreException exception = assertThrows(OrderService.CouldNotStoreException.class, () -> {
             orderService.processOrder(null);
-        }).isInstanceOf(OrderService.CouldNotStoreException.class);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The order is null or it already exists in the database.");
     }
 
     @Test
@@ -149,24 +158,99 @@ public class OrderServiceTest {
         editOrder.setPickupTime(currentOrder.getPickupTime());
         editOrder.setUserId("differentId");
 
-        assertThatThrownBy(() -> {
+        OrderService.InvalidEditException exception = assertThrows(OrderService.InvalidEditException.class, () -> {
             orderService.processOrder(editOrder);
-        }).isInstanceOf(OrderService.InvalidEditException.class);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The order does not belong to the same user.");
     }
 
     @Test
     void testPlaceOrder_priceIsNull() throws Exception {
-        Order editOrder = new Order();
+        Order order = new Order();
         when(foodPriceService.getFoodPrices(any())).thenReturn(null);
 
-        editOrder.setFoods(order_valid.getFoods());
-        editOrder.setStoreId(order_valid.getStoreId());
-        editOrder.setCouponIds(order_valid.getCouponIds());
-        editOrder.setPickupTime(order_valid.getPickupTime());
-        editOrder.setUserId("differentId");
+        order.setFoods(order_valid.getFoods());
+        order.setStoreId(order_valid.getStoreId());
+        order.setCouponIds(order_valid.getCouponIds());
+        order.setPickupTime(order_valid.getPickupTime());
+        order.setUserId("differentId");
+
+        OrderService.FoodInvalidException exception = assertThrows(OrderService.FoodInvalidException.class, () -> {
+            orderService.processOrder(order);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The order contains invalid recipe/ingredient ids.");
+    }
+
+    @Test
+    void testPlaceOrder_priceIsNotRight() throws Exception {
+        order_valid.setPrice(100.0);
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
 
         assertThatThrownBy(() -> {
-            orderService.processOrder(editOrder);
-        }).isInstanceOf(OrderService.FoodInvalidException.class);
+            orderService.processOrder(order_valid);
+        }).isInstanceOf(OrderService.PriceNotRightException.class);
+    }
+
+    @Test
+    void testRemoveOrder_worksCorrectly() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        orderService.processOrder(order_valid);
+
+        assertThat(orderService.removeOrder(order_valid.getOrderId(), order_valid.getUserId(), false)).isTrue();
+    }
+
+    @Test
+    void testRemoveOrder_nullOrderId() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        orderService.processOrder(order_valid);
+
+        assertThat(orderService.removeOrder(null, order_valid.getUserId(), false)).isFalse();
+    }
+
+    @Test
+    void testRemoveOrder_nullOUserId() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        orderService.processOrder(order_valid);
+
+        assertThat(orderService.removeOrder(order_valid.getOrderId(), null, false)).isFalse();
+    }
+
+    @Test
+    void testRemoveOrder_nullBoth() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        orderService.processOrder(order_valid);
+
+        assertThat(orderService.removeOrder(null, null, false)).isFalse();
+    }
+
+    @Test
+    void testRemoveOrder_noSuchOrder() throws Exception {
+        assertThat(orderService.removeOrder(2L, "Mocked Id", false)).isFalse();
+    }
+
+    @Test
+    void testRemoveOrder_canRemoveInTime() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        order_valid.setPickupTime(LocalDateTime.of(2021, Month.JANUARY, 3, 14, 31, 0));
+        when(clockWrapper.getNow()).thenReturn(LocalDateTime.of(2021, Month.JANUARY, 3, 14, 0, 1));
+        orderService.processOrder(order_valid);
+
+        when(clockWrapper.getNow()).thenReturn(LocalDateTime.of(2021, Month.JANUARY, 3, 14, 0, 1));
+
+        assertThat(orderService.removeOrder(order_valid.getOrderId(), order_valid.getUserId(), false)).isTrue();
+    }
+
+    @Test
+    void testRemoveOrder_cannotRemoveBecauseOfTime() throws Exception {
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+        order_valid.setPickupTime(LocalDateTime.of(2021, Month.JANUARY, 3, 14, 31, 0));
+        when(clockWrapper.getNow()).thenReturn(LocalDateTime.of(2021, Month.JANUARY, 3, 14, 0, 1));
+        orderService.processOrder(order_valid);
+
+        when(clockWrapper.getNow()).thenReturn(LocalDateTime.of(2021, Month.JANUARY, 3, 14, 5, 1));
+
+        assertThat(orderService.removeOrder(order_valid.getOrderId(), order_valid.getUserId(), false)).isFalse();
     }
 }

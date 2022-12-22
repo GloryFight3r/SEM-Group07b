@@ -26,7 +26,15 @@ public class FoodTests {
     public void foodsEqual_withObject() {
         Food firstFood = new Food(1, 3, 4, List.of(), List.of());
         Object secondFood = new Food(1, 3, 4, List.of(), List.of());
+
         assertThat(firstFood.equals(secondFood)).isTrue();
+    }
+
+    @Test
+    public void foodsEqual_withDifferentObject() {
+        Food firstFood = new Food(1, 3, 4, List.of(), List.of());
+        String secondFood = "Random String";
+        assertThat(firstFood.equals(secondFood)).isFalse();
     }
 
     @Test

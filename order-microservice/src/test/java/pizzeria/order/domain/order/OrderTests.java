@@ -39,4 +39,19 @@ public class OrderTests {
 
         assertThat(order.equals(secondOrder)).isTrue();
     }
+
+    @Test
+    public void orderEquals_isEqualToItself() {
+        Order order = new Order(2L, List.of(), 3L, "Mocked Id", LocalDateTime.now(), 100.0, List.of());
+
+        assertThat(order.equals(order)).isTrue();
+    }
+
+    @Test
+    public void orderEquals_otherObject() {
+        Order order = new Order(2L, List.of(), 3L, "Mocked Id", LocalDateTime.now(), 100.0, List.of());
+        Object otherObject = "Random String";
+
+        assertThat(order.equals(otherObject)).isFalse();
+    }
 }

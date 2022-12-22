@@ -16,7 +16,11 @@ public class StoreService {
     }
 
     public Store addStore(Store store) throws Exception {
-        if (store == null || storeRepo.existsById(store.getId())) {
+        if (store == null) {
+            throw new StoreIsNullException();
+        }
+
+        if (storeRepo.existsById(store.getId())) {
             throw new StoreAlreadyExistException();
         }
 
@@ -60,8 +64,8 @@ public class StoreService {
         if (optionalStore.isEmpty()) {
             throw new StoreDoesNotExistException();
         }
-
-        return storeRepo.deleteStoreById(storeId) != 0;
+        storeRepo.deleteStoreById(storeId);
+        return true;
     }
 
     /**
@@ -109,6 +113,14 @@ public class StoreService {
         @Override
         public String getMessage(){
             return "The store with the id provided does not exist";
+        }
+    }
+
+    @SuppressWarnings("PMD")
+    public static class StoreIsNullException extends Exception {
+        @Override
+        public String getMessage(){
+            return "The store that is provided is null";
         }
     }
 
