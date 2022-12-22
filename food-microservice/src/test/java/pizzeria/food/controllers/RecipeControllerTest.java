@@ -12,10 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
-import pizzeria.food.domain.recipe.Recipe;
-import pizzeria.food.domain.recipe.RecipeAlreadyInUseException;
-import pizzeria.food.domain.recipe.RecipeNotFoundException;
-import pizzeria.food.domain.recipe.RecipeService;
+import pizzeria.food.domain.recipe.*;
 import pizzeria.food.models.ingredient.GetBaseToppingsRequestModel;
 import pizzeria.food.models.ingredient.GetBaseToppingsResponseModel;
 import pizzeria.food.models.recipe.*;
@@ -69,6 +66,8 @@ class RecipeControllerTest {
             fail();
         } catch (RecipeAlreadyInUseException e) {
             fail();
+        } catch (InvalidRecipeException e) {
+            fail();
         }
     }
 
@@ -86,12 +85,33 @@ class RecipeControllerTest {
             fail();
         } catch (RecipeAlreadyInUseException e) {
             fail();
+        } catch (InvalidRecipeException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testSaveFoodHandlingInvalidRecipeException(){
+        Recipe recipe = new Recipe("Test", List.of(1L, 55L, 3L), 12.0);
+        try {
+            when(recipeService.registerFood(recipe)).thenThrow(InvalidRecipeException.class);
+            SaveFoodRequestModel requestModel = new SaveFoodRequestModel();
+            requestModel.setRecipe(recipe);
+            ResponseEntity response = recipeController.saveFood(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (IngredientNotFoundException e) {
+            fail();
+        } catch (RecipeAlreadyInUseException e) {
+            fail();
+        } catch (InvalidRecipeException e) {
+            fail();
         }
     }
 
     @Test
     void updateFood() {
-        Recipe recipe = new Recipe("Test", List.of(1L, 55L, 3L), 12.0);
+        Recipe recipe = new Recipe(null, List.of(1L, 55L, 3L), 12.0);
         try {
             when(recipeService.updateFood(recipe, 1L)).thenReturn(recipe);
             UpdateFoodRequestModel requestModel = new UpdateFoodRequestModel();
@@ -103,6 +123,8 @@ class RecipeControllerTest {
         } catch (IngredientNotFoundException e) {
             fail();
         } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (InvalidRecipeException e) {
             fail();
         }
     }
@@ -122,6 +144,8 @@ class RecipeControllerTest {
             fail();
         } catch (RecipeNotFoundException e) {
             fail();
+        } catch (InvalidRecipeException e) {
+            fail();
         }
     }
 
@@ -139,6 +163,28 @@ class RecipeControllerTest {
         } catch (IngredientNotFoundException e) {
             fail();
         } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (InvalidRecipeException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateFoodThrowsException3(){
+        Recipe recipe = new Recipe("Test", List.of(1L, 55L, 3L), 12.0);
+        try {
+            when(recipeService.updateFood(recipe, 1L)).thenThrow(InvalidRecipeException.class);
+            UpdateFoodRequestModel requestModel = new UpdateFoodRequestModel();
+            requestModel.setRecipe(recipe);
+            requestModel.setId(1L);
+            ResponseEntity response = recipeController.updateFood(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (IngredientNotFoundException e) {
+            fail();
+        } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (InvalidRecipeException e) {
             fail();
         }
     }

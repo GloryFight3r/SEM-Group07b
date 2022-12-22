@@ -5,10 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pizzeria.food.domain.ingredient.Ingredient;
-import pizzeria.food.domain.ingredient.IngredientAlreadyInUseException;
-import pizzeria.food.domain.ingredient.IngredientNotFoundException;
-import pizzeria.food.domain.ingredient.IngredientService;
+import pizzeria.food.domain.ingredient.*;
 import pizzeria.food.models.ingredient.*;
 
 import java.util.List;
@@ -39,7 +36,7 @@ public class IngredientController {
             responseModel.setId(saved.getId());
             responseModel.setIngredient(saved);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
-        } catch (IngredientAlreadyInUseException e){
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e){
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
@@ -56,7 +53,7 @@ public class IngredientController {
             responseModel.setId(updated.getId());
             responseModel.setIngredient(updated);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
-        } catch (IngredientNotFoundException e) {
+        } catch (IngredientNotFoundException | InvalidIngredientException e) {
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }

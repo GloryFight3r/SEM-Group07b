@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pizzeria.user.models.UserRegisterModel;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -19,7 +20,10 @@ public class UserService {
      *
      * @param user UserModel containing information about the user
      */
-    public void saveUser(UserRegisterModel user) throws EmailAlreadyInUseException{
+    public void saveUser(UserRegisterModel user) throws EmailAlreadyInUseException, InvalidEmailException {
+        if (!verifyEmailFormat(user.getEmail())){
+            throw new InvalidEmailException(user.getEmail());
+        }
         User userToSave = user.parseToUser();
 
         if (checkUniqueEmail(userToSave.getEmail())) {
@@ -27,6 +31,14 @@ public class UserService {
         } else {
             throw new EmailAlreadyInUseException(user.getEmail());
         }
+    }
+
+    private boolean verifyEmailFormat(String testEmail) {
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+
+        Pattern pattern = Pattern.compile(regexPattern);
+        return pattern.matcher(testEmail).matches();
     }
 
     private boolean checkUniqueEmail(String email) {
@@ -104,4 +116,13 @@ public class UserService {
     public boolean userExistsById(String id) {
         return userRepository.existsById(id);
     }
+
+    public class InvalidEmailException extends Exception {
+        static final long serialVersionUID = 1L;
+        public InvalidEmailException(String email) {
+            super("The email " + email + " is not valid");
+        }
+    }
 }
+
+

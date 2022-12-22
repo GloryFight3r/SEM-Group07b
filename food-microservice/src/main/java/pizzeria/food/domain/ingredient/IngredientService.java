@@ -24,7 +24,10 @@ public class IngredientService {
      * @return Ingredient that is stored in the database.
      * @throws IngredientAlreadyInUseException thrown when the Ingredients name or id is already in the database.
      */
-    public Ingredient registerIngredient(Ingredient ingredient) throws IngredientAlreadyInUseException {
+    public Ingredient registerIngredient(Ingredient ingredient) throws IngredientAlreadyInUseException, InvalidIngredientException {
+        if (!validateIngredient(ingredient)){
+            throw new InvalidIngredientException();
+        }
         if (ingredientRepository.existsById(ingredient.getId()) || ingredientRepository.existsByName(ingredient.getName())) {
             throw new IngredientAlreadyInUseException();
         }
@@ -39,7 +42,10 @@ public class IngredientService {
      * @throws IngredientNotFoundException thrown when the given id is not associated to an ingredient is not
      * associated with an ingredient in the database.
      */
-    public Ingredient updateIngredient(Ingredient ingredient, long id) throws IngredientNotFoundException {
+    public Ingredient updateIngredient(Ingredient ingredient, long id) throws IngredientNotFoundException, InvalidIngredientException {
+        if (!validateIngredient(ingredient)){
+            throw new InvalidIngredientException();
+        }
         if (ingredientRepository.existsById(id)) {
             ingredient.setId(id);
             return ingredientRepository.save(ingredient);
@@ -93,6 +99,16 @@ public class IngredientService {
     public List<Ingredient> getToppingsList(){
         List<Ingredient> ingredientList = ingredientRepository.findAll();
         return ingredientList;
+    }
+
+
+    /**
+     * @param ingredient Ingredient instance that we want to validate.
+     * @return true iff the given ingredient is valid.
+     */
+    public boolean validateIngredient(Ingredient ingredient){
+        return ingredient != null && ingredient.getName() != null && ingredient.getName().length() > 0
+                && ingredient.getPrice() >= 0.0 && ingredient.getAllergens() != null;
     }
 
 }
