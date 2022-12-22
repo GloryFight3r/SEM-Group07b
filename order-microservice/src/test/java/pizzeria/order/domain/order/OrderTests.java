@@ -54,4 +54,20 @@ public class OrderTests {
 
         assertThat(order.equals(otherObject)).isFalse();
     }
+
+    @Test
+    public void orderEquals_hashCode() {
+        Order order = new Order(2L, List.of(), 3L, "Mocked Id", LocalDateTime.now(), 100.0, List.of());
+        Order order2 = new Order(2L, List.of(), 3L, "Mocked Id", LocalDateTime.now(), 100.0, List.of());
+
+        assertThat(order.hashCode()).isEqualTo(order2.hashCode());
+    }
+
+    @Test
+    public void orderEquals_hashCodeNotEqual() {
+        Order order = new Order(2L, List.of(), 3L, "Mocked Id", LocalDateTime.now(), 100.0, List.of());
+        Order order2 = new Order(4L, List.of(), 3L, "Mocked Id", LocalDateTime.now(), 100.0, List.of());
+
+        assertThat(order.hashCode()).isNotEqualTo(order2.hashCode());
+    }
 }

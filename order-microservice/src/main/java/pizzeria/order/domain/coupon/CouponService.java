@@ -36,8 +36,6 @@ public class CouponService {
             switch (coupon.getType()) {
                 case "PERCENTAGE":
                     PercentageCoupon percentageCoupon = new PercentageCoupon(coupon.getId(), coupon.getPercentage());
-                    if (percentageCoupon.getPercentage() < 0 || percentageCoupon.getPercentage() > 1)
-                        return false;
                     coupon_percentage_Repository.save(percentageCoupon);
                     break;
                 case "TWO_FOR_ONE":
