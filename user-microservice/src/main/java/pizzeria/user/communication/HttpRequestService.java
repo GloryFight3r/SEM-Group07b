@@ -75,6 +75,7 @@ public class HttpRequestService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        //headers.setBearerAuth();
 
         // create headers
         // create a map for post parameters

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pizzeria.order.domain.coupon.CouponService;
-import pizzeria.order.domain.coupon.Coupon;
+import pizzeria.order.models.CouponModel;
 
 /**
  * The type Coupon controller
@@ -32,13 +32,12 @@ public class CouponController {
     /**
      * Create coupon response entity.
      *
-     * @param <T>    the type parameter, expect any subclass of coupon (strategy pattern)
      * @param coupon the coupon
      * @return the response entity
      */
     @PostMapping("/create")
-    public <T extends Coupon> ResponseEntity<Void> createCoupon(@RequestBody T coupon) {
-        //if the coupon created has been succesful respond with created
+    public ResponseEntity<Void> createCoupon(@RequestBody CouponModel coupon) {
+        //if the coupon created has been successful respond with created
         if (couponService.createCoupon(coupon))
             return ResponseEntity.status(HttpStatus.CREATED).build();
         //else bad request if any errors

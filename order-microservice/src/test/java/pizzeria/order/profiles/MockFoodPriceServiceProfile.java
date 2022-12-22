@@ -7,12 +7,18 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import pizzeria.order.domain.food.FoodPriceService;
 
-@Profile("mockFoodPriceService")
+@Profile("mockPriceService")
 @Configuration
 public class MockFoodPriceServiceProfile {
+
+    /**
+     * Mocks the FoodPriceService.
+     *
+     * @return A mocked FoodPriceService.
+     */
     @Bean
-    @Primary
-    public FoodPriceService getMockFoodPriceService() {
+    @Primary  // marks this bean as the first bean to use when trying to inject an AuthenticationManager
+    public FoodPriceService getMockPriceService() {
         return Mockito.mock(FoodPriceService.class);
     }
 }

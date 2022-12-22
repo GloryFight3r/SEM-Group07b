@@ -8,14 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import pizzeria.order.domain.coupon.CouponRepository;
-import pizzeria.order.domain.coupon.PercentageCoupon;
-import pizzeria.order.domain.coupon.TwoForOneCoupon;
+import pizzeria.order.domain.coupon.*;
 import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.food.FoodPriceService;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.domain.order.OrderRepository;
 import pizzeria.order.domain.order.OrderService;
+import pizzeria.order.domain.store.Store;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.models.GetPricesResponseModel;
 import pizzeria.order.models.Tuple;
@@ -26,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -43,8 +40,11 @@ public class OrderServiceTest {
     private transient StoreService storeService;
     @Autowired
     private transient FoodPriceService foodPriceService;
+
     @Autowired
-    private transient CouponRepository couponRepository;
+    private transient Coupon_2for1_Repository coupon_2for1_repository;
+    @Autowired
+    private transient Coupon_percentage_Repository coupon_percentage_repository;
 
     private transient Order order_invalidTime;
     private transient Order order_invalidFood; // references non-existent recipes and ingredients
@@ -54,7 +54,7 @@ public class OrderServiceTest {
     private transient GetPricesResponseModel pricesResponseModel;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws Exception {
         // contains one peperoni with salami as base and extra pineapple and mushrooms, and 2 basic margheritas
         // normal price = 36.0, percentage discount price = 18.0, 2for1 discount price = 26.0
         ArrayList<Food> foodList = new ArrayList<Food>(List.of(
@@ -66,6 +66,8 @@ public class OrderServiceTest {
                 new Food(99L, 99L, 99L, List.of(99L), List.of(99L))
         ));
 
+        Store st = storeService.addStore(new Store("NL-2624ME", "ba@abv.bg"));
+
         HashMap<Long, Tuple> recipePrices = new HashMap<>();
         recipePrices.put(0L, new Tuple(11, "Margherita"));
         recipePrices.put(1L, new Tuple(12, "Peperoni"));
@@ -75,25 +77,20 @@ public class OrderServiceTest {
         ingredientPrices.put(2L, new Tuple(1, "Mushrooms"));
         pricesResponseModel = new GetPricesResponseModel(recipePrices, ingredientPrices);
 
-        when(storeService.existsById(any())).thenReturn(true);
+      //  when(storeService.existsById(any())).thenReturn(true);
 
-        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+       // when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
 
-        when(couponRepository.findAllById(List.of("percentage", "2for1"))).thenReturn(List.of(
-                new PercentageCoupon("percentage", 50),
-                new TwoForOneCoupon("2for1")
-        ));
-        when(couponRepository.findAllById(List.of("percentage", "2for1", "invalid"))).thenReturn(List.of(
-                new PercentageCoupon("percentage", 50),
-                new TwoForOneCoupon("2for1")
-        ));
-        when(couponRepository.findAllById(List.of("invalid"))).thenReturn(List.of());
+        //System.out.println("DASDAS" + st.getId());
 
-        order_invalidTime = new Order(null, foodList, 0, "uid", LocalDateTime.now(), 36, new ArrayList<String>(List.of()));
-        order_invalidFood = new Order(null, invalidFoodList, 0, "uid", LocalDateTime.now().plusHours(1), 36, new ArrayList<String>(List.of()));
-        order_invalidCoupons = new Order(null, foodList, 0, "uid", LocalDateTime.now().plusHours(1), 36, new ArrayList<String>(List.of("invalid")));
-        order_invalidPrice = new Order(null, foodList, 0, "uid", LocalDateTime.now().plusHours(1), 26, new ArrayList<String>(List.of("percentage", "2for1")));
-        order_valid = new Order(null, foodList, 0, "uid", LocalDateTime.now().plusHours(1), 18, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
+        coupon_percentage_repository.save(new PercentageCoupon("percentage", 0.5));
+        coupon_2for1_repository.save( new TwoForOneCoupon("2for1"));
+
+        order_invalidTime = new Order(null, foodList, 1L, "uid", LocalDateTime.now(), 36, new ArrayList<String>(List.of()));
+        order_invalidFood = new Order(null, invalidFoodList, 1L, "uid", LocalDateTime.now().plusHours(1), 36, new ArrayList<String>(List.of()));
+        order_invalidCoupons = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 36, new ArrayList<String>(List.of("invalid")));
+        order_invalidPrice = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 26, new ArrayList<String>(List.of("percentage", "2for1")));
+        order_valid = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 18, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
     }
 
     //@Test
@@ -103,13 +100,13 @@ public class OrderServiceTest {
 
         // assert with 2 orders
         orderService.processOrder(order_valid);
-        assertEquals(orderService.listAllOrders().size(), 1);
-        orderService.processOrder(order_invalidCoupons);
+       // assertEquals(orderService.listAllOrders().size(), 1);
+       // orderService.processOrder(order_invalidCoupons);
 
-        List<Order> orders = orderService.listAllOrders();
-        assertEquals(orders.size(), 2);
-        assertTrue(orders.contains(order_valid));
-        assertTrue(orders.contains(order_invalidCoupons));
+        //List<Order> orders = orderService.listAllOrders();
+        //assertEquals(orders.size(), 2);
+        //assertTrue(orders.contains(order_valid));
+       // assertTrue(orders.contains(order_invalidCoupons));
 
     }
 
