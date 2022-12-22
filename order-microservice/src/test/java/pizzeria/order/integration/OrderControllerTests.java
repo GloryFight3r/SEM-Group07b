@@ -116,7 +116,7 @@ public class OrderControllerTests {
         order.setCouponIds(List.of());
         order.setFoods(List.of(firstFood));
         order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
-        order.setPrice(127.8);
+        order.setPrice(114.3);
         order.setStoreId(1L);
 
         Map<Long, Tuple> foodPrices = new HashMap<>();
@@ -171,7 +171,7 @@ public class OrderControllerTests {
         order.setCouponIds(List.of("Coupon"));
         order.setFoods(List.of(firstFood));
         order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
-        order.setPrice(102.24);
+        order.setPrice(91.44);
         order.setStoreId(1L);
 
         Map<Long, Tuple> foodPrices = new HashMap<>();
@@ -230,7 +230,7 @@ public class OrderControllerTests {
         order.setCouponIds(List.of("Coupon"));
         order.setFoods(List.of(firstFood));
         order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
-        order.setPrice(76.68);
+        order.setPrice(68.58);
         order.setStoreId(1L);
 
         Map<Long, Tuple> foodPrices = new HashMap<>();
@@ -290,7 +290,7 @@ public class OrderControllerTests {
         order.setCouponIds(List.of("Coupon"));
         order.setFoods(List.of(firstFood, secondFood));
         order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
-        order.setPrice(100.0 + 2*27.8);
+        order.setPrice(100.0 + 2*14.3);
         order.setStoreId(1L);
 
         Map<Long, Tuple> foodPrices = new HashMap<>();
@@ -354,7 +354,7 @@ public class OrderControllerTests {
         order.setCouponIds(List.of("Coupon", "Coupon2"));
         order.setFoods(List.of(firstFood, secondFood));
         order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 2, 1, 3));
-        order.setPrice(100.0 + 2*27.8);
+        order.setPrice(100.0 + 2*14.3);
         order.setStoreId(1L);
 
         Map<Long, Tuple> foodPrices = new HashMap<>();
@@ -621,7 +621,7 @@ public class OrderControllerTests {
         editOrder.setCouponIds(List.of());
         editOrder.setFoods(List.of(firstFood, secondFood));
         editOrder.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
-        editOrder.setPrice(269.9);
+        editOrder.setPrice(228.6);
         editOrder.setStoreId(1L);
         editOrder.setOrderId(order.getOrderId());
 

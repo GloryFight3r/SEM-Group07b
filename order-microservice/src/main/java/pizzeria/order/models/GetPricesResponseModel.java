@@ -14,4 +14,9 @@ import java.util.Map;
 public class GetPricesResponseModel {
     private Map<Long, Tuple> foodPrices;
     private Map<Long, Tuple> ingredientPrices;
+
+    public GetPricesResponseModel(Map<Long, Tuple> f, Map<Long, Tuple> i) {
+        foodPrices = f;
+        ingredientPrices = i;
+    }
 }
