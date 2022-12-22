@@ -111,27 +111,27 @@ class PriceControllerTest {
         List<Long> recipeIds = List.of(5L, 8L, 88L);
         List<Long> ingredientIds = List.of(52L, 4L, 78L, 99L);
 
-            Map<Long, Tuple> recipePrices = Map.of(
-                    5L, new Tuple(5.0, "Test"),
-                    8L, new Tuple(8.0, "Test1"),
-                    88L, new Tuple(88.0, "Test2")
-            );
+        Map<Long, Tuple> recipePrices = Map.of(
+                5L, new Tuple(5.0, "Test"),
+                8L, new Tuple(8.0, "Test1"),
+                88L, new Tuple(88.0, "Test2")
+        );
 
-            try {
-                when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
-                when(ingredientService.getDetails(ingredientIds)).thenThrow(new IngredientNotFoundException());
-                GetPricesRequestModel requestModel = new GetPricesRequestModel();
-                requestModel.setFoodIds(recipeIds);
-                requestModel.setIngredientIds(ingredientIds);
-                ResponseEntity<GetPricesResponseModel> response = priceController.getPrices(requestModel);
-                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        try {
+            when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
+            when(ingredientService.getDetails(ingredientIds)).thenThrow(new IngredientNotFoundException());
+            GetPricesRequestModel requestModel = new GetPricesRequestModel();
+            requestModel.setFoodIds(recipeIds);
+            requestModel.setIngredientIds(ingredientIds);
+            ResponseEntity<GetPricesResponseModel> response = priceController.getPrices(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
 
-            } catch (IngredientNotFoundException e) {
-                fail();
-            } catch (RecipeNotFoundException e) {
-                fail();
-            }
+        } catch (IngredientNotFoundException e) {
+            fail();
+        } catch (RecipeNotFoundException e) {
+            fail();
+        }
 
     }
 }
