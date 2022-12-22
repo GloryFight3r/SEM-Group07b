@@ -5,13 +5,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.domain.store.Store;
 import pizzeria.order.models.DeleteStoreModel;
 import pizzeria.order.models.StoreModel;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/store")
@@ -27,7 +24,8 @@ public class StoreController {
     @PostMapping("/create")
     public ResponseEntity<Store> createStore(@RequestBody StoreModel store) {
         if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
+                    "Arguments for store are invalid").build();
         }
 
         try {
@@ -41,7 +39,8 @@ public class StoreController {
     @PutMapping("/edit")
     public ResponseEntity editStore(@RequestBody StoreModel store) {
         if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Arguments for store are invalid");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
+                    "Arguments for store are invalid").build();
         }
 
         try {
@@ -63,8 +62,8 @@ public class StoreController {
     }
 
     @GetMapping("/get_stores")
-    public List<Store> getStores() {
-        return storeService.getAllStores();
+    public ResponseEntity getStores() {
+        return ResponseEntity.ok().body(storeService.getAllStores());
     }
 
     /*@PostMapping("/send_email")

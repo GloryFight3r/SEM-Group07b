@@ -8,7 +8,6 @@ import pizzeria.user.communication.HttpRequestService;
 import pizzeria.user.domain.user.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 import pizzeria.user.models.*;
 
 import java.util.List;
@@ -144,8 +143,7 @@ public class UserController {
     public ResponseEntity<LoginResponseModel> loginUser(@RequestBody LoginModel loginModel) {
         if (loginModel.getEmail() == null || loginModel.getPassword() == null ||
                 loginModel.getEmail().isEmpty() || loginModel.getPassword().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).header(HttpHeaders.WARNING,  "Login details' format is " +
-                    "invalid").build();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).header(HttpHeaders.WARNING, "Login details' format is " + "invalid").build();
         }
 
         Optional<User> user = userService.findUserByEmail(loginModel.getEmail());
@@ -156,7 +154,7 @@ public class UserController {
 
         Optional <String> jwtToken = httpRequestService.loginUser(user.get().getId(), loginModel.getPassword());
         if (jwtToken.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,  "Could not authenticate").build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "Could not authenticate").build();
         }
         return ResponseEntity.ok().body(new LoginResponseModel(jwtToken.get()));
     }
