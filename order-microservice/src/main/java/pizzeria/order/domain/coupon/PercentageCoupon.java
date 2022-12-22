@@ -48,13 +48,6 @@ public class PercentageCoupon extends Coupon {
     @Override
     public double calculatePrice(Order order, GetPricesResponseModel prices, double basePrice) {
         //makes the percentage reduction on the base price
-        if (Double.compare(1.0, this.percentage) < 0){
-            //if the percentage is greater than 1 the order is free
-            return 0.0;
-        } else if (Double.compare(0.0, this.percentage) > 0){
-            //if the percentage is smaller than 0 apply no reduction
-            return basePrice;
-        }
         return basePrice - basePrice * percentage;
     }
 }

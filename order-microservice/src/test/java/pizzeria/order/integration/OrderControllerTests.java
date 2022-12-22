@@ -709,6 +709,123 @@ public class OrderControllerTests {
     }
 
     @Test
+    void editOrder_noSuchStore() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Food secondFood = new Food();
+        secondFood.setBaseIngredients(List.of(1L, 10L));
+        secondFood.setExtraIngredients(List.of(4L));
+        secondFood.setRecipeId(3L);
+
+        Order order = new Order();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        orderRepository.save(order);
+
+        OrderEditModel editOrder = new OrderEditModel();
+        editOrder.setUserId("Mocked Id");
+        editOrder.setCouponIds(List.of());
+        editOrder.setFoods(List.of(firstFood, secondFood));
+        editOrder.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        editOrder.setPrice(269.9);
+        editOrder.setStoreId(2L);
+        editOrder.setOrderId(order.getOrderId());
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        foodPrices.put(3L, new Tuple(100.0, "MockName5"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+        ingredientPrices.put(10L, new Tuple(14.3, "MockName4"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(editOrder);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editOrder_invalidEdit() throws Exception {
+        Food firstFood = new Food();
+        firstFood.setBaseIngredients(List.of(1L));
+        firstFood.setExtraIngredients(List.of(4L));
+        firstFood.setRecipeId(2L);
+
+        Food secondFood = new Food();
+        secondFood.setBaseIngredients(List.of(1L, 10L));
+        secondFood.setExtraIngredients(List.of(4L));
+        secondFood.setRecipeId(3L);
+
+        Order order = new Order();
+        order.setUserId("Mocked Id");
+        order.setCouponIds(List.of());
+        order.setFoods(List.of(firstFood));
+        order.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        order.setPrice(127.8);
+        order.setStoreId(1L);
+
+        orderRepository.save(order);
+
+        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("Mocked Id2");
+
+        OrderEditModel editOrder = new OrderEditModel();
+        editOrder.setUserId("Mocked Id2");
+        editOrder.setCouponIds(List.of());
+        editOrder.setFoods(List.of(firstFood, secondFood));
+        editOrder.setPickupTime(LocalDateTime.of(2023, Month.JANUARY, 3, 14, 0, 0));
+        editOrder.setPrice(269.9);
+        editOrder.setStoreId(1L);
+        editOrder.setOrderId(order.getOrderId());
+
+
+        Map<Long, Tuple> foodPrices = new HashMap<>();
+        Map<Long, Tuple> ingredientPrices = new HashMap<>();
+
+        foodPrices.put(2L, new Tuple(100.0, "MockName1"));
+        foodPrices.put(3L, new Tuple(100.0, "MockName5"));
+        ingredientPrices.put(1L, new Tuple(13.5, "MockName2"));
+        ingredientPrices.put(4L, new Tuple(14.3, "MockName3"));
+        ingredientPrices.put(10L, new Tuple(14.3, "MockName4"));
+
+        GetPricesResponseModel pricesResponseModel = new GetPricesResponseModel();
+        pricesResponseModel.setIngredientPrices(ingredientPrices);
+        pricesResponseModel.setFoodPrices(foodPrices);
+
+        String serializedString = JsonUtil.serialize(editOrder);
+
+        when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(post("/order/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializedString)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
     void deleteOrder_worksCorrectly() throws Exception {
         Food firstFood = new Food();
         firstFood.setBaseIngredients(List.of(1L));

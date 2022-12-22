@@ -2,6 +2,7 @@ package pizzeria.order.domain.mailing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pizzeria.order.Application;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -41,6 +42,7 @@ public class MailingService {
 
         // Get the Session object.// and pass username and password
         session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            @Application.ExcludeFromJacocoGeneratedReport
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, fromPassword);
             }
