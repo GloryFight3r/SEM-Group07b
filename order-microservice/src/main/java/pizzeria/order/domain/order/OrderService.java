@@ -95,16 +95,13 @@ public class OrderService {
         double sum = 0.0;
         for (Food f: order.getFoods()) {
             sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
-
-            for (long l: f.getBaseIngredients())
-                sum += prices.getIngredientPrices().get(l).getPrice();
             for (long l: f.getExtraIngredients())
                 sum += prices.getIngredientPrices().get(l).getPrice();
         }
 
         if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
             if (Double.compare(order.price, sum) != 0) {
-                throw new PriceNotRightException();
+                throw new PriceNotRightException("expected " + sum + " but was " + order.price);
             }
 
             /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
@@ -121,12 +118,12 @@ public class OrderService {
             if (Double.compare(price, minPrice) < 0) {
                 minPrice = price;
                 //set the first element in the coupon ids to the coupon used
-                order.couponIds.set(0, c.getId());
+                order.couponIds.add(0, c.getId());
             }
         }
 
         if (Double.compare(order.price, minPrice) != 0)
-            throw new PriceNotRightException();
+            throw new PriceNotRightException("expected " + minPrice + " but was " + order.price);
 
         /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
             foodRepository.deleteAll(orderRepo.findByOrderId(order.getOrderId()).get().getFoods());
@@ -199,9 +196,13 @@ public class OrderService {
      */
     @SuppressWarnings("PMD")
     public static class PriceNotRightException extends Exception {
+        private final String msg;
+        public PriceNotRightException(String msg) {
+            this.msg = msg;
+        }
         @Override
         public String getMessage(){
-            return "The price calculated does not match the price given";
+            return "The price calculated does not match the price given: " + msg;
         }
     }
 
