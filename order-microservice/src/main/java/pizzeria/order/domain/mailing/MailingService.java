@@ -1,5 +1,6 @@
 package pizzeria.order.domain.mailing;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -13,25 +14,19 @@ public class MailingService {
     // The authentication password we use
     final transient String fromPassword = "ycgmcwdcuopnrbrd";
 
+    final transient MessageTransport messageTransport;
+
     public enum ProcessType {
         CREATED,
         EDITED,
         DELETED
     }
 
-    public MailingService() {
+    transient private Session session;
 
-    }
-
-    /**
-     * Notify the store about the creation/edit/deletion of an order with the current orderId
-     * @param orderId ID of the order
-     * @param recipientEmail Email of the store
-     * @param processType Type of the process CREATED/EDITED/DELETED
-     */
-    @SuppressWarnings("PMD")
-    public void sendEmail(Long orderId, String recipientEmail, ProcessType processType) {
-        System.out.println(orderId + " " + recipientEmail + " " + processType);
+    @Autowired
+    public MailingService(MessageTransport messageTransport) {
+        this.messageTransport = messageTransport;
 
         String host = "smtp.gmail.com";
 
@@ -45,7 +40,7 @@ public class MailingService {
         properties.put("mail.smtp.auth", "true");
 
         // Get the Session object.// and pass username and password
-        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+        session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, fromPassword);
             }
@@ -53,7 +48,16 @@ public class MailingService {
 
         // Used to debug SMTP issues
         session.setDebug(true);
+    }
 
+    /**
+     * Notify the store about the creation/edit/deletion of an order with the current orderId
+     * @param orderId ID of the order
+     * @param recipientEmail Email of the store
+     * @param processType Type of the process CREATED/EDITED/DELETED
+     */
+    @SuppressWarnings("PMD")
+    public void sendEmail(Long orderId, String recipientEmail, ProcessType processType) {
         try {
             // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
@@ -82,9 +86,8 @@ public class MailingService {
                     message.setText(String.format("Order with orderId : %d has been deleted", orderId));
                     break;
             }
-
             // Send message
-            Transport.send(message);
+            messageTransport.sendMessage(message);
         } catch (MessagingException mex) {
             mex.printStackTrace();
         }

@@ -66,13 +66,12 @@ public class FoodPriceService {
         // build the request
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
-
         // send POST request
         ResponseEntity<GetPricesResponseModel> response =
                 this.restTemplate.postForEntity("http://localhost:8084/price/ids", entity, GetPricesResponseModel.class);
         // check response status code
 
-        System.out.println("DAS");
+        System.out.println(response);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             GetPricesResponseModel responseModel = response.getBody();

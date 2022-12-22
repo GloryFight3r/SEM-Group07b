@@ -1,4 +1,4 @@
-package pizzeria.order.integration;
+package pizzeria.order.domain.order;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

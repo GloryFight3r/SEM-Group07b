@@ -1,4 +1,4 @@
-package pizzeria.order.domain;
+package pizzeria.order.domain.store;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

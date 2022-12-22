@@ -42,7 +42,6 @@ public class Food {
     @Setter
     private List<Long> extraIngredients;
 
-    @Getter
     private enum foodType {PIZZA};
 
     /**
