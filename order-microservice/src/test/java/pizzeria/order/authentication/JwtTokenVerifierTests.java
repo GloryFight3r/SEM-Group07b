@@ -28,7 +28,7 @@ public class JwtTokenVerifierTests {
     @Test
     public void validateNonExpiredToken() {
         // Arrange
-        String token = generateToken(secret, "user123", -10_000_000, 10_000_000);
+        String token = generateToken(secret, "user123", -10_000_000, 10_000_000, "ROLE_CUSTOMER");
 
         // Act
         boolean actual = jwtTokenVerifier.validateToken(token);
@@ -40,7 +40,7 @@ public class JwtTokenVerifierTests {
     @Test
     public void validateExpiredToken() {
         // Arrange
-        String token = generateToken(secret, "user123", -10_000_000, -5_000_000);
+        String token = generateToken(secret, "user123", -10_000_000, -5_000_000, "ROLE_CUSTOMER");
 
         // Act
         ThrowableAssert.ThrowingCallable action = () -> jwtTokenVerifier.validateToken(token);
@@ -53,7 +53,20 @@ public class JwtTokenVerifierTests {
     @Test
     public void validateTokenIncorrectSignature() {
         // Arrange
-        String token = generateToken("incorrectSecret", "user123", -10_000_000, 10_000_000);
+        String token = generateToken("incorrectSecret", "user123", -10_000_000, 10_000_000, "ROLE_CUSTOMER");
+
+        // Act
+        ThrowableAssert.ThrowingCallable action = () -> jwtTokenVerifier.validateToken(token);
+
+        // Assert
+        assertThatExceptionOfType(SignatureException.class)
+                .isThrownBy(action);
+    }
+
+    @Test
+    public void validateTokenRole() {
+        // Arrange
+        String token = generateToken("incorrectSecret", "user123", -10_000_000, 10_000_000, "ROLE_CUSTOMER");
 
         // Act
         ThrowableAssert.ThrowingCallable action = () -> jwtTokenVerifier.validateToken(token);
@@ -80,7 +93,7 @@ public class JwtTokenVerifierTests {
     public void parseNetid() {
         // Arrange
         String expected = "user123";
-        String token = generateToken(secret, expected, -10_000_000, 10_000_000);
+        String token = generateToken(secret, expected, -10_000_000, 10_000_000, "ROLE_CUSTOMER");
 
         // Act
         String actual = jwtTokenVerifier.getNetIdFromToken(token);
@@ -89,8 +102,22 @@ public class JwtTokenVerifierTests {
         assertThat(actual).isEqualTo(expected);
     }
 
-    private String generateToken(String jwtSecret, String netid, long issuanceOffset, long expirationOffset) {
+    @Test
+    public void getRoleFromToken() {
+        // Arrange
+        String expected = "ROLE_MANAGER";
+        String token = generateToken(secret, expected, -10_000_000, 10_000_000, "ROLE_MANAGER");
+
+        // Act
+        String actual = jwtTokenVerifier.getRoleFromToken(token).toArray()[0].toString();
+
+        // Assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private String generateToken(String jwtSecret, String netid, long issuanceOffset, long expirationOffset, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
         return Jwts.builder().setClaims(claims).setSubject(netid)
                 .setIssuedAt(new Date(System.currentTimeMillis() + issuanceOffset))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationOffset))

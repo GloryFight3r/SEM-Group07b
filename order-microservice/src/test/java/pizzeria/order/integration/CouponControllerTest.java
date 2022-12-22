@@ -21,9 +21,7 @@ import pizzeria.order.domain.coupon.PercentageCoupon;
 import pizzeria.order.domain.coupon.TwoForOneCoupon;
 import pizzeria.order.integration.utils.JsonUtil;
 import pizzeria.order.models.CouponModel;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;

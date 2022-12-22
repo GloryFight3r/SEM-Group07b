@@ -11,9 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pizzeria.order.domain.coupon.*;
 import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.food.FoodPriceService;
-import pizzeria.order.domain.order.Order;
-import pizzeria.order.domain.order.OrderRepository;
-import pizzeria.order.domain.order.OrderService;
 import pizzeria.order.domain.store.Store;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.models.GetPricesResponseModel;
@@ -131,5 +128,45 @@ public class OrderServiceTest {
         assertThatThrownBy(() -> {
             orderService.processOrder(order_invalidTime);
         }).isInstanceOf(OrderService.TimeInvalidException.class);
+    }
+
+    @Test
+    void testProcessOrder_orderIsNull() throws Exception {
+        assertThatThrownBy(() -> {
+            orderService.processOrder(null);
+        }).isInstanceOf(OrderService.CouldNotStoreException.class);
+    }
+
+    @Test
+    void testEditOrder_orderNotNullButBelongsToDifferentUser() throws Exception {
+        Order currentOrder = orderRepository.save(order_valid);
+
+        Order editOrder = new Order();
+        editOrder.setOrderId(currentOrder.orderId);
+        editOrder.setFoods(currentOrder.getFoods());
+        editOrder.setPrice(currentOrder.getPrice());
+        editOrder.setCouponIds(currentOrder.getCouponIds());
+        editOrder.setPickupTime(currentOrder.getPickupTime());
+        editOrder.setUserId("differentId");
+
+        assertThatThrownBy(() -> {
+            orderService.processOrder(editOrder);
+        }).isInstanceOf(OrderService.InvalidEditException.class);
+    }
+
+    @Test
+    void testPlaceOrder_priceIsNull() throws Exception {
+        Order editOrder = new Order();
+        when(foodPriceService.getFoodPrices(any())).thenReturn(null);
+
+        editOrder.setFoods(order_valid.getFoods());
+        editOrder.setStoreId(order_valid.getStoreId());
+        editOrder.setCouponIds(order_valid.getCouponIds());
+        editOrder.setPickupTime(order_valid.getPickupTime());
+        editOrder.setUserId("differentId");
+
+        assertThatThrownBy(() -> {
+            orderService.processOrder(editOrder);
+        }).isInstanceOf(OrderService.FoodInvalidException.class);
     }
 }
