@@ -38,7 +38,7 @@ public class UserServiceTests {
 
     @BeforeEach
     public void init() {
-        email = "Test1";
+        email = "Test1@gmail.com";
         name = "Test1";
         password = "coolpassword";
         allergies = List.of("Al1", "Al2", "Al3");
@@ -55,7 +55,7 @@ public class UserServiceTests {
     public void saveUser_worksCorrectly() {
         try {
             userService.saveUser(userModel);
-        } catch (EmailAlreadyInUseException e) {
+        } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
             System.out.println("User with such email already exists");
         }
 

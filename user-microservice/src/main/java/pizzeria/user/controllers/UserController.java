@@ -65,9 +65,8 @@ public class UserController {
                         "authentication service");
             }
 
-        } catch (EmailAlreadyInUseException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "A user with the given email " +
-                    "has already been registered", e);
+        } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
