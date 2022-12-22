@@ -1,6 +1,8 @@
 package pizzeria.authentication.domain.providers.implementations;
 
 import java.time.Instant;
+
+import pizzeria.authentication.Application;
 import pizzeria.authentication.domain.providers.TimeProvider;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,7 @@ public class CurrentTimeProvider implements TimeProvider {
      *
      * @return The current time
      */
+    @Application.ExcludeFromJacocoGeneratedReport
     public Instant getCurrentTime() {
         return Instant.now();
     }
