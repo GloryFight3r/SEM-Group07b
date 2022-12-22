@@ -64,25 +64,6 @@ public class StoreService {
         return storeRepo.deleteStoreById(storeId) != 0;
     }
 
-    /*public boolean notifyStore(Long storeId, String notificationType, Order order) throws StoreDoesNotExistException {
-        Optional<Store> optionalStore = storeRepo.findById(storeId);
-
-        if (optionalStore.isEmpty()) {
-            throw new StoreDoesNotExistException();
-        }
-
-        SendEmailRequestModel outgoing = new SendEmailRequestModel();
-        outgoing.setStore(storeId);
-        outgoing.setNotificationType(notificationType);
-        outgoing.setOrder(order);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        Email response = restTemplate.postForObject("http://localhost:8082/store/send_email", outgoing, Email.class);
-
-        return response != null;
-    }*/
-
     /**
      * Get the email corresponding to the storeID
      * @param id ID of the store

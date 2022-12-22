@@ -4,6 +4,9 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -27,11 +30,13 @@ public class Food {
 
     @ElementCollection
     @Column(name = "baseIngredients")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
     private List<Long> baseIngredients;
 
     @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Column(name = "extraIngredients")
     @Getter
     @Setter

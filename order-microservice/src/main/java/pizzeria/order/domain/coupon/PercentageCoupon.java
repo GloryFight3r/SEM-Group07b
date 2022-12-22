@@ -1,14 +1,20 @@
 package pizzeria.order.domain.coupon;
 
 import lombok.Getter;
+import lombok.Setter;
 import pizzeria.order.domain.order.Order;
 import pizzeria.order.models.GetPricesResponseModel;
+
+import javax.persistence.Entity;
 
 /**
  * The type Percentage coupon.
  */
+@Entity
 public class PercentageCoupon extends Coupon {
+
     @Getter
+    @Setter
     private double percentage;
 
     /**

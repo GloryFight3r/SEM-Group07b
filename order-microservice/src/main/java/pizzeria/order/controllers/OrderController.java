@@ -14,6 +14,7 @@ import pizzeria.order.domain.order.Order;
 import pizzeria.order.domain.order.OrderService;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.models.DeleteModel;
+import pizzeria.order.models.OrdersResponse;
 
 /**
  * The type Order controller.
@@ -54,7 +55,6 @@ public class OrderController {
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody Order incoming) {
         try {
-
             //check if the order that is trying to be placed is by the user the request comes from
             //if not then we deny the operation, else we process the order (and validate everything else)
             String userId = authManager.getNetId();
@@ -132,7 +132,9 @@ public class OrderController {
             Long storeId = orderToBeDeleted.get().getStoreId();
             String recipientEmail = storeService.getEmailById(storeId);
 
-            orderService.removeOrder(deleteModel.getOrderId(), userId, isManager);
+            if (!orderService.removeOrder(deleteModel.getOrderId(), userId, isManager)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
 
             mailingService.sendEmail(deleteModel.getOrderId(), recipientEmail, MailingService.ProcessType.DELETED);
             //validate if we can delete this order, if we can ok else bad request
@@ -148,11 +150,11 @@ public class OrderController {
      * @return the response entity
      */
     @GetMapping("/list")
-    public ResponseEntity<List<Order>> listOrders() {
+    public ResponseEntity<OrdersResponse> listOrders() {
         String userId = authManager.getNetId();
         //get a list of the orders that belong to this user
         List<Order> orders = orderService.listOrders(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(new OrdersResponse(orders));
     }
 
     /**
@@ -162,9 +164,9 @@ public class OrderController {
      * @return the response entity
      */
     @GetMapping("/listAll")
-    public ResponseEntity<List<Order>> listAllOrders() {
+    public ResponseEntity<OrdersResponse> listAllOrders() {
         //get all the orders in the system
         List<Order> orders = orderService.listAllOrders();
-        return ResponseEntity.status(HttpStatus.OK).body(orders);
+        return ResponseEntity.status(HttpStatus.OK).body(new OrdersResponse(orders));
     }
 }

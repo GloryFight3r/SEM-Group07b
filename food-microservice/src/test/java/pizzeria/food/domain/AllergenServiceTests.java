@@ -66,7 +66,7 @@ public class AllergenServiceTests {
         recipeRepository.save(new Recipe("Recipe1", List.of(1L, 2L, 3L), 12.50));
         recipeRepository.save(new Recipe("Recipe2", List.of(4L, 3L), 12.50));
         recipeRepository.save(new Recipe("Recipe3", List.of(2L, 4L), 12.50));
-        try{
+        try {
             List<Recipe> result = allergenService.filterMenuOnAllergens(List.of("Al58"));
             assertThat(result).hasSize(2);
             assertThat(result.get(0).getName()).isEqualTo("Recipe2");
@@ -90,7 +90,7 @@ public class AllergenServiceTests {
         recipeRepository.save(new Recipe("Recipe2", List.of(3L, 4L), 12.50));
         recipeRepository.save(new Recipe("Recipe3", List.of(5L, 6L), 12.50));
 
-        try{
+        try {
             List<Recipe> result = allergenService.filterMenuOnAllergens(List.of("Al56", "Al44"));
             assertThat(result.size()).isEqualTo(0);
         } catch (IngredientNotFoundException e) {
@@ -112,7 +112,7 @@ public class AllergenServiceTests {
         recipeRepository.save(new Recipe("Recipe2", List.of(3L, 4L), 12.50));
         recipeRepository.save(new Recipe("Recipe3", List.of(5L, 6L), 12.50));
 
-        try{
+        try {
             List<Recipe> result = allergenService.filterMenuOnAllergens(List.of("Al18", "Al3"));
             assertThat(result.size()).isEqualTo(1);
             assertThat(result.get(0).getName()).isEqualTo("Recipe1");
@@ -135,7 +135,7 @@ public class AllergenServiceTests {
         recipeRepository.save(new Recipe("Recipe2", List.of(3L, 4L), 12.50));
         recipeRepository.save(new Recipe("Recipe3", List.of(5L, 6L), 12.50));
 
-        try{
+        try {
             List<Recipe> result = allergenService.filterMenuOnAllergens(List.of("99"));
             assertThat(result.size()).isEqualTo(3);
         } catch (IngredientNotFoundException e) {
@@ -209,7 +209,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12")));
         Recipe recipe = new Recipe("recipe1", List.of(1L), 12.50);
 
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al17", "Al19", "Al4"))).isTrue();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -221,7 +221,7 @@ public class AllergenServiceTests {
     void testRecipeWithOneIngredientThatIsSafe2(){
         ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17")));
         Recipe recipe = new Recipe("recipe1", List.of(1L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al16", "Al19", "Al4"))).isTrue();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -233,7 +233,7 @@ public class AllergenServiceTests {
     void testRecipeWithOneIngredientThatIsNotSafe(){
         ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17")));
         Recipe recipe = new Recipe("recipe1", List.of(1L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al16", "Al19", "Al4", "Al1"))).isFalse();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -245,7 +245,7 @@ public class AllergenServiceTests {
     void testRecipeWithOneIngredientThatIsNotSafe2(){
         ingredientRepository.save(new Ingredient("Ingredient1", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17")));
         Recipe recipe = new Recipe("recipe1", List.of(1L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al16", "Al19", "Al4", "Al17"))).isFalse();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -262,7 +262,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient4", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17", "Al14", "Al23")));
 
         Recipe recipe = new Recipe("recipe1", List.of(1L, 2L, 3L, 4L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of())).isTrue();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -278,7 +278,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient4", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17", "Al14", "Al23")));
 
         Recipe recipe = new Recipe("recipe1", List.of(1L, 2L, 3L, 4L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al1"))).isFalse();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -294,7 +294,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient4", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17", "Al14", "Al23")));
 
         Recipe recipe = new Recipe("recipe1", List.of(1L, 2L, 3L, 4L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al15", "Al22", "Al7"))).isTrue();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -311,7 +311,7 @@ public class AllergenServiceTests {
 
         Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
 
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al1"))).isFalse();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -327,7 +327,7 @@ public class AllergenServiceTests {
 
         Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
 
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al3", "Al1"))).isFalse();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -343,7 +343,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient4", 10, List.of("Al1", "Al3", "Al9", "Al12", "Al17", "Al14", "Al23")));
 
         Recipe recipe = new Recipe("recipe1", List.of(1L, 2L, 3L, 4L), 12.50);
-        try{
+        try {
             assertThat(allergenService.recipeIsSafe(recipe, List.of("Al88", "Al77", "Al23", "Al9"))).isFalse();
         } catch (IngredientNotFoundException e) {
             System.out.println(e.getMessage());
@@ -358,7 +358,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al14", "Al23", "Al9", "Al12")));
         Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
         recipe = recipeRepository.save(recipe);
-        try{
+        try {
             assertThat(allergenService.checkIfSafeRecipeWithId(recipe.getId(), List.of("Al111", "Al23"))).isFalse();
 
         } catch (RecipeNotFoundException | IngredientNotFoundException e) {
@@ -373,7 +373,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al14", "Al23", "Al9", "Al12")));
         Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
         recipe = recipeRepository.save(recipe);
-        try{
+        try {
             assertThat(allergenService.checkIfSafeRecipeWithId(recipe.getId(), List.of("Al111", "A233", "Al465"))).isTrue();
 
         } catch (RecipeNotFoundException | IngredientNotFoundException e) {
@@ -388,7 +388,7 @@ public class AllergenServiceTests {
         ingredientRepository.save(new Ingredient("Ingredient3", 10, List.of("Al14", "Al23", "Al9", "Al12")));
         Recipe recipe = new Recipe("recipe1", List.of(3L, 2L, 1L), 12.50);
         recipe = recipeRepository.save(recipe);
-        try{
+        try {
             assertThat(allergenService.checkIfSafeRecipeWithId(recipe.getId(), List.of("Al3", "A23"))).isFalse();
 
         } catch (RecipeNotFoundException | IngredientNotFoundException e) {
