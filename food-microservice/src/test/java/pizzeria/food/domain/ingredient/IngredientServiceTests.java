@@ -41,9 +41,9 @@ public class IngredientServiceTests {
             List<Ingredient> test = repo.findAll();
             assertThat(test.size()).isEqualTo(1);
             assertThat(test.get(0).getName()).isEqualTo("test");
-        } catch (IngredientAlreadyInUseException e) {
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e) {
             System.out.println(e.getMessage());
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -77,7 +77,7 @@ public class IngredientServiceTests {
             List<Ingredient> test = repo.findAll();
             assertThat(test.size()).isEqualTo(1);
             assertThat(test.get(0).getName()).isEqualTo("test1");
-        } catch (IngredientNotFoundException e) {
+        } catch (IngredientNotFoundException | InvalidIngredientException e) {
             System.out.println(e.getMessage());
             assertTrue(false);
         }
@@ -239,4 +239,180 @@ public class IngredientServiceTests {
             fail();
         }
     }
+
+    @Test
+    void testInputValidationRegister1(){
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.registerIngredient(null);
+        });
+    }
+
+    @Test
+    void testInputValidationRegister2(){
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.registerIngredient(new Ingredient(null, 1.0, new ArrayList<>()));
+        });
+    }
+
+    @Test
+    void testInputValidationRegister3(){
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.registerIngredient(new Ingredient("", 1.0, new ArrayList<>()));
+        });
+    }
+
+    @Test
+    void testInputValidationRegister4(){
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.registerIngredient(new Ingredient("test", -1, new ArrayList<>()));
+        });
+    }
+
+    @Test
+    void registerIngredientInputValidationCorrect() {
+        Ingredient ingredient = new Ingredient("test", 0.0, new ArrayList<>());
+        try {
+            Ingredient ing = ingredientService.registerIngredient(ingredient);
+            assertTrue(repo.existsById(ing.getId()));
+            List<Ingredient> test = repo.findAll();
+            assertThat(test.size()).isEqualTo(1);
+            assertThat(test.get(0).getName()).isEqualTo("test");
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e) {
+            System.out.println(e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void testRegisterInputValidationCorrect(){
+        Ingredient ingredient = new Ingredient("t", 10, new ArrayList<>());
+        try {
+            Ingredient ing = ingredientService.registerIngredient(ingredient);
+            assertTrue(repo.existsById(ing.getId()));
+            List<Ingredient> test = repo.findAll();
+            assertThat(test.size()).isEqualTo(1);
+            assertThat(test.get(0).getName()).isEqualTo("t");
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e) {
+            System.out.println(e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void testUserInputValidationRegister5(){
+        Ingredient ingredient = new Ingredient("test", 0.0, null);
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.registerIngredient(ingredient);
+        });
+    }
+
+    @Test
+    void testUserInputValidationUpdate1(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.updateIngredient(null, 1L);
+        });
+    }
+
+    @Test
+    void testUserInputValidationUpdate2(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.updateIngredient(new Ingredient(null, 1.0, new ArrayList<>()), 1L);
+        });
+    }
+
+    @Test
+    void testUserInputValidationUpdate3(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.updateIngredient(new Ingredient("", 1.0, new ArrayList<>()), 1L);
+        });
+    }
+
+    @Test
+    void testUserInputValidationUpdate4(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.updateIngredient(new Ingredient("test", -1.0, new ArrayList<>()), 1L);
+        });
+    }
+
+    @Test
+    void testUserInputValidationUpdate5(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        assertThrows(InvalidIngredientException.class, () -> {
+            ingredientService.updateIngredient(new Ingredient("test", 1.0, null), 1L);
+        });
+    }
+
+    @Test
+    void testUserInputValidationIsCorrectUpdating(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        Ingredient ingredient = new Ingredient("test", 0.0, new ArrayList<>());
+        try {
+            Ingredient ing = ingredientService.updateIngredient(ingredient, 1L);
+            assertTrue(repo.existsById(ing.getId()));
+            List<Ingredient> test = repo.findAll();
+            assertThat(test.size()).isEqualTo(1);
+            assertThat(test.get(0).getName()).isEqualTo("test");
+            assertThat(test.get(0).getPrice()).isEqualTo(0.0);
+        } catch (InvalidIngredientException | IngredientNotFoundException e) {
+            System.out.println(e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void testUserInputValidationIsCorrectUpdating2(){
+        repo.save(new Ingredient("test", 1.0, new ArrayList<>()));
+        Ingredient ingredient = new Ingredient("t", 0.0, new ArrayList<>());
+        try {
+            Ingredient ing = ingredientService.updateIngredient(ingredient, 1L);
+            assertTrue(repo.existsById(ing.getId()));
+            List<Ingredient> test = repo.findAll();
+            assertThat(test.size()).isEqualTo(1);
+            assertThat(test.get(0).getName()).isEqualTo("t");
+            assertThat(test.get(0).getPrice()).isEqualTo(0.0);
+        } catch (InvalidIngredientException | IngredientNotFoundException e) {
+            System.out.println(e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void testUserInputValidationMethod1(){
+        assertFalse(ingredientService.validateIngredient(null));
+    }
+
+    @Test
+    void testUserInputValidationMethod2(){
+        assertFalse(ingredientService.validateIngredient(new Ingredient(null, 1.0, new ArrayList<>())));
+    }
+
+    @Test
+    void testUserInputValidationMethod3(){
+        assertFalse(ingredientService.validateIngredient(new Ingredient("", 1.0, new ArrayList<>())));
+    }
+
+    @Test
+    void testUserInputValidationMethod4(){
+        assertFalse(ingredientService.validateIngredient(new Ingredient("test", -1.0, new ArrayList<>())));
+    }
+
+    @Test
+    void testUserInputValidationMethod5(){
+        assertFalse(ingredientService.validateIngredient(new Ingredient("test", 1.0, null)));
+    }
+
+    @Test
+    void testUserInputValidationMthod6(){
+        assertTrue(ingredientService.validateIngredient(new Ingredient("t", 1.0, new ArrayList<>())));
+    }
+
+    @Test
+    void testUserInputValidationMthod7(){
+        assertTrue(ingredientService.validateIngredient(new Ingredient("test", 0.0, new ArrayList<>())));
+    }
+
 }

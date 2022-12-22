@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import pizzeria.food.domain.ingredient.Ingredient;
-import pizzeria.food.domain.ingredient.IngredientAlreadyInUseException;
-import pizzeria.food.domain.ingredient.IngredientNotFoundException;
-import pizzeria.food.domain.ingredient.IngredientService;
+import pizzeria.food.domain.ingredient.*;
 import pizzeria.food.models.ingredient.*;
 
 import java.util.List;
@@ -51,7 +48,7 @@ class IngredientControllerTest {
             ResponseEntity<SaveIngredientResponseModel> response = ingredientController.saveIngredient(requestModel);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response.getBody().getIngredient()).isEqualTo(ing);
-        } catch (IngredientAlreadyInUseException e) {
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e) {
             fail();
         }
     }
@@ -66,7 +63,22 @@ class IngredientControllerTest {
             ResponseEntity<SaveIngredientResponseModel> responseEntity = ingredientController.saveIngredient(requestModel);
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertTrue(responseEntity.getHeaders().containsKey(HttpHeaders.WARNING));
-        } catch (IngredientAlreadyInUseException e) {
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void saveIngredientThrowsInvalidIngredientException(){
+        Ingredient ingredient = new Ingredient("Test", 12.0, List.of("gluten", "lactose"));
+        try {
+            when(ingredientService.registerIngredient(ingredient)).thenThrow(InvalidIngredientException.class);
+            SaveIngredientRequestModel requestModel = new SaveIngredientRequestModel();
+            requestModel.setIngredient(ingredient);
+            ResponseEntity<SaveIngredientResponseModel> responseEntity = ingredientController.saveIngredient(requestModel);
+            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertTrue(responseEntity.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (IngredientAlreadyInUseException | InvalidIngredientException e) {
             fail();
         }
     }
@@ -84,7 +96,7 @@ class IngredientControllerTest {
             ResponseEntity<UpdateIngredientResponseModel> response = ingredientController.updateIngredient(requestModel);
             assertThat(response.getBody().getIngredient()).isEqualTo(returnIngredient);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        } catch (IngredientNotFoundException e) {
+        } catch (IngredientNotFoundException | InvalidIngredientException e) {
             fail();
         }
     }
@@ -101,7 +113,24 @@ class IngredientControllerTest {
             ResponseEntity<UpdateIngredientResponseModel> response = ingredientController.updateIngredient(requestModel);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertTrue(response.getHeaders().containsKey(HttpHeaders.WARNING));
-        } catch (IngredientNotFoundException e) {
+        } catch (IngredientNotFoundException | InvalidIngredientException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testUpdateIngredientThrowsInvalidIngredientException(){
+        Ingredient ingredient = new Ingredient("Test", 12.0, List.of("gluten", "lactose"));
+        ingredient.setId(1L);
+        try {
+            when(ingredientService.updateIngredient(ingredient, 1L)).thenThrow(InvalidIngredientException.class);
+            UpdateIngredientRequestModel requestModel = new UpdateIngredientRequestModel();
+            requestModel.setIngredient(ingredient);
+            requestModel.setId(1L);
+            ResponseEntity<UpdateIngredientResponseModel> response = ingredientController.updateIngredient(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertTrue(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (IngredientNotFoundException | InvalidIngredientException e) {
             fail();
         }
     }

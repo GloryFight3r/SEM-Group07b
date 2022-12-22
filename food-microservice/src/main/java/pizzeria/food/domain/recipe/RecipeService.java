@@ -35,7 +35,10 @@ public class RecipeService {
      * @throws IngredientNotFoundException thrown when we try to save a recipe that has ingredients that aren't stored
      * in the database.
      */
-    public Recipe registerFood(Recipe recipe) throws RecipeAlreadyInUseException, IngredientNotFoundException {
+    public Recipe registerFood(Recipe recipe) throws RecipeAlreadyInUseException, IngredientNotFoundException, InvalidRecipeException {
+        if (!userInputValidation(recipe)){
+            throw new InvalidRecipeException();
+        }
         if (recipeRepository.existsById(recipe.getId()) || recipeRepository.existsByName(recipe.getName())) {
             throw new RecipeAlreadyInUseException();
         }
@@ -58,7 +61,10 @@ public class RecipeService {
      * @throws IngredientNotFoundException thrown when one of the ingredient ids in the recipe is not stored in the
      * database.
      */
-    public Recipe updateFood(Recipe recipe, long id) throws RecipeNotFoundException, IngredientNotFoundException {
+    public Recipe updateFood(Recipe recipe, long id) throws RecipeNotFoundException, IngredientNotFoundException, InvalidRecipeException {
+        if (!userInputValidation(recipe)){
+            throw new InvalidRecipeException();
+        }
         for (long idIngredients: recipe.getBaseToppings()){
             if (!ingredientRepository.existsById(idIngredients)){
                 throw new IngredientNotFoundException();
@@ -136,5 +142,14 @@ public class RecipeService {
         } else {
             throw new RecipeNotFoundException("The Recipe with the id " + id + " was not found in the databases");
         }
+    }
+
+    /**
+     * @param recipe Recipe instance that we want to check if it is in the database.
+     * @return true iff the recipe is valid
+     */
+    public boolean userInputValidation(Recipe recipe){
+        return recipe != null && recipe.getName() != null && recipe.getBaseToppings() != null
+                 && recipe.getBasePrice() > 0 && recipe.getName().length() > 0;
     }
 }

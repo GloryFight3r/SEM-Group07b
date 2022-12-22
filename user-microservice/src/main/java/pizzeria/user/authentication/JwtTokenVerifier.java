@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import pizzeria.user.Application;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ public class JwtTokenVerifier {
     /**
      * Validate the JWT token for expiration.
      */
+    @Application.ExcludeFromJacocoGeneratedReport
     public boolean validateToken(String token) {
         return !isTokenExpired(token);
     }
@@ -42,7 +44,7 @@ public class JwtTokenVerifier {
      * @return A collection of granted authorities in the format ROLE_(Given role)
      */
     public Collection
-            <? extends GrantedAuthority> getRoleFromToken(String token) {
+            <GrantedAuthority> getRoleFromToken(String token) {
         String role = getClaimFromToken(token, claims -> claims.get("role").toString());
         role = role.replace("[", "").replace("]", "");
         return Collections.singleton(new SimpleGrantedAuthority(role));
