@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -63,7 +62,6 @@ public class UsersTests {
     public void register_withValidData_worksCorrectly() throws Exception {
         // Arrange
         final String testPassword = "password123";
-        final String testRole = "ROLE_CUSTOMER";
         final String testEmail = "Borislav@gmail.com";
         final String testName = "borislav";
         final List<String> testAllergies = List.of("Allergy");
@@ -205,7 +203,6 @@ public class UsersTests {
     @Test
     void deleteUser_worksCorrectly() throws Exception {
         // we save the user
-        final String testPassword = "password";
         final String testEmail = "correctmail@gmail.com";
         final String testName = "CoolName";
         final List<String> testAllergies = List.of("Allergy");
@@ -227,18 +224,13 @@ public class UsersTests {
     @Test
     void deleteUser_notAuthenticated() throws Exception {
         // we save the user
-        final String testPassword = "password";
         final String testEmail = "correctmail@gmail.com";
         final String testName = "CoolName";
         final List<String> testAllergies = List.of("Allergy");
-        userRepository.save(new User(testName, testEmail, testAllergies));
+        User currentUser = userRepository.save(new User(testName, testEmail, testAllergies));
 
-        when(mockAuthManager.getNetId()).thenReturn("Mocked Id");
-        when(mockAuthManager.getRole()).thenReturn("[ROLE_MANAGER]");
-        when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(true);
-        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("Mocked Id");
-        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_MANAGER")));
-
+        when(mockAuthManager.getNetId()).thenReturn(currentUser.getId());
+        when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(false);
 
         // Act
         ResultActions resultActions = mockMvc.perform(delete("/user/delete_user")
@@ -246,24 +238,37 @@ public class UsersTests {
                 .header("Authorization", "Bearer MockedToken"));
 
         // Assert
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteUser_noToken() throws Exception {
+        // we save the user
+        final String testEmail = "correctmail@gmail.com";
+        final String testName = "CoolName";
+        final List<String> testAllergies = List.of("Allergy");
+        User currentUser = userRepository.save(new User(testName, testEmail, testAllergies));
+
+        when(mockAuthManager.getNetId()).thenReturn(currentUser.getId());
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(delete("/user/delete_user")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Assert
+        resultActions.andExpect(status().isUnauthorized());
     }
 
     @Test
     void deleteUser_noSuchUser() throws Exception {
         // we save the user
-        final String testPassword = "password";
         final String testEmail = "correctmail@gmail.com";
         final String testName = "CoolName";
         final List<String> testAllergies = List.of("Allergy");
         userRepository.save(new User(testName, testEmail, testAllergies));
 
-        when(mockAuthManager.getNetId()).thenReturn("Mocked Id");
-        when(mockAuthManager.getRole()).thenReturn("[ROLE_MANAGER]");
+        when(mockAuthManager.getNetId()).thenReturn("Not The Correct Id");
         when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(true);
-        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("Mocked Id");
-        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_MANAGER")));
-
 
         // Act
         ResultActions resultActions = mockMvc.perform(delete("/user/delete_user")
@@ -271,7 +276,7 @@ public class UsersTests {
                 .header("Authorization", "Bearer MockedToken"));
 
         // Assert
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(status().isExpectationFailed());
     }
 
     static Stream<Arguments> invalidEmailsSuite() {
@@ -286,7 +291,6 @@ public class UsersTests {
 
     @Test
     public void updateAllergies_worksCorrectly() throws Exception {
-        final String testPassword = "password123";
         final String testEmail = "Borislav@gmail.com";
         final String testName = "borislav";
         final List<String> testAllergies = List.of("Allergy");
@@ -320,14 +324,37 @@ public class UsersTests {
     }
 
     @Test
+    public void updateAllergies_noSuchUser() throws Exception {
+        final String testEmail = "Borislav@gmail.com";
+        final String testName = "borislav";
+        final List<String> testAllergies = List.of("Allergy");
+        final List<String> newAllergies = List.of("Allergy2");
+
+        userRepository.save(new User(testName, testEmail, testAllergies));
+
+        when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
+        when(mockAuthManager.getNetId()).thenReturn("NotTheSameId");
+
+        AllergiesModel model = new AllergiesModel();
+        model.setAllergies(newAllergies);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(put("/user/update_allergies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(model))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void getAllergies_worksCorrectly() throws Exception {
-        final String testPassword = "password123";
         final String testEmail = "Borislav@gmail.com";
         final String testName = "borislav";
         final List<String> testAllergies = List.of("Allergy", "Allergy2", "Allergy3");
 
         when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
-        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("asdasdasdas");
+        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("MockedID");
 
         userRepository.save(new User(testName, testEmail, testAllergies));
 
@@ -347,6 +374,25 @@ public class UsersTests {
         User tempUser = userRepository.findUserByEmail(testEmail).get();
 
         assertThat(tempUser.getAllergies()).containsExactlyElementsOf(testAllergies);
+    }
+
+    @Test
+    public void getAllergies_noSuchUser() throws Exception {
+        final String testEmail = "Borislav@gmail.com";
+        final String testName = "borislav";
+        final List<String> testAllergies = List.of("Allergy", "Allergy2", "Allergy3");
+
+        userRepository.save(new User(testName, testEmail, testAllergies));
+
+        when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
+        when(mockAuthManager.getNetId()).thenReturn("NotTheSameId");
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/user/get_allergies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -387,6 +433,62 @@ public class UsersTests {
         String actualToken = responseModel.getJwtToken();
 
         assertThat(actualToken).isEqualTo(token);
+    }
+
+    @ParameterizedTest
+    @MethodSource("loginInvalidSuite")
+    public void loginUser_invalidParameters(String email, String password) throws Exception {
+        LoginModel loginModel = new LoginModel();
+        loginModel.setEmail(email);
+        loginModel.setPassword(password);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(loginModel)));
+
+        resultActions.andExpect(status().isExpectationFailed());
+    }
+
+    static Stream<Arguments> loginInvalidSuite() {
+        return Stream.of(
+                Arguments.of("", "email@gmail.com"),
+                Arguments.of(null, "email@gmail.com"),
+                Arguments.of("MockedPassword", null),
+                Arguments.of("MockedPassword", "")
+        );
+    }
+
+    @Test
+    public void loginUser_noSuchUser() throws Exception {
+        LoginModel loginModel = new LoginModel();
+        loginModel.setEmail("goodEmail@gmail.com");
+        loginModel.setPassword("goodPassword@gmail.com");
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(loginModel)));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void loginUser_httpRequestNotFound() throws Exception {
+        LoginModel loginModel = new LoginModel();
+        loginModel.setEmail("goodEmail@gmail.com");
+        loginModel.setPassword("goodPassword@gmail.com");
+
+        userRepository.save(new User("MockMail", loginModel.getEmail(), List.of()));
+
+        when(httpRequestService.loginUser(anyString(), anyString())).thenReturn(Optional.empty());
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(get("/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(loginModel)));
+
+        resultActions.andExpect(status().isBadRequest());
     }
 }
 

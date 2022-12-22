@@ -89,9 +89,8 @@ public class UserController {
         if (userService.userExistsById(authManager.getNetId())) {
             userService.deleteUserById(authManager.getNetId());
             return ResponseEntity.ok().build();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such id found");
         }
+        throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "No user with such id found");
     }
 
     /**
@@ -138,7 +137,8 @@ public class UserController {
      */
     @GetMapping("/login")
     public ResponseEntity<LoginResponseModel> loginUser(@RequestBody LoginModel loginModel) {
-        if (loginModel.getEmail().isEmpty() || loginModel.getPassword().isEmpty()) {
+        if (loginModel.getEmail() == null || loginModel.getPassword() == null ||
+                loginModel.getEmail().isEmpty() || loginModel.getPassword().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Login details' format is " +
                     "invalid", new InvalidLoginArgumentsException(loginModel));
         }
