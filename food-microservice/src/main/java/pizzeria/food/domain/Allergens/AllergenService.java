@@ -73,7 +73,7 @@ public class AllergenService {
     /**
      * @param recipeId id of the recipe we want to check for allergens
      * @param allergens list of strings that represents the allergens
-     * @return true iff the recipe does not contain any of the allergens
+     * @return true iff the recipe does not contain any of the specified allergens
      * @throws RecipeNotFoundException when the recipe is not stored in the database
      * @throws IngredientNotFoundException when an ingredient of this recipe is not stored in the database
      */

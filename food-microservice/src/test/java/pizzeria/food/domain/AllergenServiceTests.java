@@ -395,4 +395,9 @@ public class AllergenServiceTests {
             fail();
         }
     }
+
+    @Test
+    void testRecipeIdIsSafeIdNotFound(){
+        assertThrows(RecipeNotFoundException.class, () -> allergenService.checkIfSafeRecipeWithId(1L, List.of("Al111", "A233", "Al465")));
+    }
 }

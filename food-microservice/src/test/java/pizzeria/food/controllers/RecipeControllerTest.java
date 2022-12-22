@@ -10,11 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import pizzeria.food.domain.ingredient.Ingredient;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.recipe.Recipe;
 import pizzeria.food.domain.recipe.RecipeAlreadyInUseException;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
+import pizzeria.food.models.ingredient.GetBaseToppingsRequestModel;
+import pizzeria.food.models.ingredient.GetBaseToppingsResponseModel;
 import pizzeria.food.models.recipe.*;
 
 import java.util.List;
@@ -177,5 +180,58 @@ class RecipeControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getMenu()).isEqualTo(List.of(recipe, recipe2));
 
+    }
+
+    @Test
+    void getBaseToppings(){
+        long id = 1L;
+        GetBaseToppingsRequestModel requestModel = new GetBaseToppingsRequestModel();
+        requestModel.setRecipeId(id);
+        Ingredient ingredient1 = new Ingredient("ing1", 12.00);
+        Ingredient ingredient2 = new Ingredient("ing2", 6.00, List.of("vegan"));
+        List<Ingredient> ingredients = List.of(ingredient1, ingredient2);
+        try {
+            when(recipeService.getBaseToppings(id)).thenReturn(ingredients);
+            ResponseEntity<GetBaseToppingsResponseModel> response = recipeController.getBaseToppings(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().getBaseToppings()).isEqualTo(ingredients);
+        } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (IngredientNotFoundException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testThrowsException(){
+        try {
+            when(recipeService.getBaseToppings(1L)).thenThrow(RecipeNotFoundException.class);
+            GetBaseToppingsRequestModel requestModel = new GetBaseToppingsRequestModel();
+            requestModel.setRecipeId(1L);
+            ResponseEntity response = recipeController.getBaseToppings(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (IngredientNotFoundException e) {
+            fail();
+        }
+
+    }
+
+    @Test
+    void testThrowsException2(){
+        try {
+            when(recipeService.getBaseToppings(1L)).thenThrow(IngredientNotFoundException.class);
+            GetBaseToppingsRequestModel requestModel = new GetBaseToppingsRequestModel();
+            requestModel.setRecipeId(1L);
+            ResponseEntity response = recipeController.getBaseToppings(requestModel);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getHeaders().containsKey(HttpHeaders.WARNING));
+        } catch (RecipeNotFoundException e) {
+            fail();
+        } catch (IngredientNotFoundException e) {
+            fail();
+        }
     }
 }

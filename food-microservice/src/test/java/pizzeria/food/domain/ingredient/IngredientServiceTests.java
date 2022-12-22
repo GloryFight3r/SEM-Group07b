@@ -11,12 +11,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pizzeria.food.models.prices.Tuple;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -228,5 +228,15 @@ public class IngredientServiceTests {
             assertThat(list.get(i).getPrice()).isEqualTo(ingredients.get(i).getPrice());
         }
 
+    }
+
+    @Test
+    void testGetDetailsWithNullInput(){
+        try {
+            Map<Long, Tuple> map = ingredientService.getDetails(null);
+            assertThat(map).isEqualTo(new HashMap<>());
+        } catch (IngredientNotFoundException e) {
+            fail();
+        }
     }
 }

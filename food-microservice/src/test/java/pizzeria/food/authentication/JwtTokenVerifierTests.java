@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JwtTokenVerifierTests {
     private transient JwtTokenVerifier jwtTokenVerifier;
@@ -86,6 +87,17 @@ public class JwtTokenVerifierTests {
 
         // Assert
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void getRoleFromToken(){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", "ROLE_MANAGER");
+        String token = Jwts.builder().setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis() + 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 10000))
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
+        assertEquals("ROLE_MANAGER", jwtTokenVerifier.getRoleFromToken(token).toArray()[0].toString());
     }
 
     private String generateToken(String jwtSecret, String netid, long issuanceOffset, long expirationOffset) {

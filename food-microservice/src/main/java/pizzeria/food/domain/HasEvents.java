@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.data.domain.DomainEvents;
+import pizzeria.food.Application;
 
 /**
  * A base class for adding domain event support to an entity.
@@ -14,6 +15,7 @@ import org.springframework.data.domain.DomainEvents;
 public abstract class HasEvents {
     private final transient List<Object> domainEvents = new ArrayList<>();
 
+    @Application.ExcludeFromJacocoGeneratedReport
     protected void recordThat(Object event) {
         domainEvents.add(Objects.requireNonNull(event));
     }
