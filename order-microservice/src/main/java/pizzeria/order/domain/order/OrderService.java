@@ -107,17 +107,15 @@ public class OrderService {
         double sum = 0.0;
         for (Food f: order.getFoods()) {
             sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
-
-            for (long l: f.getBaseIngredients())
+            for (long l: f.getExtraIngredients()) {
                 sum += prices.getIngredientPrices().get(l).getPrice();
-            for (long l: f.getExtraIngredients())
-                sum += prices.getIngredientPrices().get(l).getPrice();
+            }
         }
 
         if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
             final double EPS = 1e-6;
             if (Math.abs(order.price - sum) > EPS) {
-                throw new PriceNotRightException();
+                throw new PriceNotRightException("Price is not right");
             }
 
             /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
@@ -148,7 +146,7 @@ public class OrderService {
 
         final double EPS = 1e-6;
         if (Math.abs(order.price - minPrice) > EPS) {
-            throw new PriceNotRightException();
+            throw new PriceNotRightException("Price is not right");
         }
 
         /*if (order.getOrderId() != null && orderRepo.existsById(order.getOrderId())) {
@@ -223,9 +221,13 @@ public class OrderService {
      */
     @SuppressWarnings("PMD")
     public static class PriceNotRightException extends Exception {
+        private final String msg;
+        public PriceNotRightException(String msg) {
+            this.msg = msg;
+        }
         @Override
         public String getMessage(){
-            return "The price calculated does not match the price given";
+            return "The price calculated does not match the price given: " + msg;
         }
     }
 
