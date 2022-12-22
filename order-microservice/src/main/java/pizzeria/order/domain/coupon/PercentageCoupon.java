@@ -31,6 +31,7 @@ public class PercentageCoupon extends Coupon {
      * @param percentage the percentage that is to be discounted, e.g. 0.15 -> 15%, 0 <= p <= 1
      */
     public PercentageCoupon(String id, double percentage){
+        if (percentage > 1 || percentage < 0) throw new IllegalArgumentException();
         this.id = id;
         this.percentage = percentage;
     }
