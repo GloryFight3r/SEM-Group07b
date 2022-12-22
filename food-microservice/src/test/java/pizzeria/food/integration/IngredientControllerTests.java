@@ -3,6 +3,9 @@ package pizzeria.food.integration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +28,7 @@ import pizzeria.food.models.ingredient.SaveIngredientResponseModel;
 import pizzeria.food.models.ingredient.UpdateIngredientRequestModel;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -340,5 +344,74 @@ public class IngredientControllerTests {
             assertThat(current.getId()).isEqualTo(i + 1L);
             assertThat(current.getAllergens()).isEqualTo(testIngredients.get(i).getAllergens());
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("incorrectIngredientsSuite")
+    void testIncorrectIngredients(Ingredient testIngredient) throws Exception{
+        //insert the ingredient in the DB
+        SaveIngredientRequestModel request = new SaveIngredientRequestModel();
+        //make an ingredient with a matching name of the second
+        Ingredient ing = new Ingredient("Olive", 1.0);
+        request.setIngredient(ing);
+
+        ResultActions resultActions = mockMvc.perform(post("/ingredient/save")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(request))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isCreated());
+
+        //insert the test ingredient, should not work
+        SaveIngredientRequestModel testRequest = new SaveIngredientRequestModel();
+        testRequest.setIngredient(testIngredient);
+
+        ResultActions resultActions2 = mockMvc.perform(post("/ingredient/save")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(testRequest))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions2.andExpect(status().isBadRequest());
+    }
+
+    static Stream<Arguments> incorrectIngredientsSuite() {
+        Ingredient testIngredient1 = new Ingredient("Pepperoni", 1.5, List.of("pig"));
+        testIngredient1.setId(1L);
+        Ingredient testIngredient2 = new Ingredient("Olive", 1.0);
+
+        return Stream.of(
+                Arguments.of(testIngredient1),
+                Arguments.of(testIngredient2)
+        );
+    }
+
+    @Test
+    void testIncorrectIdUpdate() throws Exception{
+        //now try to update an ingredient that does not exist
+        UpdateIngredientRequestModel request2 = new UpdateIngredientRequestModel();
+        Ingredient testIngredient2 = new Ingredient("Olive", 1.0);
+        request2.setIngredient(testIngredient2);
+        request2.setId(3L);
+
+        ResultActions resultActions2 = mockMvc.perform(post("/ingredient/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(request2))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions2.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testIncorrectDelete() throws Exception{
+        //now try to delete an ingredient that does not exist
+        UpdateIngredientRequestModel request2 = new UpdateIngredientRequestModel();
+        request2.setId(3L);
+
+        ResultActions resultActions2 = mockMvc.perform(delete("/ingredient/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(request2))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions2.andExpect(status().isBadRequest());
     }
 }
