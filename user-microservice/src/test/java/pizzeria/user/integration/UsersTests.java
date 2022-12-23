@@ -324,6 +324,36 @@ public class UsersTests {
     }
 
     @Test
+    public void updateAllergies_nullAllergies() throws Exception {
+        final String testEmail = "Borislav@gmail.com";
+        final String testName = "borislav";
+        final List<String> testAllergies = List.of("Allergy");
+        final List<String> newAllergies = null;
+
+        when(mockJwtTokenVerifier.validateToken(any())).thenReturn(true);
+        when(mockJwtTokenVerifier.getNetIdFromToken(anyString())).thenReturn("asdasdasdas");
+
+        userRepository.save(new User(testName, testEmail, testAllergies));
+
+        User currentUser = userRepository.findUserByEmail(testEmail).get();
+
+        String id = currentUser.getId();
+
+        when(mockAuthManager.getNetId()).thenReturn(id);
+
+        AllergiesModel model = new AllergiesModel();
+        model.setAllergies(newAllergies);
+
+        // Act
+        ResultActions resultActions = mockMvc.perform(put("/user/update_allergies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.serialize(model))
+                .header("Authorization", "Bearer MockedToken"));
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void updateAllergies_noSuchUser() throws Exception {
         final String testEmail = "Borislav@gmail.com";
         final String testName = "borislav";

@@ -1,13 +1,13 @@
 package pizzeria.user.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import pizzeria.user.authentication.AuthManager;
 import pizzeria.user.communication.HttpRequestService;
 import pizzeria.user.domain.user.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 import pizzeria.user.models.*;
 
 import java.util.List;
@@ -45,8 +45,9 @@ public class UserController {
         // perform UserModel data validation
         if (user.getEmail() == null || user.getPassword() == null || user.getName() == null ||
                 user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Arguments for user are " +
-                    "invalid", new InvalidUserArgumentsException(user));
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).header(HttpHeaders.WARNING,
+                    "Arguments for user are " +
+                    "invalid").build();
         }
 
         try {
@@ -58,12 +59,13 @@ public class UserController {
             if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
                 userService.deleteUserByEmail(savedUser.get().getEmail());
 
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not communicate with " +
-                        "authentication service");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
+                        "Could not communicate with " +
+                        "authentication service").build();
             }
 
         } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -88,7 +90,7 @@ public class UserController {
             userService.deleteUserById(authManager.getNetId());
             return ResponseEntity.ok().build();
         }
-        throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "No user with such id found");
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).header(HttpHeaders.WARNING, "No user with such id found").build();
     }
 
     /**
@@ -100,10 +102,14 @@ public class UserController {
     @PutMapping("/update_allergies")
     public ResponseEntity updateAllergies(@RequestBody AllergiesModel allergiesModel) {
         if (userService.userExistsById(authManager.getNetId())) {
+            if (allergiesModel.getAllergies() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "Allergens are null").build();
+            }
+
             userService.updateUserAllergies(authManager.getNetId(), allergiesModel.getAllergies());
             return ResponseEntity.ok().build();
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such id not found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "User with such id not found").build();
         }
     }
 
@@ -121,7 +127,7 @@ public class UserController {
 
             return ResponseEntity.ok().body(new AllergiesResponseModel(allergies));
         } else {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such id not found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "User with such id not found").build();
         }
     }
 
@@ -137,19 +143,18 @@ public class UserController {
     public ResponseEntity<LoginResponseModel> loginUser(@RequestBody LoginModel loginModel) {
         if (loginModel.getEmail() == null || loginModel.getPassword() == null ||
                 loginModel.getEmail().isEmpty() || loginModel.getPassword().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Login details' format is " +
-                    "invalid", new InvalidLoginArgumentsException(loginModel));
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).header(HttpHeaders.WARNING, "Login details' format is " + "invalid").build();
         }
 
         Optional<User> user = userService.findUserByEmail(loginModel.getEmail());
 
         if (user.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such email not found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "User with such email not found").build();
         }
 
         Optional <String> jwtToken = httpRequestService.loginUser(user.get().getId(), loginModel.getPassword());
         if (jwtToken.isEmpty()) {
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not authenticate");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "Could not authenticate").build();
         }
         return ResponseEntity.ok().body(new LoginResponseModel(jwtToken.get()));
     }
