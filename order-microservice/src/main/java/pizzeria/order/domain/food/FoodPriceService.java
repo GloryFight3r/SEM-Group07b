@@ -52,16 +52,22 @@ public class FoodPriceService {
 
         ResponseEntity<GetPricesResponseModel> response = getResponse(ingredients, recipes);
 
+        return extractPriceResponseModel(response);
+    }
+
+    private static GetPricesResponseModel extractPriceResponseModel(ResponseEntity<GetPricesResponseModel> response) {
         // check response status code
-        if (response.getStatusCode() == HttpStatus.OK) return null;
+        if (response.getStatusCode() != HttpStatus.OK) return null;
 
         GetPricesResponseModel responseModel = response.getBody();
+
         if (responseModel.getFoodPrices() == null) {
             responseModel.setFoodPrices(new HashMap<>());
         }
         if (responseModel.getIngredientPrices() == null) {
             responseModel.setIngredientPrices(new HashMap<>());
         }
+
         return responseModel;
     }
 
