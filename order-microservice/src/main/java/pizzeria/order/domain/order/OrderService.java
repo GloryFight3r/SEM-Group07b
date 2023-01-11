@@ -7,7 +7,6 @@ import pizzeria.order.domain.coupon.Coupon_percentage_Repository;
 import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.domain.food.FoodPriceService;
-import pizzeria.order.domain.food.FoodRepository;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.models.GetPricesResponseModel;
 
@@ -29,15 +28,12 @@ public class OrderService {
     private transient final Coupon_2for1_Repository coupon_2for1_repository;
     private transient final ClockWrapper clockWrapper;
 
-    private final transient FoodRepository foodRepository;
-
     private final transient StoreService storeService;
 
     /**
      * Instantiates a new Order service with the respective repositories and services
      *
      * @param orderRepo        the order repository
-     * @param foodRepository   the food repository
      * @param foodPriceService the food price service
      * @param clockWrapper     clock wrapper for time
      * @param storeService     the store service
@@ -45,13 +41,12 @@ public class OrderService {
      * @param coupon_2for1_repository the 2for1 coupon repository
      */
     @Autowired
-    public OrderService(OrderRepository orderRepo, FoodRepository foodRepository, FoodPriceService foodPriceService,
+    public OrderService(OrderRepository orderRepo, FoodPriceService foodPriceService,
                         ClockWrapper clockWrapper, StoreService storeService,
                         Coupon_2for1_Repository coupon_2for1_repository,
                         Coupon_percentage_Repository coupon_percentage_repository){
         this.orderRepo = orderRepo;
         this.foodPriceService = foodPriceService;
-        this.foodRepository = foodRepository;
         this.clockWrapper = clockWrapper;
         this.storeService = storeService;
         this.coupon_percentage_repository = coupon_percentage_repository;
