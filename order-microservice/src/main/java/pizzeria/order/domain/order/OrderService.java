@@ -91,7 +91,6 @@ public class OrderService {
         coupons.addAll(coupon_2for1_repository.findAllById(order.couponIds));
         // this list only contains validated coupons, no need for additional checks
         order.couponIds.clear(); // clear the list, so we can send only the used one back
-
         //get the base price of the order
         double sum = 0.0;
         for (Food f: order.getFoods()) {
@@ -100,30 +99,34 @@ public class OrderService {
                 sum += prices.getIngredientPrices().get(l).getPrice();
             }
         }
-
-        if (!coupons.isEmpty()) {
-            final double priceWithoutCoupons = sum;
-            order.couponIds.add("0");
-
-            for (Coupon c: coupons) {
-                //iterate over the list of valid coupons
-                double price = c.calculatePrice(order, prices, priceWithoutCoupons);
-
-                if (Double.compare(price, sum) < 0) {
-                    sum = price;
-                    //set the first element in the coupon ids to the coupon used
-                    //order.couponIds.clear();
-                    order.couponIds.set(0, c.getId());
-                }
-            }
-        }
-
+        sum = calculatePriceWithCoupons(order, prices, coupons, sum);
         final double EPS = 1e-6;
         if (Math.abs(order.price - sum) > EPS) {
             throw new PriceNotRightException("Price is not right");
         }
-
         return orderRepo.save(order);
+    }
+
+    @SuppressWarnings("PMD")
+    private static double calculatePriceWithCoupons(Order order, GetPricesResponseModel prices, ArrayList<Coupon> coupons, double sum) {
+        if (coupons.isEmpty()) {
+            return sum;
+        }
+        final double priceWithoutCoupons = sum;
+        order.couponIds.add("0");
+
+        for (Coupon c: coupons) {
+            //iterate over the list of valid coupons
+            double price = c.calculatePrice(order, prices, priceWithoutCoupons);
+
+            if (Double.compare(price, sum) < 0) {
+                sum = price;
+                //set the first element in the coupon ids to the coupon used
+                //order.couponIds.clear();
+                order.couponIds.set(0, c.getId());
+            }
+        }
+        return sum;
     }
 
     private void validateOrderTime(Order order) throws TimeInvalidException {
