@@ -50,6 +50,22 @@ public class FoodPriceService {
         List<Long> recipes = order.getFoods().stream()
                 .map(Food::getRecipeId).collect(Collectors.toList());
 
+        ResponseEntity<GetPricesResponseModel> response = getResponse(ingredients, recipes);
+
+        // check response status code
+        if (response.getStatusCode() == HttpStatus.OK) return null;
+
+        GetPricesResponseModel responseModel = response.getBody();
+        if (responseModel.getFoodPrices() == null) {
+            responseModel.setFoodPrices(new HashMap<>());
+        }
+        if (responseModel.getIngredientPrices() == null) {
+            responseModel.setIngredientPrices(new HashMap<>());
+        }
+        return responseModel;
+    }
+
+    private ResponseEntity<GetPricesResponseModel> getResponse(List<Long> ingredients, List<Long> recipes) {
         // create headers
         HttpHeaders headers = new HttpHeaders();
         // set `content-type` header
@@ -67,25 +83,7 @@ public class FoodPriceService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
         // send POST request
-        ResponseEntity<GetPricesResponseModel> response =
-                this.restTemplate.postForEntity("http://localhost:8084/price/ids", entity, GetPricesResponseModel.class);
-        // check response status code
-
-        System.out.println(response);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            GetPricesResponseModel responseModel = response.getBody();
-            if (responseModel.getFoodPrices() == null) {
-                responseModel.setFoodPrices(new HashMap<>());
-            }
-            if (responseModel.getIngredientPrices() == null) {
-                responseModel.setIngredientPrices(new HashMap<>());
-            }
-
-            return responseModel;
-        } else {
-            return null;
-        }
+        return restTemplate.postForEntity("http://localhost:8084/price/ids", entity, GetPricesResponseModel.class);
     }
 
 }
