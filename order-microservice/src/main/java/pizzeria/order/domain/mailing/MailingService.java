@@ -24,7 +24,11 @@ public class MailingService {
     }
 
     transient private Session session;
-
+    private final transient String[] messageSubject = {
+            "Order has been edited!",
+            "Order has been created!",
+            "Order has been deleted!"
+    };
     @Autowired
     public MailingService(MessageTransport messageTransport) {
         this.messageTransport = messageTransport;
@@ -52,6 +56,15 @@ public class MailingService {
         session.setDebug(true);
     }
 
+    private String getMessageText(Long orderId, int index) {
+        String[] messageText = {
+                String.format("Order with orderId : %d has been edited", orderId),
+                String.format("Order with orderId : %d has been created", orderId),
+                String.format("Order with orderId : %d has been deleted", orderId)
+        };
+        return messageText[index];
+    }
+
     /**
      * Notify the store about the creation/edit/deletion of an order with the current orderId
      * @param orderId ID of the order
@@ -70,24 +83,12 @@ public class MailingService {
             // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
 
+            int messageTypeToNumber = processType.ordinal();
+
             // Set Subject: header field
-            switch (processType) {
-                case EDITED:
-                    message.setSubject("Order has been edited!");
-                    // Now set the actual message
-                    message.setText(String.format("Order with orderId : %d has been edited", orderId));
-                    break;
-                case CREATED:
-                    message.setSubject("Order has been created!");
-                    // Now set the actual message
-                    message.setText(String.format("Order with orderId : %d has been created", orderId));
-                    break;
-                case DELETED:
-                    message.setSubject("Order has been deleted!");
-                    // Now set the actual message
-                    message.setText(String.format("Order with orderId : %d has been deleted", orderId));
-                    break;
-            }
+            message.setSubject(messageSubject[messageTypeToNumber]);
+            // Now set the actual message
+            message.setText(getMessageText(orderId, messageTypeToNumber));
             // Send message
             messageTransport.sendMessage(message);
         } catch (MessagingException mex) {
