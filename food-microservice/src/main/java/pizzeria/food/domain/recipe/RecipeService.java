@@ -42,13 +42,17 @@ public class RecipeService {
         if (recipeRepository.existsById(recipe.getId()) || recipeRepository.existsByName(recipe.getName())) {
             throw new RecipeAlreadyInUseException();
         }
-        for (long id: recipe.getBaseToppings()){
+        checkForIngredientsExistence(recipe.getBaseToppings());
+        Recipe result = recipeRepository.save(recipe);
+        return result;
+    }
+
+    private void checkForIngredientsExistence(List<Long> ids) throws IngredientNotFoundException {
+        for (long id: ids){
             if (!ingredientRepository.existsById(id)){
                 throw new IngredientNotFoundException();
             }
         }
-        Recipe result = recipeRepository.save(recipe);
-        return result;
     }
 
     /**
@@ -65,11 +69,7 @@ public class RecipeService {
         if (!userInputValidation(recipe)){
             throw new InvalidRecipeException();
         }
-        for (long idIngredients: recipe.getBaseToppings()){
-            if (!ingredientRepository.existsById(idIngredients)){
-                throw new IngredientNotFoundException();
-            }
-        }
+        checkForIngredientsExistence(recipe.getBaseToppings());
         if (recipeRepository.existsById(id)) {
             recipe.setId(id);
             return recipeRepository.save(recipe);
@@ -131,12 +131,10 @@ public class RecipeService {
         if (recipeRepository.existsById(id)){
             Recipe recipe = recipeRepository.findById(id).get();
             List<Ingredient> baseToppings = new ArrayList<>();
+            checkForIngredientsExistence(recipe.getBaseToppings());
+
             for (long ingredientId: recipe.getBaseToppings()){
-                if (ingredientRepository.existsById(ingredientId)){
-                    baseToppings.add(ingredientRepository.findById(ingredientId).get());
-                } else {
-                    throw new IngredientNotFoundException("The ingredient with the id " + ingredientId + " was not found in the database");
-                }
+                baseToppings.add(ingredientRepository.findById(ingredientId).get());
             }
             return ingredientRepository.findAllById(recipe.getBaseToppings());
         } else {
@@ -152,4 +150,6 @@ public class RecipeService {
         return recipe != null && recipe.getName() != null && recipe.getBaseToppings() != null
                  && recipe.getBasePrice() > 0 && recipe.getName().length() > 0;
     }
+
+
 }
