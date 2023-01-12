@@ -55,7 +55,7 @@ public class FoodPriceService {
         return extractPriceResponseModel(response);
     }
 
-    private static GetPricesResponseModel extractPriceResponseModel(ResponseEntity<GetPricesResponseModel> response) {
+    private GetPricesResponseModel extractPriceResponseModel(ResponseEntity<GetPricesResponseModel> response) {
         // check response status code
         if (response.getStatusCode() != HttpStatus.OK) return null;
 
