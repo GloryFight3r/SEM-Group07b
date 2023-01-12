@@ -43,7 +43,7 @@ class HttpRequestServiceTest {
         GetAllergiesFromUserResponseModel responseModel = new GetAllergiesFromUserResponseModel();
         responseModel.setAllergies(allergens);
         ResponseEntity<GetAllergiesFromUserResponseModel> response = ResponseEntity.status(HttpStatus.OK).body(responseModel);
-        when(restTemplate.exchange("http://localhost:8083/user/get_allergies", HttpMethod.GET, entity, GetAllergiesFromUserResponseModel.class)).thenReturn(response);
+        when(restTemplate.exchange("http://localhost:8083/allergies/get_allergies", HttpMethod.GET, entity, GetAllergiesFromUserResponseModel.class)).thenReturn(response);
         Optional<List<String>> result = httpRequestService.getUserAllergens(token);
         assertTrue(result.isPresent());
         assertEquals(allergens, result.get());
@@ -59,7 +59,7 @@ class HttpRequestServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<GetAllergiesFromUserResponseModel> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        when(restTemplate.exchange("http://localhost:8083/user/get_allergies", HttpMethod.GET, entity, GetAllergiesFromUserResponseModel.class)).thenReturn(response);
+        when(restTemplate.exchange("http://localhost:8083/allergies/get_allergies", HttpMethod.GET, entity, GetAllergiesFromUserResponseModel.class)).thenReturn(response);
         Optional<List<String>> result = httpRequestService.getUserAllergens(token);
         assertFalse(result.isPresent());
     }

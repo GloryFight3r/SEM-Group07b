@@ -1,7 +1,11 @@
 package pizzeria.user.domain.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import pizzeria.user.communication.HttpRequestService;
 import pizzeria.user.models.UserRegisterModel;
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +14,13 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
     private final transient UserRepository userRepository;
+
+    private final transient HttpRequestService httpRequestService;
+
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, HttpRequestService httpRequestService) {
         this.userRepository = userRepository;
+        this.httpRequestService = httpRequestService;
     }
 
     /**
@@ -39,6 +47,21 @@ public class UserService {
 
         Pattern pattern = Pattern.compile(regexPattern);
         return pattern.matcher(testEmail).matches();
+    }
+
+    public ResponseEntity addUser(UserRegisterModel user) throws InvalidEmailException, EmailAlreadyInUseException {
+        saveUser(user);
+
+        Optional<User> savedUser = findUserByEmail(user.getEmail());
+
+        //registers the user in the authenticate-microservice database
+        if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
+            deleteUserByEmail(savedUser.get().getEmail());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
+                    "Could not communicate with " +
+                            "authentication service").build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private boolean checkUniqueEmail(String email) {
