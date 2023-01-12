@@ -10,6 +10,8 @@ import pizzeria.order.domain.store.Store;
 import pizzeria.order.models.DeleteStoreModel;
 import pizzeria.order.models.StoreModel;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/store")
 public class StoreController {
@@ -37,7 +39,7 @@ public class StoreController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity editStore(@RequestBody StoreModel store) {
+    public ResponseEntity<String> editStore(@RequestBody StoreModel store) {
         if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
                     "Arguments for store are invalid").build();
@@ -52,18 +54,16 @@ public class StoreController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteStore(@RequestBody DeleteStoreModel store) {
-        try {
-            storeService.deleteStore(store.getId());
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
-        }
+    public ResponseEntity<String> deleteStore(@RequestBody DeleteStoreModel store) {
+        if (!storeService.getStoreRepo().existsById(store.getId()))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "The store with the id provided does not exist").build();
+        storeService.getStoreRepo().deleteStoreById(store.getId());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/get_stores")
-    public ResponseEntity getStores() {
-        return ResponseEntity.ok().body(storeService.getAllStores());
+    public ResponseEntity<List<Store>> getStores() {
+        return ResponseEntity.ok().body(storeService.getStoreRepo().findAll());
     }
 
     /*@PostMapping("/send_email")
