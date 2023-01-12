@@ -74,8 +74,7 @@ public class OrderService {
     @SuppressWarnings("PMD")
     public Order processOrder(Order order) throws Exception {
         // null-checks for all members
-        if (order == null || order.getFoods() == null || order.getUserId() == null
-                || order.getPickupTime() == null || order.getCouponIds() == null)
+        if (order == null || order.getFoods() == null || order.getUserId() == null || order.getPickupTime() == null || order.getCouponIds() == null)
             throw new CouldNotStoreException();
         // check if we are in 'edit mode' (the orderId is specified in the Order object)
         // then check if the order belongs to the user
@@ -86,7 +85,7 @@ public class OrderService {
             throw new InvalidEditException();
         }
 
-        if (!storeService.existsById(order.getStoreId())) {
+        if (!storeService.getStoreRepo().existsById(order.getStoreId())) {
             throw new InvalidStoreIdException();
         }
 
