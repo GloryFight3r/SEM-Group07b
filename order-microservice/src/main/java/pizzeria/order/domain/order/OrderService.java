@@ -28,7 +28,6 @@ public class OrderService {
     private transient final Coupon_2for1_Repository coupon_2for1_repository;
     private transient final ClockWrapper clockWrapper;
 
-
     private final transient StoreService storeService;
 
     /**
@@ -55,7 +54,7 @@ public class OrderService {
     }
 
     /**
-     * Process an order
+     * Process an order 
      * Includes validation of user, of time, of price, of foods and of coupons
      *
      * @param order the order to be processed
@@ -69,6 +68,71 @@ public class OrderService {
      */
     @SuppressWarnings("PMD")
     public Order processOrder(Order order) throws Exception {
+        validateInput(order);
+
+        validateOrderTime(order);
+
+        GetPricesResponseModel prices = foodPriceService.getFoodPrices(order); // get prices
+        if (prices == null)
+            //some food does not exist or something else went wrong in the food ms communication
+            throw new FoodInvalidException();
+
+        return calculatePrice(order, prices);
+    }
+
+    @SuppressWarnings("PMD")
+    private Order calculatePrice(Order order, GetPricesResponseModel prices) throws PriceNotRightException {
+        ArrayList<Coupon> coupons = new ArrayList<>(coupon_percentage_repository.findAllById(order.couponIds));
+        coupons.addAll(coupon_2for1_repository.findAllById(order.couponIds));
+        // this list only contains validated coupons, no need for additional checks
+        order.couponIds.clear(); // clear the list, so we can send only the used one back
+        //get the base price of the order
+        double sum = 0.0;
+        for (Food f: order.getFoods()) {
+            sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
+            for (long l: f.getExtraIngredients()) {
+                sum += prices.getIngredientPrices().get(l).getPrice();
+            }
+        }
+        sum = calculatePriceWithCoupons(order, prices, coupons, sum);
+        final double EPS = 1e-6;
+        if (Math.abs(order.price - sum) > EPS) {
+            throw new PriceNotRightException("Price is not right");
+        }
+        return orderRepo.save(order);
+    }
+
+    @SuppressWarnings("PMD")
+    private static double calculatePriceWithCoupons(Order order, GetPricesResponseModel prices, ArrayList<Coupon> coupons, double sum) {
+        if (coupons.isEmpty()) {
+            return sum;
+        }
+        final double priceWithoutCoupons = sum;
+        order.couponIds.add("0");
+
+        for (Coupon c: coupons) {
+            //iterate over the list of valid coupons
+            double price = c.calculatePrice(order, prices, priceWithoutCoupons);
+
+            if (Double.compare(price, sum) < 0) {
+                sum = price;
+                //set the first element in the coupon ids to the coupon used
+                //order.couponIds.clear();
+                order.couponIds.set(0, c.getId());
+            }
+        }
+        return sum;
+    }
+
+    private void validateOrderTime(Order order) throws TimeInvalidException {
+        //check if the selected pickup time is 30 minutes or more in the future
+        LocalDateTime current = clockWrapper.getNow();
+
+        if (order.getPickupTime().isBefore(current.plusMinutes(30)))
+            throw new TimeInvalidException();
+    }
+
+    private void validateInput(Order order) throws Exception {
         // null-checks for all members
         if (order == null || order.getFoods() == null || order.getUserId() == null
                 || order.getPickupTime() == null || order.getCouponIds() == null)
@@ -85,62 +149,6 @@ public class OrderService {
         if (!storeService.existsById(order.getStoreId())) {
             throw new InvalidStoreIdException();
         }
-
-        //check if the selected pickup time is 30 minutes or more in the future
-        LocalDateTime current = clockWrapper.getNow();
-
-        if (order.getPickupTime().isBefore(current.plusMinutes(30)))
-            throw new TimeInvalidException();
-
-        GetPricesResponseModel prices = foodPriceService.getFoodPrices(order); // get prices
-        if (prices == null)
-            //some food does not exist or something else went wrong in the food ms communication
-            throw new FoodInvalidException();
-
-        ArrayList<Coupon> coupons = new ArrayList<>(coupon_percentage_repository.findAllById(order.couponIds));
-        coupons.addAll(coupon_2for1_repository.findAllById(order.couponIds));
-        // this list only contains validated coupons, no need for additional checks
-        order.couponIds.clear(); // clear the list, so we can send only the used one back
-
-        //get the base price of the order
-        double sum = 0.0;
-        for (Food f: order.getFoods()) {
-            sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
-            for (long l: f.getExtraIngredients()) {
-                sum += prices.getIngredientPrices().get(l).getPrice();
-            }
-        }
-
-        if (coupons.isEmpty()) { // If coupon list is empty, just add all ingredients and recipes
-            final double EPS = 1e-6;
-            if (Math.abs(order.price - sum) > EPS) {
-                throw new PriceNotRightException("Price is not right");
-            }
-
-            return orderRepo.save(order);
-        }
-
-        double minPrice = Double.MAX_VALUE;
-        order.couponIds.add("0");
-
-        for (Coupon c: coupons) {
-            //iterate over the list of valid coupons
-            double price = c.calculatePrice(order, prices, sum);
-
-            if (Double.compare(price, minPrice) < 0) {
-                minPrice = price;
-                //set the first element in the coupon ids to the coupon used
-                //order.couponIds.clear();
-                order.couponIds.set(0, c.getId());
-            }
-        }
-
-        final double EPS = 1e-6;
-        if (Math.abs(order.price - minPrice) > EPS) {
-            throw new PriceNotRightException("Price is not right");
-        }
-
-        return orderRepo.save(order);
     }
 
     /**
@@ -160,10 +168,12 @@ public class OrderService {
         if (toDelete == null){
             return false;
         }
-        //check if the selected pickup time is 30 minutes or more in the future
-        LocalDateTime current = clockWrapper.getNow();
-        if (toDelete.getPickupTime().isBefore(current.plusMinutes(30)))
+
+        try {
+            validateOrderTime(toDelete);
+        } catch (TimeInvalidException e) {
             return false;
+        }
 
         //check if we have a manager or the order belongs to the user
         //we already check above that the order exists, so now we only check if the user ids match

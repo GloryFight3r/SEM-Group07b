@@ -35,6 +35,11 @@ public class UserController {
         this.authManager = authManager;
     }
 
+    private boolean checkUserCreationModel(UserRegisterModel user) {
+        return user.getEmail() == null || user.getPassword() == null || user.getName() == null ||
+                user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty();
+    }
+
     /**
      * Endpoint used for creating new users
      * @param user UserModel which contains the following fields [email, role, allergies, name, password]
@@ -43,8 +48,7 @@ public class UserController {
     @PostMapping("/create_user")
     public ResponseEntity create(@RequestBody UserRegisterModel user) {
         // perform UserModel data validation
-        if (user.getEmail() == null || user.getPassword() == null || user.getName() == null ||
-                user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getName().isEmpty()) {
+        if (checkUserCreationModel(user)) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).header(HttpHeaders.WARNING,
                     "Arguments for user are " +
                     "invalid").build();

@@ -8,8 +8,11 @@ import pizzeria.food.domain.ingredient.IngredientRepository;
 import pizzeria.food.domain.recipe.Recipe;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeRepository;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AllergenService {
@@ -52,22 +55,28 @@ public class AllergenService {
      */
     public boolean recipeIsSafe(Recipe recipe, List<String> allergens) throws IngredientNotFoundException {
         List<Long> ids = recipe.getBaseToppings();
-        int size = ids.size();
-        for (int i = 0; i < size; i++){
-            long id = ids.get(i);
-            if (ingredientRepository.existsById(id)){
-                List<String> allergensOfIngredient = ingredientRepository.findById(id).get().getAllergens();
-                for (String allergen: allergensOfIngredient){
-                    if (allergens.contains(allergen)) {
-                        return false;
-                    }
-                }
+        Set <String> recipeAllergens = getSetOfAllergens(ids);
+        recipeAllergens.retainAll(new HashSet<>(allergens));
+        return recipeAllergens.isEmpty();
+    }
 
-            } else {
+    /**
+     * Returns a set of the allergens contained in the list of ids
+     * @param ingredientIds list of ingredient ids
+     * @return set of allergens
+     * @throws IngredientNotFoundException
+     */
+    @SuppressWarnings("PMD")
+    private Set<String> getSetOfAllergens(List<Long> ingredientIds) throws IngredientNotFoundException {
+        Set<String> allergens = new HashSet<>();
+
+        for (Long ingredientId : ingredientIds) {
+            if (!ingredientRepository.existsById(ingredientId)) {
                 throw new IngredientNotFoundException();
             }
+            allergens.addAll(ingredientRepository.findById(ingredientId).get().getAllergens());
         }
-        return true;
+        return allergens;
     }
 
     /**
