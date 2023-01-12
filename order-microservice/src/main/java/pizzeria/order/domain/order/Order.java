@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.domain.food.Food;
+import pizzeria.order.models.GetPricesResponseModel;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -92,5 +94,46 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(orderId);
+    }
+
+    public double calculatePrice(GetPricesResponseModel prices, List<Coupon> coupons) {
+        double sum = 0.0;
+        for (Food f: getFoods()) {
+            sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
+            for (long l: f.getExtraIngredients()) {
+                sum += prices.getIngredientPrices().get(l).getPrice();
+            }
+        }
+        return calculatePriceWithCoupons(prices, coupons, sum);
+    }
+
+    @SuppressWarnings("PMD")
+    private double calculatePriceWithCoupons(GetPricesResponseModel prices, List<Coupon> coupons, double sum) {
+        if (coupons.isEmpty()) {
+            return sum;
+        }
+        final double priceWithoutCoupons = sum;
+        couponIds.add("0");
+
+        for (Coupon c: coupons) {
+            //iterate over the list of valid coupons
+            double price = c.calculatePrice(this, prices, priceWithoutCoupons);
+
+            if (Double.compare(price, sum) < 0) {
+                sum = price;
+                //set the first element in the coupon ids to the coupon used
+                //order.couponIds.clear();
+                couponIds.set(0, c.getId());
+            }
+        }
+        return sum;
+    }
+
+    private void validateOrderTime(Order order, ClockWrapper clockWrapper) throws OrderServiceExceptions.TimeInvalidException {
+        //check if the selected pickup time is 30 minutes or more in the future
+        LocalDateTime current = clockWrapper.getNow();
+
+        if (order.getPickupTime().isBefore(current.plusMinutes(30)))
+            throw new OrderServiceExceptions.TimeInvalidException();
     }
 }
