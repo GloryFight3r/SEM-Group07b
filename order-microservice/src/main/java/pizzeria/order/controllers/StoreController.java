@@ -12,9 +12,6 @@ import pizzeria.order.models.StoreModel;
 
 import java.util.List;
 
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
-
 @RestController
 @RequestMapping("/store")
 public class StoreController {
@@ -29,44 +26,44 @@ public class StoreController {
     @PostMapping("/create")
     public ResponseEntity<Store> createStore(@RequestBody StoreModel store) {
         if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
-            return status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
                     "Arguments for store are invalid").build();
         }
 
         try {
             Store saved = storeService.addStore(store.parseToStore());
-            return status(HttpStatus.CREATED).body(saved);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
-            return status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
 
     @PutMapping("/edit")
     public ResponseEntity<String> editStore(@RequestBody StoreModel store) {
         if (store.getLocation().isEmpty() || store.getContact().isEmpty()) {
-            return status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
                     "Arguments for store are invalid").build();
         }
 
         try {
             storeService.editStore(store.getId(), store.parseToStore());
-            return ok().build();
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteStore(@RequestBody DeleteStoreModel store) {
         if (!storeService.getStoreRepo().existsById(store.getId()))
-            return status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "The store with the id provided does not exist").build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "The store with the id provided does not exist").build();
         storeService.getStoreRepo().deleteStoreById(store.getId());
-        return ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/get_stores")
     public ResponseEntity<List<Store>> getStores() {
-        return ok().body(storeService.getStoreRepo().findAll());
+        return ResponseEntity.ok().body(storeService.getStoreRepo().findAll());
     }
 
     /*@PostMapping("/send_email")
