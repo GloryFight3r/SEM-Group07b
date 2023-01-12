@@ -53,23 +53,10 @@ public class UserController {
         }
 
         try {
-            userService.saveUser(user);
-
-            Optional<User> savedUser = userService.findUserByEmail(user.getEmail());
-
-            //registers the user in the authenticate-microservice database
-            if (!httpRequestService.registerUser(savedUser.get(), user.getPassword())) {
-                userService.deleteUserByEmail(savedUser.get().getEmail());
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING,
-                        "Could not communicate with " +
-                        "authentication service").build();
-            }
-
+            return userService.addUser(user);
         } catch (EmailAlreadyInUseException | UserService.InvalidEmailException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).header(HttpHeaders.WARNING, e.getMessage()).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /*

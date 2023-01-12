@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pizzeria.order.domain.coupon.Coupon_2for1_Repository;
 import pizzeria.order.domain.coupon.Coupon_percentage_Repository;
-import pizzeria.order.domain.food.Food;
 import pizzeria.order.domain.coupon.Coupon;
 import pizzeria.order.domain.food.FoodPriceService;
+import pizzeria.order.domain.mailing.MailingService;
 import pizzeria.order.domain.store.StoreService;
 import pizzeria.order.models.GetPricesResponseModel;
 import java.time.LocalDateTime;
@@ -28,6 +28,8 @@ public class OrderService {
 
     private final transient StoreService storeService;
 
+    private final transient MailingService mailingService;
+
     /**
      * Instantiates a new Order service with the respective repositories and services
      *
@@ -42,13 +44,15 @@ public class OrderService {
     public OrderService(OrderRepository orderRepo, FoodPriceService foodPriceService,
                         ClockWrapper clockWrapper, StoreService storeService,
                         Coupon_2for1_Repository coupon_2for1_repository,
-                        Coupon_percentage_Repository coupon_percentage_repository){
+                        Coupon_percentage_Repository coupon_percentage_repository,
+                        MailingService mailingService){
         this.orderRepo = orderRepo;
         this.foodPriceService = foodPriceService;
         this.clockWrapper = clockWrapper;
         this.storeService = storeService;
         this.coupon_percentage_repository = coupon_percentage_repository;
         this.coupon_2for1_repository = coupon_2for1_repository;
+        this.mailingService = mailingService;
     }
 
     /**
@@ -85,41 +89,14 @@ public class OrderService {
         // this list only contains validated coupons, no need for additional checks
         order.couponIds.clear(); // clear the list, so we can send only the used one back
         //get the base price of the order
-        double sum = 0.0;
-        for (Food f: order.getFoods()) {
-            sum += prices.getFoodPrices().get(f.getRecipeId()).getPrice();
-            for (long l: f.getExtraIngredients()) {
-                sum += prices.getIngredientPrices().get(l).getPrice();
-            }
-        }
-        sum = calculatePriceWithCoupons(order, prices, coupons, sum);
+        double sum = order.calculatePrice(prices, coupons);
+
+        //sum = calculatePriceWithCoupons(order, prices, coupons);
         final double EPS = 1e-6;
         if (Math.abs(order.price - sum) > EPS) {
             throw new OrderServiceExceptions.PriceNotRightException("Price is not right");
         }
         return orderRepo.save(order);
-    }
-
-    @SuppressWarnings("PMD")
-    private static double calculatePriceWithCoupons(Order order, GetPricesResponseModel prices, ArrayList<Coupon> coupons, double sum) {
-        if (coupons.isEmpty()) {
-            return sum;
-        }
-        final double priceWithoutCoupons = sum;
-        order.couponIds.add("0");
-
-        for (Coupon c: coupons) {
-            //iterate over the list of valid coupons
-            double price = c.calculatePrice(order, prices, priceWithoutCoupons);
-
-            if (Double.compare(price, sum) < 0) {
-                sum = price;
-                //set the first element in the coupon ids to the coupon used
-                //order.couponIds.clear();
-                order.couponIds.set(0, c.getId());
-            }
-        }
-        return sum;
     }
 
     private void validateOrderTime(Order order) throws OrderServiceExceptions.TimeInvalidException {
