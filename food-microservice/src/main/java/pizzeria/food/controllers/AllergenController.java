@@ -50,33 +50,13 @@ public class AllergenController {
     public ResponseEntity<Boolean> checkIfSafe(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody CheckIfRecipeIsSafeRequestModel requestModel) {
         try {
             Optional<Boolean> checkSafetyStatus = allergenService.checkSafety(token, requestModel);
-            System.out.println("DSADAS");
             if (checkSafetyStatus.isEmpty()) {
-
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             return ResponseEntity.status(HttpStatus.OK).body(checkSafetyStatus.get());
 
         } catch (Exception e) {
-            System.out.println("DAS");
             return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
         }
     }
-
-    /*@GetMapping("/warn")
-    public ResponseEntity<Boolean> checkIfSafe(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody CheckIfRecipeIsSafeRequestModel requestModel) {
-        Optional<List<String>> allergens = requestService.getUserAllergens(token);
-        if (allergens.isPresent()) {
-            try {
-                boolean isSafe = allergenService.checkIfSafeRecipeWithId(requestModel.getId(), allergens.get());
-                return ResponseEntity.status(HttpStatus.OK).body(isSafe);
-            } catch (RecipeNotFoundException e) {
-                return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
-            } catch (IngredientNotFoundException e) {
-                return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-    }*/
 }

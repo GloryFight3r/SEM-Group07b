@@ -9,6 +9,7 @@ import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
+import pizzeria.food.domain.recipe.RecipeServiceResponseInformation;
 import pizzeria.food.models.prices.GetPricesRequestModel;
 import pizzeria.food.models.prices.GetPricesResponseModel;
 import pizzeria.food.models.prices.Tuple;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class PriceController {
     private final transient RecipeService recipeService;
     private final transient IngredientService ingredientService;
+    private final transient RecipeServiceResponseInformation recipeServiceResponseInformation;
 
     /**
      * Constructor for the PriceController that auto wires the required databases
@@ -27,9 +29,12 @@ public class PriceController {
      * @param ingredientService IngredientService that handles all the ingredient operations.
      */
     @Autowired
-    public PriceController(RecipeService recipeService, IngredientService ingredientService) {
+    public PriceController(RecipeService recipeService,
+                           IngredientService ingredientService,
+                           RecipeServiceResponseInformation recipeServiceResponseInformation){
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
+        this.recipeServiceResponseInformation = recipeServiceResponseInformation;
     }
 
     /**
@@ -42,7 +47,7 @@ public class PriceController {
         try {
 
             //System.out.println(requestModel.getFoodIds() + " " + requestModel.getIngredientIds());
-            Map<Long, Tuple> foodPrices = recipeService.getPrices(requestModel.getFoodIds());
+            Map<Long, Tuple> foodPrices = recipeServiceResponseInformation.getPrices(requestModel.getFoodIds());
             Map<Long, Tuple> ingredientPrices = ingredientService.getDetails(requestModel.getIngredientIds());
             GetPricesResponseModel responseModel = new GetPricesResponseModel();
             responseModel.setFoodPrices(foodPrices);

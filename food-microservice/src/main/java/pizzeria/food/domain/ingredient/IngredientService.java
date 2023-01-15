@@ -92,6 +92,13 @@ public class IngredientService {
         return prices;
     }
 
+    public void checkForIngredientsExistence(List<Long> ids) throws IngredientNotFoundException {
+        for (long id: ids){
+            if (!ingredientRepository.existsById(id)){
+                throw new IngredientNotFoundException();
+            }
+        }
+    }
 
     /**
      * @return a list of all the extra ingredients of which the customers can choose to add to their pizza.
