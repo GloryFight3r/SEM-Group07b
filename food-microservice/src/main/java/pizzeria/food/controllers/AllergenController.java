@@ -7,13 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pizzeria.food.communication.HttpRequestService;
 import pizzeria.food.domain.Allergens.AllergenService;
-import pizzeria.food.domain.ingredient.IngredientNotFoundException;
-import pizzeria.food.domain.recipe.Recipe;
-import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.models.allergens.CheckIfRecipeIsSafeRequestModel;
 import pizzeria.food.models.allergens.FilterMenuResponseModel;
-
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,24 +35,35 @@ public class AllergenController {
      */
     @GetMapping("/menu")
     public ResponseEntity<FilterMenuResponseModel> filterMenu(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-
-            Optional<List<String>> allergens = requestService.getUserAllergens(token);
-            if (allergens.isPresent()) {
-                try {
-                    List<Recipe> filteredMenu = allergenService.filterMenuOnAllergens(allergens.get());
-                    FilterMenuResponseModel responseModel = new FilterMenuResponseModel();
-                    responseModel.setRecipes(filteredMenu);
-                    return ResponseEntity.status(HttpStatus.OK).body(responseModel);
-                } catch (IngredientNotFoundException e) {
-                    return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
-                }
-            } else {
+        try {
+            FilterMenuResponseModel responseModel = allergenService.filterMenu(token);
+            if (responseModel == null) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-
+            return ResponseEntity.status(HttpStatus.OK).body(allergenService.filterMenu(token));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
     }
 
     @GetMapping("/warn")
+    public ResponseEntity<Boolean> checkIfSafe(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody CheckIfRecipeIsSafeRequestModel requestModel) {
+        try {
+            Optional<Boolean> checkSafetyStatus = allergenService.checkSafety(token, requestModel);
+            System.out.println("DSADAS");
+            if (checkSafetyStatus.isEmpty()) {
+
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(checkSafetyStatus.get());
+
+        } catch (Exception e) {
+            System.out.println("DAS");
+            return ResponseEntity.badRequest().header(HttpHeaders.WARNING, e.getMessage()).build();
+        }
+    }
+
+    /*@GetMapping("/warn")
     public ResponseEntity<Boolean> checkIfSafe(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody CheckIfRecipeIsSafeRequestModel requestModel) {
         Optional<List<String>> allergens = requestService.getUserAllergens(token);
         if (allergens.isPresent()) {
@@ -72,7 +78,5 @@ public class AllergenController {
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-    }
-
-
+    }*/
 }
