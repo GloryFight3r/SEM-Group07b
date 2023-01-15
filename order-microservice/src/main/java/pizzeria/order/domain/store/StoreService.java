@@ -38,6 +38,13 @@ public class StoreService {
         storeRepo.save(optionalStore.get());
     }
 
+    public void deleteStore(Long id) throws StoreDoesNotExistException {
+        if (!storeRepo.existsById(id)) {
+            throw new StoreDoesNotExistException();
+        }
+        storeRepo.deleteStoreById(id);
+    }
+
     /**
      * Get the email corresponding to the storeID
      * @param id ID of the store
