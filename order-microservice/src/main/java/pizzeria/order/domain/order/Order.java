@@ -128,12 +128,4 @@ public class Order {
         }
         return sum;
     }
-
-    private void validateOrderTime(Order order, ClockWrapper clockWrapper) throws OrderServiceExceptions.TimeInvalidException {
-        //check if the selected pickup time is 30 minutes or more in the future
-        LocalDateTime current = clockWrapper.getNow();
-
-        if (order.getPickupTime().isBefore(current.plusMinutes(30)))
-            throw new OrderServiceExceptions.TimeInvalidException();
-    }
 }

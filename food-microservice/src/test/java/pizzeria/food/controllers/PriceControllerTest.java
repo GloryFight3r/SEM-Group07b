@@ -14,6 +14,7 @@ import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
+import pizzeria.food.domain.recipe.RecipeServiceResponseInformation;
 import pizzeria.food.models.prices.GetPricesRequestModel;
 import pizzeria.food.models.prices.GetPricesResponseModel;
 import pizzeria.food.models.prices.Tuple;
@@ -33,12 +34,14 @@ class PriceControllerTest {
     private transient PriceController priceController;
     private transient RecipeService recipeService;
     private transient IngredientService ingredientService;
+    private transient RecipeServiceResponseInformation recipeServiceResponseInformation;
 
     @BeforeEach
     void setUp(){
         ingredientService = Mockito.mock(IngredientService.class);
         recipeService = Mockito.mock(RecipeService.class);
-        priceController = new PriceController(recipeService, ingredientService);
+        recipeServiceResponseInformation = Mockito.mock(RecipeServiceResponseInformation.class);
+        priceController = new PriceController(recipeService, ingredientService, recipeServiceResponseInformation);
     }
     @Test
     void getPrices() {
@@ -59,7 +62,7 @@ class PriceControllerTest {
         );
 
         try {
-            when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
+            when(recipeServiceResponseInformation.getPrices(recipeIds)).thenReturn(recipePrices);
             when(ingredientService.getDetails(ingredientIds)).thenReturn(ingredientPrices);
             GetPricesRequestModel requestModel = new GetPricesRequestModel();
             requestModel.setFoodIds(recipeIds);
@@ -89,7 +92,7 @@ class PriceControllerTest {
         );
 
         try {
-            when(recipeService.getPrices(recipeIds)).thenThrow(new RecipeNotFoundException());
+            when(recipeServiceResponseInformation.getPrices(recipeIds)).thenThrow(new RecipeNotFoundException());
             when(ingredientService.getDetails(ingredientIds)).thenReturn(ingredientPrices);
             GetPricesRequestModel requestModel = new GetPricesRequestModel();
             requestModel.setFoodIds(recipeIds);
@@ -118,7 +121,7 @@ class PriceControllerTest {
         );
 
         try {
-            when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
+            when(recipeServiceResponseInformation.getPrices(recipeIds)).thenReturn(recipePrices);
             when(ingredientService.getDetails(ingredientIds)).thenThrow(new IngredientNotFoundException());
             GetPricesRequestModel requestModel = new GetPricesRequestModel();
             requestModel.setFoodIds(recipeIds);

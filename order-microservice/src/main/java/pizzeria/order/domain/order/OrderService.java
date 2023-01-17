@@ -121,7 +121,7 @@ public class OrderService {
             throw new OrderServiceExceptions.InvalidEditException();
         }
 
-        if (!storeService.existsById(order.getStoreId())) {
+        if (!storeService.getStoreRepo().existsById(order.getStoreId())) {
             throw new OrderServiceExceptions.InvalidStoreIdException();
         }
     }

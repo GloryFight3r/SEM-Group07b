@@ -25,6 +25,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -50,8 +52,8 @@ class AllergenControllerTest {
         List<Recipe> result = List.of(recipe, recipe1);
         try {
             when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
-            when(allergenService.filterMenuOnAllergens(allergens)).thenReturn(result);
-            when(allergenService.filterMenuOnAllergens(allergens)).thenReturn(result);
+            when(allergenService.filterMenu("a")).thenReturn(new FilterMenuResponseModel(result));
+            when(allergenService.filterMenu("a")).thenReturn(new FilterMenuResponseModel(result));
             FilterMenuRequestModel requestModel = new FilterMenuRequestModel();
             requestModel.setAllergens(allergens);
             assertThat(allergenController.filterMenu("a").getBody().getRecipes()).isEqualTo(result);
@@ -65,7 +67,7 @@ class AllergenControllerTest {
         List<String> allergens = List.of("gluten", "lactose");
         try {
             when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
-            when(allergenService.filterMenuOnAllergens(allergens)).thenThrow(new IngredientNotFoundException("Test"));
+            when(allergenService.filterMenu("a")).thenThrow(new IngredientNotFoundException("Test"));
             ResponseEntity<FilterMenuResponseModel> response = allergenController.filterMenu("a");
             assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
             assertTrue(response.getHeaders().containsKey(HttpHeaders.WARNING));
@@ -85,13 +87,13 @@ class AllergenControllerTest {
 
 
     @Test
-    void testCheckIfSafe(){
+    void testCheckIfSafe() throws Exception{
         List<String> allergens = List.of("gluten", "lactose");
         try {
             when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
             CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
             requestModel.setId(1L);
-            when(allergenService.checkIfSafeRecipeWithId(1L, allergens)).thenReturn(true);
+            when(allergenService.checkSafety("a", requestModel)).thenReturn(Optional.of(true));
             assertThat(allergenController.checkIfSafe("a", requestModel).getBody()).isTrue();
         } catch (IngredientNotFoundException e) {
             fail();
@@ -101,13 +103,13 @@ class AllergenControllerTest {
     }
 
     @Test
-    void testCheckIfSafe2(){
+    void testCheckIfSafe2() throws Exception{
         List<String> allergens = List.of("gluten", "lactose");
         try {
             when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
             CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
             requestModel.setId(1L);
-            when(allergenService.checkIfSafeRecipeWithId(1L, allergens)).thenReturn(false);
+            when(allergenService.checkSafety("a", requestModel)).thenReturn(Optional.of(false));
             assertThat(allergenController.checkIfSafe("a", requestModel).getBody()).isFalse();
         } catch (IngredientNotFoundException e) {
             fail();
@@ -117,7 +119,7 @@ class AllergenControllerTest {
     }
 
     @Test
-    void testCheckIfSafe3(){
+    void testCheckIfSafe3() {
         when(requestService.getUserAllergens("a")).thenReturn(Optional.empty());
         CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
         requestModel.setId(1L);
@@ -126,11 +128,11 @@ class AllergenControllerTest {
     }
 
     @Test
-    void testCheckIfSafe4(){
+    void testCheckIfSafe4() throws Exception{
         List<String> allergens = List.of("gluten", "lactose");
         when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
         try {
-            when(allergenService.checkIfSafeRecipeWithId(1L, allergens)).thenThrow(new RecipeNotFoundException("Test"));
+            when(allergenService.checkSafety(eq("a"), any())).thenThrow(new RecipeNotFoundException("Test"));
             CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
             requestModel.setId(1L);
             ResponseEntity<Boolean> response = allergenController.checkIfSafe("a", requestModel);
@@ -144,11 +146,11 @@ class AllergenControllerTest {
     }
 
     @Test
-    void testCheckIfSafe5(){
+    void testCheckIfSafe5() throws Exception{
         List<String> allergens = List.of("gluten", "lactose");
         when(requestService.getUserAllergens("a")).thenReturn(Optional.of(allergens));
         try {
-            when(allergenService.checkIfSafeRecipeWithId(1L, allergens)).thenThrow(new IngredientNotFoundException("Test"));
+            when(allergenService.checkSafety(eq("a"), any())).thenThrow(new IngredientNotFoundException("Test"));
             CheckIfRecipeIsSafeRequestModel requestModel = new CheckIfRecipeIsSafeRequestModel();
             requestModel.setId(1L);
             ResponseEntity<Boolean> response = allergenController.checkIfSafe("a", requestModel);
