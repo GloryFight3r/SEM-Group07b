@@ -29,11 +29,13 @@ import static org.mockito.Mockito.when;
 class RecipeControllerTest {
     private transient RecipeController recipeController;
     private transient RecipeService recipeService;
+    private transient RecipeServiceResponseInformation recipeServiceResponseInformation;
 
     @BeforeEach
     void setUp(){
         recipeService = Mockito.mock(RecipeService.class);
-        recipeController = new RecipeController(recipeService);
+        recipeServiceResponseInformation = Mockito.mock(RecipeServiceResponseInformation.class);
+        recipeController = new RecipeController(recipeService, recipeServiceResponseInformation);
     }
     @Test
     void saveFood() {
@@ -221,7 +223,7 @@ class RecipeControllerTest {
         recipe.setId(1L);
         Recipe recipe2 = new Recipe("Test2", List.of(1L, 55L, 3L), 12.0);
         recipe2.setId(2L);
-        when(recipeService.getMenu()).thenReturn(List.of(recipe, recipe2));
+        when(recipeServiceResponseInformation.getMenu()).thenReturn(List.of(recipe, recipe2));
         ResponseEntity<MenuResponseModel> response = recipeController.getMenu();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getMenu()).isEqualTo(List.of(recipe, recipe2));
@@ -237,7 +239,7 @@ class RecipeControllerTest {
         Ingredient ingredient2 = new Ingredient("ing2", 6.00, List.of("vegan"));
         List<Ingredient> ingredients = List.of(ingredient1, ingredient2);
         try {
-            when(recipeService.getBaseToppings(id)).thenReturn(ingredients);
+            when(recipeServiceResponseInformation.getBaseToppings(id)).thenReturn(ingredients);
             ResponseEntity<GetBaseToppingsResponseModel> response = recipeController.getBaseToppings(requestModel);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().getBaseToppings()).isEqualTo(ingredients);
@@ -251,7 +253,7 @@ class RecipeControllerTest {
     @Test
     void testThrowsException(){
         try {
-            when(recipeService.getBaseToppings(1L)).thenThrow(RecipeNotFoundException.class);
+            when(recipeServiceResponseInformation.getBaseToppings(1L)).thenThrow(RecipeNotFoundException.class);
             GetBaseToppingsRequestModel requestModel = new GetBaseToppingsRequestModel();
             requestModel.setRecipeId(1L);
             ResponseEntity response = recipeController.getBaseToppings(requestModel);
@@ -268,7 +270,7 @@ class RecipeControllerTest {
     @Test
     void testThrowsException2(){
         try {
-            when(recipeService.getBaseToppings(1L)).thenThrow(IngredientNotFoundException.class);
+            when(recipeServiceResponseInformation.getBaseToppings(1L)).thenThrow(IngredientNotFoundException.class);
             GetBaseToppingsRequestModel requestModel = new GetBaseToppingsRequestModel();
             requestModel.setRecipeId(1L);
             ResponseEntity response = recipeController.getBaseToppings(requestModel);

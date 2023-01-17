@@ -16,6 +16,7 @@ import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientService;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeService;
+import pizzeria.food.domain.recipe.RecipeServiceResponseInformation;
 import pizzeria.food.integration.utils.JsonUtil;
 import pizzeria.food.models.prices.GetPricesRequestModel;
 import pizzeria.food.models.prices.GetPricesResponseModel;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles({"test", "mockRecipeService", "mockIngredientService"})
+@ActiveProfiles({"test", "mockRecipeService", "mockRecipeResponseService", "mockIngredientService"})
 @AutoConfigureMockMvc
 class PriceControllerTests {
     @Autowired
@@ -42,6 +43,8 @@ class PriceControllerTests {
     private transient RecipeService recipeService;
     @Autowired
     private transient IngredientService ingredientService;
+    @Autowired
+    private transient RecipeServiceResponseInformation recipeServiceResponseInformation;
 
     @Test
     void getPricesWorks() throws Exception {
@@ -66,7 +69,7 @@ class PriceControllerTests {
         requestModel.setFoodIds(recipeIds);
         requestModel.setIngredientIds(ingredientIds);
 
-        when(recipeService.getPrices(any())).thenReturn(recipePrices);
+        when(recipeServiceResponseInformation.getPrices(any())).thenReturn(recipePrices);
         when(ingredientService.getDetails(any())).thenReturn(ingredientPrices);
 
         ResultActions resultActions = mockMvc.perform(post("/price/ids")
@@ -95,7 +98,7 @@ class PriceControllerTests {
         );
 
 
-        when(recipeService.getPrices(recipeIds)).thenThrow(new RecipeNotFoundException());
+        when(recipeServiceResponseInformation.getPrices(recipeIds)).thenThrow(new RecipeNotFoundException());
         when(ingredientService.getDetails(any())).thenReturn(ingredientPrices);
 
         GetPricesRequestModel requestModel = new GetPricesRequestModel();
@@ -126,7 +129,7 @@ class PriceControllerTests {
                 88L, new Tuple(88.0, "Test2")
         );
 
-        when(recipeService.getPrices(recipeIds)).thenReturn(recipePrices);
+        when(recipeServiceResponseInformation.getPrices(recipeIds)).thenReturn(recipePrices);
         when(ingredientService.getDetails(ingredientIds)).thenThrow(new IngredientNotFoundException());
 
         GetPricesRequestModel requestModel = new GetPricesRequestModel();
@@ -145,6 +148,4 @@ class PriceControllerTests {
         assertThat(response.getStatus()).isEqualTo(400); // BAD REQUEST
         assertThat(response.getHeader("Warning")).isEqualTo("The ingredient was not found in the database");
     }
-
-
 }

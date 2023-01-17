@@ -55,10 +55,12 @@ public class StoreController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteStore(@RequestBody DeleteStoreModel store) {
-        if (!storeService.getStoreRepo().existsById(store.getId()))
+        try {
+            storeService.deleteStore(store.getId());
+            return ResponseEntity.ok().build();
+        }catch (StoreService.StoreDoesNotExistException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.WARNING, "The store with the id provided does not exist").build();
-        storeService.getStoreRepo().deleteStoreById(store.getId());
-        return ResponseEntity.ok().build();
+        }
     }
 
     @GetMapping("/get_stores")
