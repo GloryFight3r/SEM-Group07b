@@ -20,14 +20,17 @@ import java.util.List;
 public class RecipeController {
 
     private final transient RecipeService foodService;
+    private final transient RecipeServiceResponseInformation recipeServiceResponseInformation;
 
     /**
      * Constructor for the RecipeController class that auto wires the required service
      * @param foodService RecipeService that handles all the Recipe complexity
      */
     @Autowired
-    public RecipeController(RecipeService foodService){
+    public RecipeController(RecipeService foodService,
+                            RecipeServiceResponseInformation recipeServiceResponseInformation){
         this.foodService = foodService;
+        this.recipeServiceResponseInformation = recipeServiceResponseInformation;
     }
 
     /**
@@ -83,7 +86,7 @@ public class RecipeController {
      */
     @GetMapping("/menu")
     public ResponseEntity<MenuResponseModel> getMenu() {
-        List<Recipe> menu = foodService.getMenu();
+        List<Recipe> menu = recipeServiceResponseInformation.getMenu();
         MenuResponseModel responseModel = new MenuResponseModel();
         responseModel.setMenu(menu);
         return ResponseEntity.ok().body(responseModel);
@@ -92,7 +95,7 @@ public class RecipeController {
     @GetMapping("/getBaseToppings")
     public ResponseEntity<GetBaseToppingsResponseModel> getBaseToppings(@RequestBody GetBaseToppingsRequestModel requestModel){
         try {
-            List<Ingredient> baseToppings = foodService.getBaseToppings(requestModel.getRecipeId());
+            List<Ingredient> baseToppings = recipeServiceResponseInformation.getBaseToppings(requestModel.getRecipeId());
             GetBaseToppingsResponseModel responseModel = new GetBaseToppingsResponseModel();
             responseModel.setBaseToppings(baseToppings);
             return ResponseEntity.ok().body(responseModel);

@@ -1,13 +1,14 @@
 package pizzeria.order.domain.store;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
 public class StoreService {
+    @Getter
     private final transient StoreRepository storeRepo;
 
     @Autowired
@@ -19,53 +20,29 @@ public class StoreService {
         if (store == null) {
             throw new StoreIsNullException();
         }
-
-        if (storeRepo.existsById(store.getId())) {
+        if (storeRepo.existsById(store.getId()))
             throw new StoreAlreadyExistException();
-        }
-
-        if (!verifyEmailFormat(store.getContact())) {
-            throw new InvalidEmailException();
-        }
-
-        if (!verifyLocationFormat(store.getLocation())) {
-            throw new InvalidLocationException();
-        }
-
+        verifyEmailFormat(store.getContact());
+        verifyLocationFormat(store.getLocation());
         return storeRepo.save(store);
     }
 
-    public boolean editStore(Long id, Store store) throws Exception {
+    public void editStore(Long id, Store store) throws Exception {
         Optional<Store> optionalStore = storeRepo.findById(id);
-
-        if (optionalStore.isEmpty()) {
+        if (optionalStore.isEmpty())
             throw new StoreDoesNotExistException();
-        }
-
-        if (!verifyEmailFormat(store.getContact())) {
-            throw new InvalidEmailException();
-        }
-
-        if (!verifyLocationFormat(store.getLocation())) {
-            throw new InvalidLocationException();
-        }
-
+        verifyEmailFormat(store.getContact());
+        verifyLocationFormat(store.getLocation());
         optionalStore.get().setContact(store.getContact());
         optionalStore.get().setLocation(store.getLocation());
-
         storeRepo.save(optionalStore.get());
-
-        return true;
     }
 
-    public boolean deleteStore(Long storeId) throws StoreDoesNotExistException {
-        Optional<Store> optionalStore = storeRepo.findById(storeId);
-
-        if (optionalStore.isEmpty()) {
+    public void deleteStore(Long id) throws StoreDoesNotExistException {
+        if (!storeRepo.existsById(id)) {
             throw new StoreDoesNotExistException();
         }
-        storeRepo.deleteStoreById(storeId);
-        return true;
+        storeRepo.deleteStoreById(id);
     }
 
     /**
@@ -77,35 +54,24 @@ public class StoreService {
         if (!storeRepo.existsById(id)) {
             return null;
         }
-        return storeRepo.findById(id).get().getContact();
+        return storeRepo.findById(id).orElse(new Store(null, null)).getContact();
     }
 
-    /**
-     * Tells us whether a store exists with the given id
-     * @param id id of the store we want to check
-     * @return True or False depending on its existence
-     */
-    public boolean existsById(Long id) {
-        return storeRepo.existsById(id);
-    }
-
-    public List<Store> getAllStores() {
-        return storeRepo.findAll();
-    }
-
-    private boolean verifyEmailFormat(String testEmail) {
+    private void verifyEmailFormat(String testEmail) throws InvalidEmailException {
         String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
         Pattern pattern = Pattern.compile(regexPattern);
-        return pattern.matcher(testEmail).matches();
+        if (!pattern.matcher(testEmail).matches())
+            throw new InvalidEmailException();
     }
 
-    private boolean verifyLocationFormat(String testLocation) {
+    private void verifyLocationFormat(String testLocation) throws InvalidLocationException {
         String regexPattern = "^(?:NL-)?(\\d{4})\\s*([A-Z]{2})$";
 
         Pattern pattern = Pattern.compile(regexPattern);
-        return pattern.matcher(testLocation).matches();
+        if (!pattern.matcher(testLocation).matches())
+            throw new InvalidLocationException();
     }
 
     @SuppressWarnings("PMD")

@@ -38,7 +38,7 @@ public class HttpRequestService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<GetAllergiesFromUserResponseModel> response = this.restTemplate.exchange("http://localhost:8083/user/get_allergies", HttpMethod.GET, entity, GetAllergiesFromUserResponseModel.class);
+        ResponseEntity<GetAllergiesFromUserResponseModel> response = this.restTemplate.exchange("http://localhost:8083/allergies/get_allergies", HttpMethod.GET, entity, GetAllergiesFromUserResponseModel.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return Optional.of(response.getBody().getAllergies());
         } else {
