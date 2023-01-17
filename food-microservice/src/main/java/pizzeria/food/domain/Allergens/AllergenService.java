@@ -3,18 +3,23 @@ package pizzeria.food.domain.Allergens;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pizzeria.food.communication.HttpRequestService;
 import pizzeria.food.domain.ingredient.IngredientNotFoundException;
 import pizzeria.food.domain.ingredient.IngredientRepository;
 import pizzeria.food.domain.recipe.Recipe;
 import pizzeria.food.domain.recipe.RecipeNotFoundException;
 import pizzeria.food.domain.recipe.RecipeRepository;
-import java.util.ArrayList;
-import java.util.List;
+import pizzeria.food.models.allergens.CheckIfRecipeIsSafeRequestModel;
+import pizzeria.food.models.allergens.FilterMenuResponseModel;
+
+import java.util.*;
 
 @Service
 public class AllergenService {
     private final transient RecipeRepository recipeRepository;
     private final transient IngredientRepository ingredientRepository;
+    private final transient HttpRequestService requestService;
+
 
     /**
      * Constructor for the AllergenService class that auto wires the required databases
@@ -22,9 +27,12 @@ public class AllergenService {
      * @param ingredientRepository IngredientRepository in which we will perform all ingredient related operations
      */
     @Autowired
-    public AllergenService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository) {
+    public AllergenService(RecipeRepository recipeRepository,
+                           IngredientRepository ingredientRepository,
+                           HttpRequestService requestService) {
         this.recipeRepository = recipeRepository;
         this.ingredientRepository = ingredientRepository;
+        this.requestService = requestService;
     }
 
     /**
@@ -52,22 +60,28 @@ public class AllergenService {
      */
     public boolean recipeIsSafe(Recipe recipe, List<String> allergens) throws IngredientNotFoundException {
         List<Long> ids = recipe.getBaseToppings();
-        int size = ids.size();
-        for (int i = 0; i < size; i++){
-            long id = ids.get(i);
-            if (ingredientRepository.existsById(id)){
-                List<String> allergensOfIngredient = ingredientRepository.findById(id).get().getAllergens();
-                for (String allergen: allergensOfIngredient){
-                    if (allergens.contains(allergen)) {
-                        return false;
-                    }
-                }
+        Set <String> recipeAllergens = getSetOfAllergens(ids);
+        recipeAllergens.retainAll(new HashSet<>(allergens));
+        return recipeAllergens.isEmpty();
+    }
 
-            } else {
+    /**
+     * Returns a set of the allergens contained in the list of ids
+     * @param ingredientIds list of ingredient ids
+     * @return set of allergens
+     * @throws IngredientNotFoundException
+     */
+    @SuppressWarnings("PMD")
+    private Set<String> getSetOfAllergens(List<Long> ingredientIds) throws IngredientNotFoundException {
+        Set<String> allergens = new HashSet<>();
+
+        for (Long ingredientId : ingredientIds) {
+            if (!ingredientRepository.existsById(ingredientId)) {
                 throw new IngredientNotFoundException();
             }
+            allergens.addAll(ingredientRepository.findById(ingredientId).get().getAllergens());
         }
-        return true;
+        return allergens;
     }
 
     /**
@@ -84,5 +98,27 @@ public class AllergenService {
         } else {
             throw new RecipeNotFoundException();
         }
+    }
+
+    public FilterMenuResponseModel filterMenu(String token) throws IngredientNotFoundException {
+        Optional<List<String>> allergens = requestService.getUserAllergens(token);
+        if (allergens.isPresent()) {
+            List<Recipe> filteredMenu = filterMenuOnAllergens(allergens.get());
+            FilterMenuResponseModel responseModel = new FilterMenuResponseModel();
+            responseModel.setRecipes(filteredMenu);
+            return responseModel;
+        }
+        return null;
+    }
+
+    public Optional<Boolean> checkSafety(String token, CheckIfRecipeIsSafeRequestModel requestModel) throws Exception {
+        Optional<List<String>> allergens = requestService.getUserAllergens(token);
+
+        if (allergens.isPresent()) {
+            boolean checkSafety = checkIfSafeRecipeWithId(requestModel.getId(), allergens.get());
+
+            return Optional.of(checkSafety);
+        }
+        return Optional.empty();
     }
 }

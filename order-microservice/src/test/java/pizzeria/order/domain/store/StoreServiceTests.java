@@ -176,7 +176,7 @@ public class StoreServiceTests {
         Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
         storeService.addStore(newstore);
 
-        storeService.deleteStore(1L);
+        storeService.getStoreRepo().deleteStoreById(1L);
 
         assertThat(storeRepository.existsById(1L)).isFalse();
     }
@@ -186,10 +186,7 @@ public class StoreServiceTests {
         Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
         storeService.addStore(newstore);
 
-        assertThatThrownBy(() -> {
-            storeService.deleteStore(2L);
-        }).isInstanceOf(StoreService.StoreDoesNotExistException.class);
-
+        storeService.getStoreRepo().deleteStoreById(2L);
         assertThat(storeRepository.existsById(1L)).isTrue();
     }
 
@@ -198,12 +195,9 @@ public class StoreServiceTests {
         Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
         storeService.addStore(newstore);
 
-        storeService.deleteStore(1L);
+        storeService.getStoreRepo().deleteStoreById(1L);
 
-        assertThatThrownBy(() -> {
-            storeService.deleteStore(2L);
-        }).isInstanceOf(StoreService.StoreDoesNotExistException.class);
-
+        storeService.getStoreRepo().deleteStoreById(2L);
         assertThat(storeRepository.existsById(1L)).isFalse();
     }
 
@@ -232,7 +226,7 @@ public class StoreServiceTests {
         Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
         storeService.addStore(newstore);
 
-        assertThat(storeService.existsById(1L)).isTrue();
+        assertThat(storeService.getStoreRepo().existsById(1L)).isTrue();
     }
 
     @Test
@@ -240,7 +234,7 @@ public class StoreServiceTests {
         Store newstore = new Store("NL-2624ME", "borislavsemerdzhiev.02@gmail.com");
         storeService.addStore(newstore);
 
-        assertThat(storeService.existsById(2L)).isFalse();
+        assertThat(storeService.getStoreRepo().existsById(2L)).isFalse();
     }
 
     @Test
@@ -252,6 +246,6 @@ public class StoreServiceTests {
         storeService.addStore(newStore2);
         storeService.addStore(newStore3);
 
-        assertThat(storeService.getAllStores()).containsExactlyInAnyOrderElementsOf(List.of(newStore, newStore2, newStore3));
+        assertThat(storeService.getStoreRepo().findAll()).containsExactlyInAnyOrderElementsOf(List.of(newStore, newStore2, newStore3));
     }
 }

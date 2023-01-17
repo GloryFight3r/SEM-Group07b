@@ -39,7 +39,7 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/store/create").hasAuthority(authorizedRole)
                 .antMatchers("/store/edit").hasAuthority(authorizedRole)
                 .antMatchers("/store/delete").hasAuthority(authorizedRole)
-                .antMatchers("/store/get_stores").hasAuthority(authorizedRole)
+                .antMatchers("/store/get_stores").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

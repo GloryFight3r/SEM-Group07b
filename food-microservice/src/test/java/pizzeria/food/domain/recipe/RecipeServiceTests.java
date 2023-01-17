@@ -29,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RecipeServiceTests {
     @Autowired
     private transient RecipeRepository recipeRepository;
+    @Autowired
+    private transient RecipeServiceResponseInformation recipeServiceResponseInformation;
 
     @Autowired
     private transient IngredientRepository ingredientRepository;
@@ -239,7 +241,7 @@ public class RecipeServiceTests {
         recipeRepository.save(new Recipe("recipe6", List.of(2L, 3L), 17.0));
         recipeRepository.save(new Recipe("recipe7", List.of(2L, 3L, 4L), 14.0));
         try {
-            Map<Long, Tuple> result = recipeService.getPrices(List.of(5L, 6L, 7L, 8L, 9L, 10L, 11L));
+            Map<Long, Tuple> result = recipeServiceResponseInformation.getPrices(List.of(5L, 6L, 7L, 8L, 9L, 10L, 11L));
             assertThat(result.size()).isEqualTo(7);
             assertThat(result.get(5L).getPrice()).isEqualTo(18.0);
             assertThat(result.get(6L).getPrice()).isEqualTo(2.0);
@@ -262,7 +264,7 @@ public class RecipeServiceTests {
 
     @Test
     void getPricesThrowsRecipeNotFoundException(){
-        assertThrows(RecipeNotFoundException.class, () -> recipeService.getPrices(List.of(1L, 2L, 3L)));
+        assertThrows(RecipeNotFoundException.class, () -> recipeServiceResponseInformation.getPrices(List.of(1L, 2L, 3L)));
     }
 
     @Test
@@ -278,7 +280,7 @@ public class RecipeServiceTests {
         recipeRepository.save(new Recipe("recipe5", List.of(2L), 19.0));
         recipeRepository.save(new Recipe("recipe6", List.of(2L, 3L), 17.0));
         recipeRepository.save(new Recipe("recipe7", List.of(2L, 3L, 4L), 14.0));
-        assertThrows(RecipeNotFoundException.class, () -> recipeService.getPrices(List.of(5L, 6L, 7L, 88L, 9L, 10L, 11L)));
+        assertThrows(RecipeNotFoundException.class, () -> recipeServiceResponseInformation.getPrices(List.of(5L, 6L, 7L, 88L, 9L, 10L, 11L)));
     }
 
     @Test
@@ -296,7 +298,7 @@ public class RecipeServiceTests {
         recipeRepository.save(new Recipe("recipe7", List.of(2L, 3L, 4L), 14.0));
 
         try {
-            Map<Long, Tuple> result = recipeService.getPrices(List.of(5L, 7L, 8L, 10L, 11L));
+            Map<Long, Tuple> result = recipeServiceResponseInformation.getPrices(List.of(5L, 7L, 8L, 10L, 11L));
             assertThat(result.size()).isEqualTo(5);
             assertThat(result.get(5L).getPrice()).isEqualTo(18.0);
             assertThat(result.get(7L).getPrice()).isEqualTo(22.0);
@@ -330,7 +332,7 @@ public class RecipeServiceTests {
         recipeRepository.save(new Recipe("recipe7", List.of(2L, 3L, 4L), 14.0));
         recipeRepository.save(new Recipe("recipe8", List.of(1L, 2L, 3L, 4L, 5L, 6L), 10.0));
 
-        List<Recipe> result = recipeService.getMenu();
+        List<Recipe> result = recipeServiceResponseInformation.getMenu();
         assertThat(result.size()).isEqualTo(8);
         assertThat(result.get(0).getName()).isEqualTo("recipe1");
         assertThat(result.get(1).getName()).isEqualTo("recipe2");
@@ -345,7 +347,7 @@ public class RecipeServiceTests {
 
     @Test
     void getMenu2(){
-        List<Recipe> result = recipeService.getMenu();
+        List<Recipe> result = recipeServiceResponseInformation.getMenu();
         assertThat(result.size()).isEqualTo(0);
     }
 
@@ -361,7 +363,7 @@ public class RecipeServiceTests {
         recipe = recipeRepository.save(recipe);
 
         try {
-            List<Ingredient> result = recipeService.getBaseToppings(recipe.getId());
+            List<Ingredient> result = recipeServiceResponseInformation.getBaseToppings(recipe.getId());
             assertThat(result.size()).isEqualTo(3);
             assertThat(result).containsExactlyElementsOf(List.of(ingredient1, ingredient3, ingredient4));
         } catch (RecipeNotFoundException | IngredientNotFoundException e) {
@@ -375,7 +377,7 @@ public class RecipeServiceTests {
         Recipe recipe = new Recipe("recipe1", List.of(1L, 4L, 3L), 18.0);
         recipe = recipeRepository.save(recipe);
 
-        assertThrows(RecipeNotFoundException.class, () -> recipeService.getBaseToppings(-1L));
+        assertThrows(RecipeNotFoundException.class, () -> recipeServiceResponseInformation.getBaseToppings(-1L));
     }
 
     @Test
@@ -387,13 +389,13 @@ public class RecipeServiceTests {
         recipe = recipeRepository.save(recipe);
         long id = recipe.getId();
 
-        assertThrows(IngredientNotFoundException.class, () -> recipeService.getBaseToppings(id));
+        assertThrows(IngredientNotFoundException.class, () -> recipeServiceResponseInformation.getBaseToppings(id));
     }
 
     @Test
     void testGetPricesWithNullInput(){
         try {
-            Map<Long, Tuple> result = recipeService.getPrices(null);
+            Map<Long, Tuple> result = recipeServiceResponseInformation.getPrices(null);
         } catch (RecipeNotFoundException e) {
             fail();
         }

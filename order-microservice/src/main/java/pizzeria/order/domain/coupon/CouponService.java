@@ -32,6 +32,7 @@ public class CouponService {
      */
     public boolean createCoupon(CouponModel coupon) {
         try {
+
             //we save the coupon in the database (if the same id is provided, the existing coupon get updated)
             switch (coupon.getType()) {
                 case "PERCENTAGE":

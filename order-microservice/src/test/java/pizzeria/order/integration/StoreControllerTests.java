@@ -423,8 +423,7 @@ public class StoreControllerTests {
             storeRepo.save(storeToSave);
         }
 
-        when(mockAuthManager.getRole()).thenReturn("ROLE_CUSTOMER");
-        when(mockJwtTokenVerifier.getRoleFromToken(anyString())).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
+        when(mockJwtTokenVerifier.validateToken(anyString())).thenReturn(false);
 
         // Act
         ResultActions resultActions = mockMvc.perform(get("/store/get_stores")

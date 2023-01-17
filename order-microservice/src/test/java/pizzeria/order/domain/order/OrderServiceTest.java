@@ -134,12 +134,12 @@ public class OrderServiceTest {
         when(foodPriceService.getFoodPrices(any())).thenReturn(pricesResponseModel);
         assertThatThrownBy(() -> {
             orderService.processOrder(order_invalidTime);
-        }).isInstanceOf(OrderService.TimeInvalidException.class);
+        }).isInstanceOf(OrderServiceExceptions.TimeInvalidException.class);
     }
 
     @Test
     void testProcessOrder_orderIsNull() throws Exception {
-        OrderService.CouldNotStoreException exception = assertThrows(OrderService.CouldNotStoreException.class, () -> {
+        OrderServiceExceptions.CouldNotStoreException exception = assertThrows(OrderServiceExceptions.CouldNotStoreException.class, () -> {
             orderService.processOrder(null);
         });
 
@@ -158,7 +158,7 @@ public class OrderServiceTest {
         editOrder.setPickupTime(currentOrder.getPickupTime());
         editOrder.setUserId("differentId");
 
-        OrderService.InvalidEditException exception = assertThrows(OrderService.InvalidEditException.class, () -> {
+        OrderServiceExceptions.InvalidEditException exception = assertThrows(OrderServiceExceptions.InvalidEditException.class, () -> {
             orderService.processOrder(editOrder);
         });
 
@@ -176,7 +176,7 @@ public class OrderServiceTest {
         order.setPickupTime(order_valid.getPickupTime());
         order.setUserId("differentId");
 
-        OrderService.FoodInvalidException exception = assertThrows(OrderService.FoodInvalidException.class, () -> {
+        OrderServiceExceptions.FoodInvalidException exception = assertThrows(OrderServiceExceptions.FoodInvalidException.class, () -> {
             orderService.processOrder(order);
         });
 
@@ -190,7 +190,7 @@ public class OrderServiceTest {
 
         assertThatThrownBy(() -> {
             orderService.processOrder(order_valid);
-        }).isInstanceOf(OrderService.PriceNotRightException.class);
+        }).isInstanceOf(OrderServiceExceptions.PriceNotRightException.class);
     }
 
     @Test

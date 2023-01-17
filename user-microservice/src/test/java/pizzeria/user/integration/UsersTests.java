@@ -311,7 +311,7 @@ public class UsersTests {
         model.setAllergies(newAllergies);
 
         // Act
-        ResultActions resultActions = mockMvc.perform(put("/user/update_allergies")
+        ResultActions resultActions = mockMvc.perform(put("/allergies/update_allergies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.serialize(model))
                 .header("Authorization", "Bearer MockedToken"));
@@ -345,7 +345,7 @@ public class UsersTests {
         model.setAllergies(newAllergies);
 
         // Act
-        ResultActions resultActions = mockMvc.perform(put("/user/update_allergies")
+        ResultActions resultActions = mockMvc.perform(put("/allergies/update_allergies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.serialize(model))
                 .header("Authorization", "Bearer MockedToken"));
@@ -369,7 +369,7 @@ public class UsersTests {
         model.setAllergies(newAllergies);
 
         // Act
-        ResultActions resultActions = mockMvc.perform(put("/user/update_allergies")
+        ResultActions resultActions = mockMvc.perform(put("/allergies/update_allergies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.serialize(model))
                 .header("Authorization", "Bearer MockedToken"));
@@ -395,7 +395,7 @@ public class UsersTests {
         when(mockAuthManager.getNetId()).thenReturn(id);
 
         // Act
-        ResultActions resultActions = mockMvc.perform(get("/user/get_allergies")
+        ResultActions resultActions = mockMvc.perform(get("/allergies/get_allergies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer MockedToken"));
 
@@ -418,7 +418,7 @@ public class UsersTests {
         when(mockAuthManager.getNetId()).thenReturn("NotTheSameId");
 
         // Act
-        ResultActions resultActions = mockMvc.perform(get("/user/get_allergies")
+        ResultActions resultActions = mockMvc.perform(get("/allergies/get_allergies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer MockedToken"));
 
