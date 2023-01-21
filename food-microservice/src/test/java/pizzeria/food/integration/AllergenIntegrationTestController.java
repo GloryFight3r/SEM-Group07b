@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"test", "mockHttpRequestService", "mockTokenVerifier", "mockAuthenticationManager"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-public class IntegrationTestAllergenController {
+public class AllergenIntegrationTestController {
     @Autowired
     private MockMvc mockMvc;
 

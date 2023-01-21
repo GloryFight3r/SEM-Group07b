@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles({"test", "mockRecipeService", "mockRecipeResponseService", "mockIngredientService"})
 @AutoConfigureMockMvc
-class IntegrationTestPriceController {
+class PriceIntegrationControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
