@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -247,5 +248,54 @@ public class StoreServiceTests {
         storeService.addStore(newStore3);
 
         assertThat(storeService.getStoreRepo().findAll()).containsExactlyInAnyOrderElementsOf(List.of(newStore, newStore2, newStore3));
+    }
+
+    @Test
+    void testAddStore() throws Exception {
+        Store newStore = new Store("NL-2624ME", "email@gmail.com");
+        //verify that the method add store returns the newstore and that the store is added to the repository
+        assertThat(storeService.addStore(newStore)).isEqualTo(newStore);
+        assertThat(storeService.getStoreRepo().findAll()).containsExactlyInAnyOrderElementsOf(List.of(newStore));
+    }
+
+    @Test
+    void testDeleteStore() throws StoreService.StoreDoesNotExistException {
+        Store newStore = new Store("NL-2624ME", "email@gmail.com");
+        storeRepository.save(newStore);
+        storeService.deleteStore(newStore.getId());
+        assertThat(storeRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    void testDeleteStore2(){
+        try {
+            storeService.deleteStore(1L);
+        } catch (StoreService.StoreDoesNotExistException e) {
+            assertThat(e.getMessage()).isEqualTo("The store with the id provided does not exist");
+        }
+    }
+
+    @Test
+    void testInvalidLocation() {
+        Store newStore = new Store("NL-26ME", "email@gmail.com");
+        try {
+            storeService.addStore(newStore);
+        } catch (StoreService.InvalidLocationException e) {
+            assertThat(e.getMessage()).isEqualTo("Invalid location format");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void testInvalidEmailFormat(){
+        Store newStore = new Store("NL-2624ME", "emailgmail.com");
+        try {
+            storeService.addStore(newStore);
+        } catch (StoreService.InvalidEmailException e) {
+            assertThat(e.getMessage()).isEqualTo("Invalid email format");
+        } catch (Exception e) {
+            fail();
+        }
     }
 }
