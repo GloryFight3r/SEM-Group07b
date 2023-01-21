@@ -15,6 +15,7 @@ import pizzeria.order.models.GetPricesResponseModel;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -22,6 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles({"test"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CouponTests {
+    @Test
+    public void testThrowsIllegal(){
+        //test that we cannot construct illegal percentage coupons
+        assertThatThrownBy(() -> {
+            PercentageCoupon couponOne = new PercentageCoupon("TestCoupon", 1.5);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @Test
     public void coupon_equalsWorksCorrectly() {
         PercentageCoupon couponOne = new PercentageCoupon("TestCoupon", 0.2);
