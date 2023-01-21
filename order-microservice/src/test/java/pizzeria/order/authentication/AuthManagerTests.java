@@ -23,7 +23,7 @@ public class AuthManagerTests {
     public void getNetidTest() {
         // Arrange
         String expected = "user123";
-        var authenticationToken = new UsernamePasswordAuthenticationToken(
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 expected,
                 null, Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
         );
@@ -44,7 +44,7 @@ public class AuthManagerTests {
     public void getRolesTest() {
         // Arrange
         String expected = "user123";
-        var authenticationToken = new UsernamePasswordAuthenticationToken(
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 expected,
                 null, Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
         );
