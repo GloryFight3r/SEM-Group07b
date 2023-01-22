@@ -1,11 +1,14 @@
 package pizzeria.order.domain.mailing;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pizzeria.order.Application;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 @Service
@@ -23,15 +26,20 @@ public class MailingService {
         DELETED
     }
 
+    @Getter
     transient private Session session;
+
+    @Getter
+    transient private List<String> logg;
     private final transient String[] messageSubject = {
-            "Order has been edited!",
             "Order has been created!",
+            "Order has been edited!",
             "Order has been deleted!"
     };
     @Autowired
     public MailingService(MessageTransport messageTransport) {
         this.messageTransport = messageTransport;
+        logg = new ArrayList<>();
 
         String host = "smtp.gmail.com";
 
@@ -53,13 +61,13 @@ public class MailingService {
         });
 
         // Used to debug SMTP issues
-        session.setDebug(true);
+        //session.setDebug(true);
     }
 
     private String getMessageText(Long orderId, int index) {
         String[] messageText = {
-                String.format("Order with orderId : %d has been edited", orderId),
                 String.format("Order with orderId : %d has been created", orderId),
+                String.format("Order with orderId : %d has been edited", orderId),
                 String.format("Order with orderId : %d has been deleted", orderId)
         };
         return messageText[index];
@@ -84,6 +92,7 @@ public class MailingService {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
 
             int messageTypeToNumber = processType.ordinal();
+            //System.out.println(messageTypeToNumber + " " + messageSubject[messageTypeToNumber]);
 
             // Set Subject: header field
             message.setSubject(messageSubject[messageTypeToNumber]);
@@ -92,7 +101,7 @@ public class MailingService {
             // Send message
             messageTransport.sendMessage(message);
         } catch (MessagingException mex) {
-            mex.printStackTrace();
+            logg.add("Couldn't send email to " + recipientEmail);
         }
     }
 
