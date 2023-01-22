@@ -56,6 +56,7 @@ public class OrderServiceTest {
     private transient Order order_invalidCoupons; // it's still a valid order, but all the coupons are invalid
     private transient Order order_invalidPrice; // price does not match correct price
     private transient Order order_valid; // perfect case
+    private transient Order order_valid_copy; //mutation in the null checks of the processOrder
     private transient GetPricesResponseModel pricesResponseModel;
 
     @BeforeEach
@@ -101,6 +102,7 @@ public class OrderServiceTest {
         order_invalidCoupons = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 37, new ArrayList<String>(List.of("invalid")));
         order_invalidPrice = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 26, new ArrayList<String>(List.of("percentage", "2for1")));
         order_valid = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 18.5, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
+        order_valid_copy = new Order(null, foodList, 1L, "uid", LocalDateTime.now().plusHours(1), 18.5, new ArrayList<String>(List.of("percentage", "2for1", "invalid")));
 
         when(clockWrapper.getNow()).thenReturn(LocalDateTime.now());
     }
@@ -141,6 +143,16 @@ public class OrderServiceTest {
     void testProcessOrder_orderIsNull() throws Exception {
         OrderServiceExceptions.CouldNotStoreException exception = assertThrows(OrderServiceExceptions.CouldNotStoreException.class, () -> {
             orderService.processOrder(null);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("The order is null or it already exists in the database.");
+    }
+
+    @Test
+    void testProcessOrder_orderCouponsIsNull() throws Exception {
+        order_valid_copy.setCouponIds(null);
+        OrderServiceExceptions.CouldNotStoreException exception = assertThrows(OrderServiceExceptions.CouldNotStoreException.class, () -> {
+            orderService.processOrder(order_valid_copy);
         });
 
         assertThat(exception.getMessage()).isEqualTo("The order is null or it already exists in the database.");

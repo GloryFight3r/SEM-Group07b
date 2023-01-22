@@ -35,6 +35,7 @@ public class FoodPriceServiceTests {
     @ParameterizedTest
     @MethodSource("getFoodPriceSuite")
     void getFoodPrice_worksCorrectly(GetPricesResponseModel model, GetPricesResponseModel expected) {
+        //make a dummy order
         Order order = new Order(1L, List.of(new Food(1, 3, 4, List.of(), List.of())), 3L, "Mocked id", LocalDateTime.now(), 134.0, List.of());
 
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
@@ -66,6 +67,7 @@ public class FoodPriceServiceTests {
 
         return Stream.of(
           Arguments.of(model1, model1),
+          //suites that catch the mutation in the extract price response model method
           Arguments.of(model2, new GetPricesResponseModel(new HashMap<>(), model2.getIngredientPrices())),
           Arguments.of(model3, new GetPricesResponseModel(model3.getFoodPrices(), new HashMap<>()))
         );
