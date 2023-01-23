@@ -5,7 +5,7 @@ buildscript {
         //maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.2'
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.0'
     }
 }
 
@@ -23,7 +23,7 @@ plugins {
     id 'pmd'
 
     // PITest
-    id 'info.solidsoft.pitest' version '1.5.2'
+    id 'info.solidsoft.pitest' version '1.7.0'
 }
 
 group = 'pizzeria'
@@ -117,8 +117,8 @@ pitest {
     junit5PluginVersion = '0.12'
 
     targetClasses = ['pizzeria.*']  //by default "${project.group}.*"
-    pitestVersion = '1.5.1' //not needed when a default PIT version should be used
-    threads = 4
+    pitestVersion = '1.7.0' //not needed when a default PIT version should be used
+    threads = 6
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
 }

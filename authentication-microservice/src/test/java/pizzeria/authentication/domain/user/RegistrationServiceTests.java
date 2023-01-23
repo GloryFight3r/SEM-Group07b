@@ -11,8 +11,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -96,5 +98,57 @@ public class RegistrationServiceTests {
 
         assertThat(savedUser.getId()).isEqualTo(testUser);
         assertThat(savedUser.getPassword()).isEqualTo(existingTestPassword);
+    }
+
+    @Test
+    public void checking_conditional_boundary() throws Exception {
+        final long manager_acc = 5;
+        final String id = "user";
+        final String password = "password";
+        UserRepository userRepository = mock(UserRepository.class);
+        PasswordHashingService passwordHashingService = mock(PasswordHashingService.class);
+
+        when(passwordHashingService.hash(any(Password.class))).thenReturn(mock(HashedPassword.class));
+        when(userRepository.count()).thenReturn(manager_acc);
+
+        RegistrationService registrationService = new RegistrationService(userRepository, passwordHashingService);
+
+        AppUser appUser = registrationService.registerUser(id, new Password(password));
+
+        assertThat(appUser.getRole()).isEqualTo("ROLE_CUSTOMER");
+    }
+
+    @Test
+    public void check_that_returns_manager() throws Exception {
+        final long manager_acc = 4;
+        final String id = "user";
+        final String password = "password";
+        UserRepository userRepository = mock(UserRepository.class);
+        PasswordHashingService passwordHashingService = mock(PasswordHashingService.class);
+
+        when(passwordHashingService.hash(any(Password.class))).thenReturn(mock(HashedPassword.class));
+        when(userRepository.count()).thenReturn(manager_acc);
+
+        RegistrationService registrationService = new RegistrationService(userRepository, passwordHashingService);
+
+        assertThat(registrationService.registerUser(id, new Password(password))).isInstanceOf(AppUser.class);
+    }
+
+    @Test
+    public void testCheckIdIsUniqueReturnsTrue() {
+        UserRepository userRepository = mock(UserRepository.class);
+        when(userRepository.existsById(anyString())).thenReturn(false);
+        RegistrationService service = new RegistrationService(userRepository, mock(PasswordHashingService.class));
+        boolean isUnique = service.checkIdIsUnique("test");
+        assertTrue(isUnique);
+    }
+
+    @Test
+    public void testCheckIdIsUniqueReturnsFalse() {
+        UserRepository userRepository = mock(UserRepository.class);
+        when(userRepository.existsById(anyString())).thenReturn(true);
+        RegistrationService service = new RegistrationService(userRepository, mock(PasswordHashingService.class));
+        boolean isUnique = service.checkIdIsUnique("test");
+        assertFalse(isUnique);
     }
 }

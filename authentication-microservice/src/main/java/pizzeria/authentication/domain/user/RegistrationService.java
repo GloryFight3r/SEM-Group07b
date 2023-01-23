@@ -40,7 +40,7 @@ public class RegistrationService {
                 AppUser manager = AppUser.createManager(id, hashedPassword);
                 userRepository.save(manager);
 
-                System.out.println("the role of the new user is: " + manager.getRole());
+                //System.out.println("the role of the new user is: " + manager.getRole());
                 return manager;
             } else {
                 // Create new account
@@ -48,7 +48,7 @@ public class RegistrationService {
 
                 userRepository.save(user);
 
-                System.out.println("the role of the new user is: " + user.getRole());
+                //System.out.println("the role of the new user is: " + user.getRole());
                 return user;
             }
         }
